@@ -41,6 +41,7 @@ class Plugin {
 			}
 
 			self::$instance->prefix = 'awpp';
+			self::$instance->debug  = true;
 			self::$instance->file   = $file;
 
 			self::$instance->run();

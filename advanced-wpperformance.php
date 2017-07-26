@@ -40,4 +40,8 @@ if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION,
 	}
 
 	awpp_get_instance();
+
+	require_once 'Classes/class-init.php';
+	awpp_get_instance()->Init = new nicomartin\AdvancedWPPerformance\Init();
+	awpp_get_instance()->Init->run();
 }
