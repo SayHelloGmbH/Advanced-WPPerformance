@@ -67,7 +67,10 @@
 /* 0 */
 /***/ (function(module, exports) {
 
+(function ($) {
 
+    $(function () {});
+})(jQuery);
 
 /***/ })
 /******/ ]);

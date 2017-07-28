@@ -10,7 +10,7 @@ Text Domain: awpp
 Domain Path: /languages
  */
 
-if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION, '5.3', '<' ) ) {
+if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	function awpp_compatability_warning() {
 		echo '<div class="error"><p>';
 		// translators: Dependency waring
@@ -44,4 +44,12 @@ if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION,
 	require_once 'Classes/class-init.php';
 	awpp_get_instance()->Init = new nicomartin\AdvancedWPPerformance\Init();
 	awpp_get_instance()->Init->run();
+
+	require_once 'Classes/class-settings.php';
+	awpp_get_instance()->Settings = new nicomartin\AdvancedWPPerformance\Settings();
+	awpp_get_instance()->Settings->run();
+
+	require_once 'Classes/class-handleenqueue.php';
+	awpp_get_instance()->HandleEnqueue = new nicomartin\AdvancedWPPerformance\HandleEnqueue();
+	awpp_get_instance()->HandleEnqueue->run();
 }

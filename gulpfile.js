@@ -33,6 +33,13 @@ var config = {
                 '!assets/img/icons/mdi/*.svg'
             ],
             dest: './'
+        },
+        scripts: {
+            src: [
+                assetsDir + 'scripts/*.js',
+                '!' + assetsDir + 'scripts/*.min.js'
+            ],
+            dest: './'
         }
     },
 
@@ -123,15 +130,6 @@ config.scripts.packages.forEach(function (key) {
             )
             .on('error', errorLog)
             .pipe(gulp.dest(config.scripts.base))
-            // minfy
-            .pipe($.uglify())
-            .pipe($.rename({
-                suffix: '.min'
-            }))
-            .on('error', errorLog)
-            .pipe(gulp.dest(config.scripts.base))
-            // reload
-            .pipe($.livereload());
     });
 });
 
@@ -142,6 +140,19 @@ gulp.task('scripts', scriptsAll);
  */
 
 var minifyAll = [];
+
+gulp.task('minify:scripts', function(){
+
+    return gulp.src(config.minify.scripts.src)
+        .pipe($.uglify())
+        .pipe($.rename({
+            suffix: '.min'
+        }))
+        .on('error', errorLog)
+        .pipe(gulp.dest(config.scripts.base))
+        .pipe($.livereload());
+});
+minifyAll.push('minify:scripts');
 
 gulp.task('minify:svg', function () {
 
