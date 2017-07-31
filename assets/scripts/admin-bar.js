@@ -100,6 +100,7 @@ module.exports = __webpack_require__(3);
 
                 var $e = $(e);
                 var link = void 0;
+                var id = $e.attr('id');
 
                 if ($e.attr('data-href') === undefined) {
                     link = $e.attr('href');
@@ -107,13 +108,13 @@ module.exports = __webpack_require__(3);
                     link = $e.attr('data-href');
                 }
 
-                if (link.includes('admin-bar') || link.includes('adminbar') || link.includes('wp-includes/')) {
+                if (id.includes('admin-bar') || id.includes('adminbar') || id.includes('dashicons')) {
                     return true;
                 }
 
                 if ($checkbox.prop('checked')) {
                     $e.attr('data-href', link);
-                    $e.attr('href', '');
+                    $e.removeAttr('href');
                 } else {
                     $e.attr('href', link);
                 }

@@ -4,29 +4,26 @@ namespace nicomartin\AdvancedWPPerformance;
 
 class CriticalCSS {
 
-	public $ccss_folder = '';
 	public $base_path = '';
 	public $base_url = '';
-	public $options = '';
 	public $default_critical_path = '';
 
+	public $options = '';
+
 	public function __construct() {
-		$this->ccss_folder           = ''; // default folder is set in check_empty()
 		$this->base_path             = ABSPATH;
 		$this->base_url              = get_home_url() . '/';
-		$this->options               = get_option( awpp_get_instance()->Settings->settings_option );
 		$this->default_critical_path = $this->base_path . 'wp-content/awpp/critical/';
+		$this->options               = get_option( awpp_get_instance()->Settings->settings_option );
+
 		if ( ! file_exists( $this->default_critical_path ) ) {
 			mkdir( $this->default_critical_path, 0777, true );
 		}
 	}
 
 	public function run() {
-		add_action( 'admin_init', [ $this, 'register_settings' ] );
-		add_filter( 'awpp_critical_dir', function ( $path ) {
-			return get_template_directory() . '/assets/critical/';
-		} );
 
+		add_action( 'admin_init', [ $this, 'register_settings' ] );
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar_item' ] );
 
 		if ( 'off' == $this->options['loadcss'] ) {
@@ -94,13 +91,6 @@ class CriticalCSS {
 	 */
 
 	public function add_toolbar_item( $wp_admin_bar ) {
-
-		// translators: x Files, x kB
-		//$text = sprintf( _n( '%1$s File, %2$s', '%1$s Files, %2$s', $file_count, 'awpp' ), "<span class='count'>$file_count</span>", "<span class='size'>$file_size</span>" );
-		//$html = '<p class="minify-content">';
-		//$html .= $text;
-		//$html .= '<span class="clear-cache"><button id="awpp-clear-cache" data-nonce="' . wp_create_nonce( 'awpp-clear-cache-nonce' ) . '" data-ajaxurl="' . admin_url( 'admin-ajax.php' ) . '">' . __( 'clear', 'sht' ) . '</button></span>';
-		//$html .= '</p>';
 
 		$html = '';
 		$html .= '<input type="checkbox" id="awpp-check-criticalcss" />';

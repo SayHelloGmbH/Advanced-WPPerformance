@@ -69,7 +69,7 @@ class HandleEnqueue {
 		$media = $a->getAttribute( 'media' );
 		$id = $a->getAttribute( 'id' );
 
-		$return = "<script>loadCSS('$href', 0, '$media' );</script>\n";
+		$return = "<script>loadCSS('$href', 0, '$media', '$id' );</script>\n";
 		$return .= "<noscript><link rel='stylesheet' id='$id' href='$href' type='text/css' media='$media'></noscript>\n";
 
 		return $return;

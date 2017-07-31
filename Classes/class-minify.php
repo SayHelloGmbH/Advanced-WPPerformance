@@ -4,26 +4,23 @@ namespace nicomartin\AdvancedWPPerformance;
 
 class Minify {
 
-	public $cache_folder = '';
 	public $base_path = '';
 	public $base_url = '';
+	public $default_cache_path = '';
+
 	public $options = '';
 
+
 	public function __construct() {
-		$this->cache_folder = ''; // default folder is set in check_empty()
-		$this->base_path    = ABSPATH;
-		$this->base_url     = get_home_url() . '/';
-		$this->options      = get_option( awpp_get_instance()->Settings->settings_option );
+
+		$this->base_path          = ABSPATH;
+		$this->base_url           = awpp_maybe_add_slash( get_home_url() );
+		$this->default_cache_path = str_replace( $this->base_url, $this->base_path, awpp_maybe_add_slash( content_url() ) . 'awpp/assets/' );
+		$this->options            = get_option( awpp_get_instance()->Settings->settings_option );
 	}
 
 	public function run() {
 
-		add_filter( 'awpp_cache_folder', 'awpp_check_format', 990 );
-		add_filter( 'awpp_cache_folder', 'awpp_maybe_add_slash', 959 );
-		add_filter( 'awpp_cache_folder', [ $this, 'check_empty' ], 999 );
-		add_filter( 'awpp_cache_folder', function ( $str ) {
-			return 'assets';
-		}, 9 );
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar_item' ] );
 		add_action( 'wp_ajax_awpp_do_clear_minify_cache', [ $this, 'clear_cache' ] );
 
@@ -34,17 +31,9 @@ class Minify {
 		add_filter( 'clean_url', [ $this, 'change_url' ], 1, 1 );
 	}
 
-	public function check_empty( $string ) {
-		if ( '' == $string || '/' == $string ) {
-			return str_replace( $this->base_url, '', content_url() ) . '/awpp/assets/';
-		}
-
-		return $string;
-	}
-
 	public function change_url( $url ) {
 
-		$cache_folder = apply_filters( 'awpp_cache_folder', $this->cache_folder );
+		$cache_dir = $this->get_cache_dir();
 
 		if ( strpos( $url, '.js' ) !== false ) {
 			$type = 'js';
@@ -54,20 +43,16 @@ class Minify {
 			return $url;
 		}
 
-		$cache_typefolder = $cache_folder . $type . '/';
-
 		$new_filename = str_replace( $this->base_url, '', $url );
-		if ( true ) {
-			$new_filename = hash( 'crc32', $new_filename, false ); // todo: check if those filenames are always(!) unique
-			//$new_filename = md5( $new_filename );
-		} else {
-			$new_filename = str_replace( '/', '-', $this->check_format( $new_filename ) ); // debug
-		}
+		$new_filename = hash( 'crc32', $new_filename, false ); // todo: check if those filenames are always(!) unique
 		$new_filename = $new_filename . '.' . $type;
 
-		$new_url  = $this->base_url . $cache_typefolder . $new_filename;
-		$new_path = $this->base_path . $cache_typefolder . $new_filename;
+		$cache_type_dir = $cache_dir . $type . '/';
+
+		$new_path = $cache_type_dir . $new_filename;
 		$old_path = str_replace( $this->base_url, $this->base_path, $url );
+		$new_url  = str_replace( $this->base_path, $this->base_url, $new_path );
+
 		if ( strpos( $old_path, '?' ) != false ) {
 			$old_path = explode( '?', $old_path )[0]; // Remove ?ver..
 		}
@@ -76,8 +61,8 @@ class Minify {
 			return $new_url;
 		}
 
-		if ( ! file_exists( $this->base_path . $cache_typefolder ) ) {
-			mkdir( $this->base_path . $cache_typefolder, 0777, true );
+		if ( ! file_exists( $cache_type_dir ) ) {
+			mkdir( $cache_type_dir, 0777, true );
 		}
 
 		$path = plugin_dir_path( awpp_get_instance()->file ) . 'Classes/Libs';
@@ -96,14 +81,15 @@ class Minify {
 
 	public function add_toolbar_item( $wp_admin_bar ) {
 
-		$cache_folder = apply_filters( 'awpp_cache_folder', $this->cache_folder );
-		$folders      = [ 'css', 'js' ];
-		$file_count   = 0;
-		$file_size    = 0;
+		$cache_dir = $this->get_cache_dir();
+
+		$folders    = [ 'css', 'js' ];
+		$file_count = 0;
+		$file_size  = 0;
 
 		foreach ( $folders as $folder ) {
 
-			$dir = $this->base_path . $cache_folder . $folder . '/';
+			$dir = $cache_dir . $folder . '/';
 
 			if ( ! file_exists( $dir ) ) {
 				mkdir( $dir, 0777, true );
@@ -147,9 +133,8 @@ class Minify {
 			$this->exit_ajax( 'error', __( 'Invalid nonce', 'awpp' ) );
 		}
 
-		$cache_folder  = apply_filters( 'awpp_cache_folder', $this->cache_folder );
-		$path          = $this->base_path . $cache_folder;
-		$files_deleted = $this->rrmdir( $path );
+		$cache_dir     = $this->get_cache_dir();
+		$files_deleted = $this->rrmdir( $cache_dir );
 
 		$this->exit_ajax( 'success', sprintf( '%s Files deleted', $files_deleted ) );
 	}
@@ -202,5 +187,16 @@ class Minify {
 		}
 
 		return $count;
+	}
+
+	public function get_cache_dir() {
+
+		$cache_dir = apply_filters( 'awpp_cache_dir', $this->default_cache_path );
+		$cache_dir = awpp_maybe_add_slash( $cache_dir );
+		if ( '' == $cache_dir || '/' == $cache_dir ) {
+			$cache_dir = $this->default_cache_path;
+		}
+
+		return $cache_dir;
 	}
 }
