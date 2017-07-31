@@ -67,6 +67,49 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
+__webpack_require__(1);
+module.exports = __webpack_require__(2);
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+(function ($) {
+
+    $(function () {
+
+        var $wrapper = $('.awpp-settings-wrap');
+        if (!$wrapper.length) {
+            return;
+        }
+        var $checkbox = $wrapper.find('input#loadcss');
+        var $critical_textarea = $wrapper.find('textarea#criticalcss');
+        var $critical_container = $critical_textarea.parents('tr');
+
+        showhide_criticalcss();
+        $checkbox.on('change', function () {
+            showhide_criticalcss();
+        });
+
+        function showhide_criticalcss() {
+            console.log($checkbox.prop('checked'));
+            if ($checkbox.prop('checked')) {
+                $critical_container.show();
+            } else {
+                $critical_container.hide();
+            }
+        }
+    });
+})(jQuery);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 

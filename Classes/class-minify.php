@@ -18,8 +18,8 @@ class Minify {
 
 	public function run() {
 
-		add_filter( 'awpp_cache_folder', [ $this, 'check_format' ], 990 );
-		add_filter( 'awpp_cache_folder', [ $this, 'maybe_add_slash' ], 959 );
+		add_filter( 'awpp_cache_folder', 'awpp_check_format', 990 );
+		add_filter( 'awpp_cache_folder', 'awpp_maybe_add_slash', 959 );
 		add_filter( 'awpp_cache_folder', [ $this, 'check_empty' ], 999 );
 		add_filter( 'awpp_cache_folder', function ( $str ) {
 			return 'assets';
@@ -32,26 +32,6 @@ class Minify {
 		}
 
 		add_filter( 'clean_url', [ $this, 'change_url' ], 1, 1 );
-	}
-
-	public function check_format( $string ) {
-
-		$string = preg_replace( '/[^A-Za-z0-9\/\-\_ ]/', '', $string );
-
-		return $string;
-	}
-
-	public function maybe_add_slash( $string ) {
-
-		if ( substr( $string, - 1 ) != '/' ) {
-			$string = $string . '/';
-		}
-
-		if ( substr( $string, 0, 1 ) == '/' ) {
-			$string = substr( $string, 1 );
-		}
-
-		return $string;
 	}
 
 	public function check_empty( $string ) {
@@ -120,8 +100,15 @@ class Minify {
 		$folders      = [ 'css', 'js' ];
 		$file_count   = 0;
 		$file_size    = 0;
+
 		foreach ( $folders as $folder ) {
-			$dir   = $this->base_path . $cache_folder . $folder . '/';
+
+			$dir = $this->base_path . $cache_folder . $folder . '/';
+
+			if ( ! file_exists( $dir ) ) {
+				mkdir( $dir, 0777, true );
+			}
+
 			$files = scandir( $dir );
 			foreach ( $files as $file ) {
 				if ( '.' == $file || '..' == $file ) {

@@ -1,3 +1,7 @@
 .awpp-settings-wrap h1 {
   margin-bottom: 50px;
 }
+.awpp-settings-wrap p.error {
+  font-weight: bold;
+  color: red;
+}

@@ -33,6 +33,7 @@ if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION,
 
 } else {
 
+	require_once 'inc/funcs.php';
 	require_once 'Classes/class-plugin.php';
 
 	function awpp_get_instance() {
@@ -56,4 +57,8 @@ if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION,
 	require_once 'Classes/class-minify.php';
 	awpp_get_instance()->Minify = new nicomartin\AdvancedWPPerformance\Minify();
 	awpp_get_instance()->Minify->run();
+
+	require_once 'Classes/class-criticalcss.php';
+	awpp_get_instance()->CriticalCSS = new nicomartin\AdvancedWPPerformance\CriticalCSS();
+	awpp_get_instance()->CriticalCSS->run();
 }

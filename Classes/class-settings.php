@@ -14,12 +14,13 @@ class Settings {
 
 	public function __construct() {
 
-		$this->capability      = 'administrator';
-		$this->settings_page   = awpp_get_instance()->prefix . '-settings';
-		$this->settings_option = awpp_get_instance()->prefix . '-option';
-		$this->settings_group  = $this->settings_key . '-group';
-		$this->adminbar_id     = awpp_get_instance()->prefix . '_adminbar';
-		$this->options         = get_option( $this->settings_option );
+		$this->capability       = 'administrator';
+		$this->settings_page    = awpp_get_instance()->prefix . '-settings';
+		$this->settings_option  = awpp_get_instance()->prefix . '-option';
+		$this->settings_group   = $this->settings_key . '-group';
+		$this->settings_section = $this->settings_key . '-section';
+		$this->adminbar_id      = awpp_get_instance()->prefix . '_adminbar';
+		$this->options          = get_option( $this->settings_option );
 
 	}
 
@@ -64,7 +65,7 @@ class Settings {
 	}
 
 	public function register_settings() {
-		$section = $this->settings_group . '-section1';
+		$section = $this->settings_section;
 		register_setting( $this->settings_group, $this->settings_option, [ $this, 'sanitize' ] );
 		add_settings_section( $section, __( 'Settings', 'awpp' ), [ $this, 'print_section_info' ], $this->settings_page );
 		add_settings_field( 'scripts_to_footer', __( 'Move all scripts to footer', 'awpp' ), [ $this, 'scripts_to_footer_callback' ], $this->settings_page, $section );
@@ -75,18 +76,17 @@ class Settings {
 
 	public function sanitize( $input ) {
 
-		$new_input  = [];
 		$checkboxes = [ 'scripts_to_footer', 'defer_scripts', 'loadcss', 'minify' ];
 
 		foreach ( $checkboxes as $key ) {
 			if ( isset( $input[ $key ] ) ) {
-				$new_input[ $key ] = $input[ $key ];
+				$input[ $key ] = $input[ $key ];
 			} else {
-				$new_input[ $key ] = 'off';
+				$input[ $key ] = 'off';
 			}
 		}
 
-		return $new_input;
+		return $input;
 	}
 
 	public function print_section_info() {
