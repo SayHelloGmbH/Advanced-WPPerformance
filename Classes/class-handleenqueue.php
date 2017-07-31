@@ -18,9 +18,6 @@ class HandleEnqueue {
 
 		if ( 'off' != $this->options['scripts_to_footer'] ) {
 			add_action( 'wp_enqueue_scripts', [ $this, 'remove_header_scripts' ] );
-		}
-
-		if ( 'off' != $this->options['defer_scripts'] ) {
 			add_filter( 'clean_url', [ $this, 'defer_scripts' ], 11, 1 );
 		}
 

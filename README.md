@@ -3,18 +3,20 @@
 ## Description
 This plugin add several performance improvements to your WordPress site.
 ### Moves all scripts to footer
-### defer scripts
-### minify scripts
+This option moves all scripts to the footer and adds a defer attribute. This makes sure the scripts woun't block the page render process but will stil be executed in the right order. **Caution:** If you have some inline JavaScript that needs jQuery, this could break your site.
+### minify assets
+This plugin minifies all CSS and JS Files and caches them. It woll **not** concenate them. This way you are still able to use conditional Assets and if you are using HTTP/2, which I highly recommend, it's not necessary to do so.
 ### Critical CSS / LoadCSS
+All CSS Files will be removed from the head and loaded asynchronously. This makes sure your CSS Files woun't delay the page rendering. To reduce the flash of unstyled content (FOUT) I recommend adding a Critical CSS.
 #### conditonal Critical CSS
 By default this plugin provides a textarea where you can put your critical CSS.
 **But there's more!** You can use a filter `awpp_critical_dir` where you can define your own critical CSS Folder:
 ```php
-add_filter('awpp_critical_dir', function(){
-    return get_template_directory() . '/assets/critical/';
-});
+add_filter( 'awpp_critical_dir', function ( $path ) {
+	return get_template_directory() . '/assets/critical/';
+} );
 ```
-Inside this directory you ca define your own conditional critical CSS files which are loaded from right (the least specific) to left (the most specific). Like in the WordPress Hierarchy, the `index.css` is set as the basic file.
+Inside this directory you can define your own conditional critical CSS files which are loaded from right (the least specific) to left (the most specific). Like in the WordPress Hierarchy, the `index.css` is set as the basic file.
 ```
 index.css
 | singular.css
@@ -35,6 +37,9 @@ index.css
 | 404.css
 | search.css
 ```
+The idea behind this option is that you could just create a bunch of critical CSS Files and put them into your Theme. The Plugin will automaticly look for the most explict file and sets this as your critical CSS.
+
+There are several ways to generate Critical CSS. If you are a theme developer. I use an [NPM module](https://github.com/addyosmani/critical) to extract critical CSS while I'm developing the theme. But we're already working on a way better solution. **More soon..**
 
 ## Changelog
 

@@ -69,7 +69,6 @@ class Settings {
 		register_setting( $this->settings_group, $this->settings_option, [ $this, 'sanitize' ] );
 		add_settings_section( $section, __( 'Settings', 'awpp' ), [ $this, 'print_section_info' ], $this->settings_page );
 		add_settings_field( 'scripts_to_footer', __( 'Move all scripts to footer', 'awpp' ), [ $this, 'scripts_to_footer_callback' ], $this->settings_page, $section );
-		add_settings_field( 'defer_scripts', __( 'Execute Scripts when page has finished parsing (defer)', 'awpp' ), [ $this, 'defer_scripts_callback' ], $this->settings_page, $section );
 		add_settings_field( 'minify', __( 'Minify CSS and JS Files', 'awpp' ), [ $this, 'minify_callback' ], $this->settings_page, $section );
 		add_settings_field( 'loadcss', __( 'Load CSS async', 'awpp' ), [ $this, 'loadcss_callback' ], $this->settings_page, $section );
 	}
@@ -94,12 +93,6 @@ class Settings {
 
 	public function scripts_to_footer_callback() {
 		$key = 'scripts_to_footer';
-		$val = $this->get_val( $key, 'on' );
-		printf( '<input type="checkbox" name="%1$s[%2$s]" id="%2$s" %3$s />', $this->settings_option, $key, ( 'on' == $val ? 'checked' : '' ) );
-	}
-
-	public function defer_scripts_callback() {
-		$key = 'defer_scripts';
 		$val = $this->get_val( $key, 'on' );
 		printf( '<input type="checkbox" name="%1$s[%2$s]" id="%2$s" %3$s />', $this->settings_option, $key, ( 'on' == $val ? 'checked' : '' ) );
 	}
