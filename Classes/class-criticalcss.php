@@ -23,9 +23,11 @@ class CriticalCSS {
 
 	public function run() {
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
-		/*add_filter( 'awpp_critical_dir', function ( $path ) {
-			return get_template_directory() . '/assets/criticale/';
-		} );*/
+		add_filter( 'awpp_critical_dir', function ( $path ) {
+			return get_template_directory() . '/assets/critical/';
+		} );
+
+		add_action( 'admin_bar_menu', [ $this, 'add_toolbar_item' ] );
 
 		if ( 'off' == $this->options['loadcss'] ) {
 			return;
@@ -33,6 +35,10 @@ class CriticalCSS {
 
 		add_action( 'wp_head', [ $this, 'add_critical_css' ], 1 );
 	}
+
+	/**
+	 * Settings
+	 */
 
 	public function register_settings() {
 		register_setting( awpp_get_instance()->Settings->settings_group, awpp_get_instance()->Settings->settings_option, [ $this, 'update_file' ] );
@@ -83,12 +89,75 @@ class CriticalCSS {
 		return $input;
 	}
 
-	public function add_critical_css() {
-		if ( true ) {
-			echo apply_filters( 'awpp_critical_dir', $this->default_critical_path );
-			echo '<pre>';
-			print_r( awpp_get_critical_keys() );
-			echo '</pre>';
+	/**
+	 * Toolbar
+	 */
+
+	public function add_toolbar_item( $wp_admin_bar ) {
+
+		// translators: x Files, x kB
+		//$text = sprintf( _n( '%1$s File, %2$s', '%1$s Files, %2$s', $file_count, 'awpp' ), "<span class='count'>$file_count</span>", "<span class='size'>$file_size</span>" );
+		//$html = '<p class="minify-content">';
+		//$html .= $text;
+		//$html .= '<span class="clear-cache"><button id="awpp-clear-cache" data-nonce="' . wp_create_nonce( 'awpp-clear-cache-nonce' ) . '" data-ajaxurl="' . admin_url( 'admin-ajax.php' ) . '">' . __( 'clear', 'sht' ) . '</button></span>';
+		//$html .= '</p>';
+
+		$html = '';
+		$html .= '<input type="checkbox" id="awpp-check-criticalcss" />';
+		$html .= '<label for="awpp-check-criticalcss">';
+		$html .= __('Test Critical CSS', 'awpp');
+		$html .= '</label>';
+
+		$args = [
+			'id'     => awpp_get_instance()->Settings->adminbar_id . '-criticalcss',
+			'parent' => awpp_get_instance()->Settings->adminbar_id,
+			'title'  => 'Critical CSS',
+			'href'   => '',
+			'meta'   => [
+				'class' => awpp_get_instance()->prefix . '-adminbar-criticalcss ' . $this->options['loadcss'],
+			],
+		];
+
+		if ( ! is_admin() && 'off' != $this->options['loadcss'] ) {
+			$args['meta']['html'] = '<div class="ab-item ab-empty-item">' . $html . '</div>';
 		}
+		$wp_admin_bar->add_node( $args );
+	}
+
+	/**
+	 * Header Output
+	 */
+
+	public function add_critical_css() {
+
+		$path = apply_filters( 'awpp_critical_dir', $this->default_critical_path );
+
+		$critical_id = '';
+		$ids         = array_reverse( awpp_get_critical_keys() );
+
+		foreach ( $ids as $id ) {
+			if ( file_exists( $path . $id . '.css' ) ) {
+				$critical_id = $id;
+				break;
+			}
+		}
+
+		$content = "/*\n";
+		$content .= "Critical CSS: set by Advanced WP Performance.\n";
+		if ( is_user_logged_in() ) {
+			$critical_url = str_replace( ABSPATH, get_home_url() . '/', $path . $critical_id . '.css' );
+			$content      .= "\nDebug Information (for logged in users):\n";
+			$content      .= "- Critical ID: $critical_id\n";
+			$content      .= "- File: $critical_url\n";
+		}
+		if ( '' == $critical_id ) {
+			$content .= "\nError: Critical CSS File not found!\n";
+			$content .= "*/\n";
+		} else {
+			$content .= "*/\n";
+			$content .= file_get_contents( $path . $critical_id . '.css' );
+		}
+
+		echo "<style type='text/css' id='criticalCSS' media='all'>$content</style>";
 	}
 }

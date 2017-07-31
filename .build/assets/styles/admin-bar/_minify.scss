@@ -8,6 +8,12 @@
 		color: rgba(240, 245, 250, .7);
 	}
 
+	.minify-content span button {
+		background-color: transparent;
+		outline: none;
+		border: none;
+	}
+
 	.minify-content .clear-cache {
 		float: right;
 		button {

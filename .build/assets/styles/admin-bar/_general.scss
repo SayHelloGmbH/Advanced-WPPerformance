@@ -1,0 +1,14 @@
+#wpadminbar .awpp-adminbar {
+	ul li {
+		border-bottom: 1px solid rgba(#fff, .3);
+		margin-top: 5px;
+		padding-bottom: 5px;
+		&:last-child {
+			border-bottom: none;
+			padding-bottom: 0;
+		}
+		&:first-child {
+			margin-top: 0;
+		}
+	}
+}

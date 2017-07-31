@@ -14,10 +14,6 @@ class Init {
 
 	public function add_assets() {
 
-		if ( ! is_user_logged_in() ) {
-			return;
-		}
-
 		$script_version = awpp_get_instance()->version;
 
 		$min = true;
@@ -27,8 +23,13 @@ class Init {
 
 		$dir_uri = plugin_dir_url( awpp_get_instance()->file );
 
-		wp_enqueue_style( awpp_get_instance()->prefix . '-style', $dir_uri . 'assets/styles/ui' . ( $min ? '.min' : '' ) . '.css', [], $script_version );
-		wp_enqueue_script( awpp_get_instance()->prefix . '-script', $dir_uri . 'assets/scripts/ui' . ( $min ? '.min' : '' ) . '.js', [ 'jquery' ], $script_version, true );
+		//wp_enqueue_style( awpp_get_instance()->prefix . '-style', $dir_uri . 'assets/styles/ui' . ( $min ? '.min' : '' ) . '.css', [], $script_version );
+		//wp_enqueue_script( awpp_get_instance()->prefix . '-script', $dir_uri . 'assets/scripts/ui' . ( $min ? '.min' : '' ) . '.js', [ 'jquery' ], $script_version, true );
+
+		if ( is_user_logged_in() ) {
+			wp_enqueue_style( awpp_get_instance()->prefix . '-style', $dir_uri . 'assets/styles/admin-bar' . ( $min ? '.min' : '' ) . '.css', [], $script_version );
+			wp_enqueue_script( awpp_get_instance()->prefix . '-script', $dir_uri . 'assets/scripts/admin-bar' . ( $min ? '.min' : '' ) . '.js', [ 'jquery' ], $script_version, true );
+		}
 	}
 
 	public function add_admin_assets() {
@@ -44,5 +45,8 @@ class Init {
 
 		wp_enqueue_style( awpp_get_instance()->prefix . '-admin-style', $dir_uri . '/assets/styles/admin' . ( $min ? '.min' : '' ) . '.css', [], $script_version );
 		wp_enqueue_script( awpp_get_instance()->prefix . '-admin-script', $dir_uri . '/assets/scripts/admin' . ( $min ? '.min' : '' ) . '.js', [ 'jquery' ], $script_version, true );
+
+		wp_enqueue_style( awpp_get_instance()->prefix . '-style', $dir_uri . 'assets/styles/admin-bar' . ( $min ? '.min' : '' ) . '.css', [], $script_version );
+		wp_enqueue_script( awpp_get_instance()->prefix . '-script', $dir_uri . 'assets/scripts/admin-bar' . ( $min ? '.min' : '' ) . '.js', [ 'jquery' ], $script_version, true );
 	}
 }

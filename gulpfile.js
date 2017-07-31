@@ -16,7 +16,7 @@ var config = {
     scripts: {
         base: assetsDir + 'scripts/',
         build: assetsBuild + 'scripts/',
-        packages: ['ui', 'admin'],
+        packages: ['ui', 'admin', 'admin-bar'],
     },
 
     reload: [

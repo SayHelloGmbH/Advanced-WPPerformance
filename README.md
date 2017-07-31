@@ -23,7 +23,7 @@ index.css
 | archive.css
 | | archive-{$post_type}.css
 | | archive-author.css
-| | | archive-author-{$author_id}.css
+| | | archive-author-{$author_name}.css
 | | archive-date.css
 | | | archive-date-year.css
 | | | archive-date-month.css
