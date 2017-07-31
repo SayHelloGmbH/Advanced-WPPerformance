@@ -17,14 +17,11 @@
         });
 
         function showhide_criticalcss() {
-            console.log($checkbox.prop('checked'));
             if ($checkbox.prop('checked')) {
                 $critical_container.show();
             } else {
                 $critical_container.hide();
             }
         }
-
     });
-
 })(jQuery);

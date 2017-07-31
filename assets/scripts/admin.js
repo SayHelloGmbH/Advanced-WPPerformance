@@ -96,7 +96,6 @@ module.exports = __webpack_require__(2);
         });
 
         function showhide_criticalcss() {
-            console.log($checkbox.prop('checked'));
             if ($checkbox.prop('checked')) {
                 $critical_container.show();
             } else {

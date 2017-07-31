@@ -24,7 +24,7 @@ class Minify {
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar_item' ] );
 		add_action( 'wp_ajax_awpp_do_clear_minify_cache', [ $this, 'clear_cache' ] );
 
-		if ( 'off' == $this->options['minify'] ) {
+		if ( 'off' == $this->options['minify'] || is_admin() ) {
 			return;
 		}
 
