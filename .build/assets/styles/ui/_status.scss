@@ -1,0 +1,20 @@
+#wpadminbar .awpp-adminbar .ab-sub-wrapper li {
+
+	position: relative;
+
+	&:before {
+		content: '';
+		position: absolute;
+		display: block;
+		height: 1em;
+		width: 1em;
+		top: 7px;
+		right: 10px;
+		@include border-radius(50%);
+		background-color: green;
+	}
+
+	&.off:before {
+		background-color: red;
+	}
+}

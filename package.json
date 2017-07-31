@@ -41,5 +41,10 @@
     "bugs": {
         "url": "https://github.com/nico-martin/Advanced-WPPerformance/issues"
     },
-    "homepage": "https://github.com/nico-martin/Advanced-WPPerformance#README"
+    "homepage": "https://github.com/nico-martin/Advanced-WPPerformance#README",
+    "babel": {
+        "presets": [
+            "env"
+        ]
+    }
 }

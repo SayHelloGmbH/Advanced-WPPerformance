@@ -1,0 +1,43 @@
+#wpadminbar .awpp-adminbar-minify {
+
+	.minify-content,
+	.minify-content span,
+	.minify-content span button {
+		font-size: 11px;
+		line-height: 25px;
+		color: rgba(240, 245, 250, .7);
+	}
+
+	.minify-content .clear-cache {
+		float: right;
+		button {
+			cursor: pointer;
+			color: #fff;
+		}
+	}
+
+	.loader {
+		display: none;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		top: 0;
+		background-color: rgba(#32373c, .8);
+		&:after {
+			position: absolute;
+			content: '';
+			top: 50%;
+			left: 50%;
+			margin-top: -12px;
+			margin-left: -12px;
+			@include spinner(24px, 3px solid #fff );
+		}
+	}
+
+	&.loading {
+		.loader {
+			display: block;
+		}
+	}
+}

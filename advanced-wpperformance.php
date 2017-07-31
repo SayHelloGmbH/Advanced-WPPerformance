@@ -52,4 +52,8 @@ if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION,
 	require_once 'Classes/class-handleenqueue.php';
 	awpp_get_instance()->HandleEnqueue = new nicomartin\AdvancedWPPerformance\HandleEnqueue();
 	awpp_get_instance()->HandleEnqueue->run();
+
+	require_once 'Classes/class-minify.php';
+	awpp_get_instance()->Minify = new nicomartin\AdvancedWPPerformance\Minify();
+	awpp_get_instance()->Minify->run();
 }

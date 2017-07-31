@@ -8,6 +8,7 @@ class Settings {
 	public $icon = '';
 	public $settings_page = '';
 	public $settings_group = '';
+	public $adminbar_id = '';
 
 	private $options = '';
 
@@ -17,13 +18,15 @@ class Settings {
 		$this->settings_page   = awpp_get_instance()->prefix . '-settings';
 		$this->settings_option = awpp_get_instance()->prefix . '-option';
 		$this->settings_group  = $this->settings_key . '-group';
+		$this->adminbar_id     = awpp_get_instance()->prefix . '_adminbar';
+		$this->options         = get_option( $this->settings_option );
 
-		$this->options = get_option( $this->settings_option );
 	}
 
 	public function run() {
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ] );
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
+		add_action( 'admin_bar_menu', [ $this, 'add_toolbar' ], 90 );
 	}
 
 	public function add_menu_page() {
@@ -66,13 +69,14 @@ class Settings {
 		add_settings_section( $section, __( 'Settings', 'awpp' ), [ $this, 'print_section_info' ], $this->settings_page );
 		add_settings_field( 'scripts_to_footer', __( 'Move all scripts to footer', 'awpp' ), [ $this, 'scripts_to_footer_callback' ], $this->settings_page, $section );
 		add_settings_field( 'defer_scripts', __( 'Execute Scripts when page has finished parsing (defer)', 'awpp' ), [ $this, 'defer_scripts_callback' ], $this->settings_page, $section );
+		add_settings_field( 'minify', __( 'Minify CSS and JS Files', 'awpp' ), [ $this, 'minify_callback' ], $this->settings_page, $section );
 		add_settings_field( 'loadcss', __( 'Load CSS async', 'awpp' ), [ $this, 'loadcss_callback' ], $this->settings_page, $section );
 	}
 
 	public function sanitize( $input ) {
 
 		$new_input  = [];
-		$checkboxes = [ 'scripts_to_footer', 'defer_scripts', 'loadcss' ];
+		$checkboxes = [ 'scripts_to_footer', 'defer_scripts', 'loadcss', 'minify' ];
 
 		foreach ( $checkboxes as $key ) {
 			if ( isset( $input[ $key ] ) ) {
@@ -100,12 +104,29 @@ class Settings {
 		printf( '<input type="checkbox" name="%1$s[%2$s]" id="%2$s" %3$s />', $this->settings_option, $key, ( 'on' == $val ? 'checked' : '' ) );
 	}
 
+	public function minify_callback() {
+		$key = 'minify';
+		$val = $this->get_val( $key, 'on' );
+		printf( '<input type="checkbox" name="%1$s[%2$s]" id="%2$s" %3$s />', $this->settings_option, $key, ( 'on' == $val ? 'checked' : '' ) );
+	}
+
 	public function loadcss_callback() {
 		$key = 'loadcss';
 		$val = $this->get_val( $key, 'on' );
 		printf( '<input type="checkbox" name="%1$s[%2$s]" id="%2$s" %3$s />', $this->settings_option, $key, ( 'on' == $val ? 'checked' : '' ) );
 	}
 
+	public function add_toolbar( $wp_admin_bar ) {
+		$args = [
+			'id'    => $this->adminbar_id,
+			'title' => str_replace( 'Advanced ', '', awpp_get_instance()->name ),
+			'href'  => admin_url( 'options-general.php?page=' . $this->settings_page ),
+			'meta'  => [
+				'class' => awpp_get_instance()->prefix . '-adminbar',
+			],
+		];
+		$wp_admin_bar->add_node( $args );
+	}
 
 	/**
 	 * Helpers

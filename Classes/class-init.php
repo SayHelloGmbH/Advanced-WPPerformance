@@ -8,11 +8,15 @@ class Init {
 	}
 
 	public function run() {
-		//add_action( 'wp_enqueue_scripts', [ $this, 'add_assets' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'add_assets' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'add_admin_assets' ] );
 	}
 
 	public function add_assets() {
+
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
 
 		$script_version = awpp_get_instance()->version;
 
