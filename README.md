@@ -3,7 +3,9 @@
 ## Description
 This plugin add several performance improvements to your WordPress site.
 ### Moves all scripts to footer
-This option moves all scripts to the footer and adds a defer attribute. This makes sure the scripts woun't block the page render process but will stil be executed in the right order. **Caution:** If you have some inline JavaScript that needs jQuery, this could break your site.
+It moves all scripts to the footer and adds a `defer` attribute. This makes sure the scripts woun't block the page render process but will stil be executed in the right order. 
+
+**Caution:** Could break some inline JS.
 ### minify assets
 This plugin minifies all CSS and JS Files and caches them. It will **not** concenate them. This way you are still able to use conditional Assets and if you are using HTTP/2, which I highly recommend, it's not necessary to do so.
 
