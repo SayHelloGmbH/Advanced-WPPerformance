@@ -40,6 +40,10 @@ class Minify {
 			return $url;
 		}
 
+		if ( strpos( $url, $this->base_url ) === false ) {
+			return $url;
+		}
+
 		$new_filename = str_replace( $this->base_url, '', $url );
 		$new_filename = hash( 'crc32', $new_filename, false ); // todo: check if those filenames are always(!) unique
 		$new_filename = $new_filename . '.' . $type;
