@@ -11,7 +11,7 @@ class Plugin {
 	public $version = '';
 	public $file = '';
 
-	public static $option_key = 'awpp_data';
+	public $option_key = 'awpp_data';
 
 	/**
 	 * Creates an instance if one isn't already available,
@@ -27,18 +27,14 @@ class Plugin {
 
 			self::$instance = new Plugin;
 
-			if ( get_option( self::$option_key ) ) {
-
-				$data                    = get_option( self::$option_key );
-				self::$instance->name    = $data['Name'];
-				self::$instance->version = $data['Version'];
-
+			if ( get_option( awpp_get_instance()->option_key ) ) {
+				$data = get_option( awpp_get_instance()->option_key );
 			} else {
-
-				self::$instance->name    = self::$name;
-				self::$instance->version = '0.0.1';
-
+				$data = get_plugin_data( $file );
 			}
+
+			self::$instance->name    = $data['Name'];
+			self::$instance->version = $data['Version'];
 
 			self::$instance->prefix = 'awpp';
 			self::$instance->debug  = true;
@@ -85,20 +81,15 @@ class Plugin {
 	 */
 	public function update_plugin_data() {
 
-		$db_data   = get_option( self::$option_key );
-		$file_data = get_plugin_data( self::$instance->file );
+		$db_data   = get_option( awpp_get_instance()->option_key );
+		$file_data = get_plugin_data( awpp_get_instance()->file );
 
 		if ( ! $db_data || version_compare( $file_data['Version'], $db_data['Version'], '>' ) ) {
 
-			$new_option = array(
-				'Version' => $file_data['Version'],
-				'Name'    => $file_data['Name'],
-			);
+			awpp_get_instance()->name    = $file_data['Name'];
+			awpp_get_instance()->version = $file_data['Version'];
 
-			self::$instance->name    = $new_option['Name'];
-			self::$instance->version = $new_option['Version'];
-
-			update_option( self::$option_key, $new_option );
+			update_option( awpp_get_instance()->option_key, $file_data );
 
 			if ( ! $db_data ) {
 				do_action( 'awpp_on_activate' );
@@ -109,6 +100,6 @@ class Plugin {
 	}
 
 	public function deactivate() {
-		delete_option( self::$option_key );
+		delete_option( awpp_get_instance()->option_key );
 	}
 }
