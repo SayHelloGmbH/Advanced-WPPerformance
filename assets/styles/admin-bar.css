@@ -123,12 +123,37 @@
 #wpadminbar .awpp-adminbar-criticalcss input[type=checkbox] {
   display: none;
 }
-#wpadminbar .awpp-adminbar-criticalcss label {
-  cursor: pointer;
+#wpadminbar .awpp-adminbar-criticalcss label, #wpadminbar .awpp-adminbar-criticalcss span, #wpadminbar .awpp-adminbar-criticalcss p {
   font-size: 11px;
   line-height: 25px;
-  color: rgba(240, 245, 250, 0.2);
+}
+#wpadminbar .awpp-adminbar-criticalcss label {
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.2);
+  display: block;
+  width: 100%;
+}
+#wpadminbar .awpp-adminbar-criticalcss label ._info {
+  opacity: .8;
+  display: inline-block;
+  margin-left: 5px;
+}
+#wpadminbar .awpp-adminbar-criticalcss label ._info.-on {
+  color: green;
+  display: none;
+}
+#wpadminbar .awpp-adminbar-criticalcss label ._info.-off {
+  color: red;
 }
 #wpadminbar .awpp-adminbar-criticalcss input#awpp-check-criticalcss:checked + label {
-  color: #f0f5fa;
+  color: #fff;
+}
+#wpadminbar .awpp-adminbar-criticalcss input#awpp-check-criticalcss:checked + label ._info {
+  opacity: 1;
+}
+#wpadminbar .awpp-adminbar-criticalcss input#awpp-check-criticalcss:checked + label ._info.-on {
+  display: inline-block;
+}
+#wpadminbar .awpp-adminbar-criticalcss input#awpp-check-criticalcss:checked + label ._info.-off {
+  display: none;
 }

@@ -99,6 +99,8 @@ class CriticalCSS {
 		$html .= '<input type="checkbox" id="awpp-check-criticalcss" />';
 		$html .= '<label for="awpp-check-criticalcss">';
 		$html .= __( 'Test Critical CSS', 'awpp' );
+		$html .= '<span class="_info -on">(on)</span>';
+		$html .= '<span class="_info -off">(off)</span>';
 		$html .= '</label>';
 
 		$args = [

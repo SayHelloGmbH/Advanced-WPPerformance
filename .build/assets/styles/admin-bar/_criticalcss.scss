@@ -4,14 +4,42 @@
 		display: none;
 	}
 
-	label {
-		cursor: pointer;
+	label, span, p {
 		font-size: 11px;
 		line-height: 25px;
-		color: rgba(240, 245, 250, .2);
+	}
+
+	label {
+
+		cursor: pointer;
+		color: rgba(#fff, .2);
+		display: block;
+		width: 100%;
+
+		._info {
+			opacity: .8;
+			display: inline-block;
+			margin-left: 5px;
+			&.-on {
+				color: green;
+				display: none;
+			}
+			&.-off {
+				color: red;
+			}
+ 		}
 	}
 
 	input#awpp-check-criticalcss:checked + label {
-		color: rgba(240, 245, 250, 1);
+		color: #fff;
+		._info {
+			opacity: 1;
+			&.-on {
+				display: inline-block;
+			}
+			&.-off {
+				display: none;
+			}
+		}
 	}
 }
