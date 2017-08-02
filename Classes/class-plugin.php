@@ -6,10 +6,10 @@ class Plugin {
 
 	private static $instance;
 
-	public static $name = '';
-	public static $prefix = '';
-	public static $version = '';
-	public static $file = '';
+	public $name = '';
+	public $prefix = '';
+	public $version = '';
+	public $file = '';
 
 	public static $option_key = 'awpp_data';
 
@@ -70,14 +70,14 @@ class Plugin {
 	private function run() {
 		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'admin_init', array( $this, 'update_plugin_data' ) );
-		register_deactivation_hook( self::$file, array( $this, 'deactivate' ) );
+		register_deactivation_hook( awpp_get_instance()->file, array( $this, 'deactivate' ) );
 	}
 
 	/**
 	 * Load translation files from the indicated directory.
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( 'awpp', false, dirname( plugin_basename( self::$file ) ) . '/languages' );
+		load_plugin_textdomain( 'awpp', false, dirname( plugin_basename( awpp_get_instance()->file ) ) . '/languages' );
 	}
 
 	/**

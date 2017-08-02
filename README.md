@@ -3,11 +3,11 @@
 ## Description
 This plugin add several performance improvements to your WordPress site.
 ### Moves all scripts to footer
-It moves all scripts to the footer and adds a `defer` attribute. This makes sure the scripts woun't block the page render process but will stil be executed in the right order. 
+It moves all scripts to the footer and adds a `defer` attribute. This makes sure the scripts won't block the page render process but will stil be executed in the right order. 
 
 **Caution:** Could break some inline JS.
 ### minify assets
-This plugin minifies all CSS and JS Files and caches them. It will **not** concenate them. This way you are still able to use conditional Assets and if you are using HTTP/2, which I highly recommend, it's not necessary to do so.
+This plugin minifies all CSS and JS Files and caches them. It will **not** merge them into on file. This way you are still able to use conditional Assets and if you are using HTTP/2, which I highly recommend, it's not necessary to do so.
 
 **Filter** `awpp_cache_dir`:
 ```php
@@ -17,7 +17,7 @@ function prefix_my_cache_dir( $path ) {
 }
 ```
 ### Critical CSS / LoadCSS
-All CSS Files will be removed from the head and loaded asynchronously. This makes sure your CSS Files woun't delay the page rendering. To reduce the flash of unstyled content (FOUT) I recommend adding a Critical CSS.
+All CSS Files will be removed from the head and loaded asynchronously. This makes sure your CSS Files won't delay the page rendering. To reduce the flash of unstyled content (FOUT) I recommend adding a Critical CSS.
 #### conditonal Critical CSS
 By default this plugin provides a textarea where you can put your critical CSS.
 **But there's more!** You can use a filter `awpp_critical_dir` where you can define your own critical CSS Folder:

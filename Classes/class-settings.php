@@ -8,6 +8,7 @@ class Settings {
 	public $icon = '';
 	public $settings_page = '';
 	public $settings_group = '';
+	public $settings_key = '';
 	public $adminbar_id = '';
 
 	private $options = '';

@@ -127,7 +127,6 @@ class CriticalCSS {
 
 		$critical_id = '';
 		$ids         = array_reverse( awpp_get_critical_keys() );
-
 		foreach ( $ids as $id ) {
 			if ( file_exists( $path . $id . '.css' ) ) {
 				$critical_id = $id;
