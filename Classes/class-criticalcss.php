@@ -111,7 +111,7 @@ class CriticalCSS {
 			],
 		];
 
-		if ( ! is_admin() && 'off' != $this->options['loadcss'] ) {
+		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
 			$args['meta']['html'] = '<div class="ab-item ab-empty-item">' . $html . '</div>';
 		}
 		$wp_admin_bar->add_node( $args );
