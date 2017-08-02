@@ -16,17 +16,14 @@ class HandleEnqueue {
 			return;
 		}
 
-		if ( 'off' != $this->options['scripts_to_footer'] ) {
+		if ( awpp_is_frontend() && 'off' != $this->options['scripts_to_footer'] ) {
 			add_action( 'wp_enqueue_scripts', [ $this, 'remove_header_scripts' ] );
 			add_filter( 'clean_url', [ $this, 'defer_scripts' ], 11, 1 );
 		}
 
-		if ( 'off' != $this->options['loadcss'] ) {
+		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
 			add_action( 'wp_head', [ $this, 'add_loadcss' ], 1 );
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 9999, 3 );
-			if ( is_admin() || 'off' == $this->options['loadcss'] ) {
-
-			}
 		}
 	}
 
@@ -65,9 +62,9 @@ class HandleEnqueue {
 		$dom->loadHTML( $html );
 		$a = $dom->getElementById( $handle . '-css' );
 
-		$href = $a->getAttribute( 'href' );
+		$href  = $a->getAttribute( 'href' );
 		$media = $a->getAttribute( 'media' );
-		$id = $a->getAttribute( 'id' );
+		$id    = $a->getAttribute( 'id' );
 
 		$return = "<script>loadCSS('$href', 0, '$media', '$id' );</script>\n";
 		$return .= "<noscript><link rel='stylesheet' id='$id' href='$href' type='text/css' media='$media'></noscript>\n";

@@ -11,6 +11,7 @@ class CriticalCSS {
 	public $options = '';
 
 	public function __construct() {
+
 		$this->base_path             = ABSPATH;
 		$this->base_url              = get_home_url() . '/';
 		$this->default_critical_path = $this->base_path . 'wp-content/awpp/critical/';
@@ -26,11 +27,9 @@ class CriticalCSS {
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar_item' ] );
 
-		if ( 'off' == $this->options['loadcss'] ) {
-			return;
+		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
+			add_action( 'wp_head', [ $this, 'add_critical_css' ], 1 );
 		}
-
-		add_action( 'wp_head', [ $this, 'add_critical_css' ], 1 );
 	}
 
 	/**
@@ -57,8 +56,12 @@ class CriticalCSS {
 			return;
 		}
 
+		$file = $this->default_critical_path . 'index.css';
+		if ( ! file_exists( $file ) ) {
+			fopen( $file, 'w' );
+		}
+
 		$key      = 'criticalcss';
-		$file     = $this->default_critical_path . 'index.css';
 		$file_url = str_replace( $this->base_path, $this->base_url, $file );
 		$val      = file_get_contents( $file );
 		printf( '<textarea type="text" rows="10" cols="70" name="%1$s[%2$s]" id="%2$s">%3$s</textarea>', awpp_get_instance()->Settings->settings_option, $key, $val );

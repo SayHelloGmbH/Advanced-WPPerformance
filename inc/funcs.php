@@ -85,3 +85,10 @@ function awpp_get_critical_keys() {
 
 	return $ids;
 }
+
+function awpp_is_frontend() {
+	if ( is_admin() || 'wp-login.php' == $GLOBALS['pagenow'] ) {
+		return false;
+	}
+	return true;
+}
