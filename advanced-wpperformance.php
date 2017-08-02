@@ -4,17 +4,18 @@ Plugin Name: Advanced WPPerformance
 Plugin URI: https://github.com/nico-martin/Advanced-WPPerformance
 Description: This plugin add several performance improvements to your WordPress site
 Author: Nico Martin (mail@nicomartin.ch)
-Version: 0.0.5
+Version: 0.0.2
 Author URI: https://nicomartin.ch
 Text Domain: awpp
 Domain Path: /languages
  */
 
+global $wp_version;
 if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	function awpp_compatability_warning() {
 		echo '<div class="error"><p>';
 		// translators: Dependency waring
-		echo sprintf( __( '“%1$s” requires PHP %2$s (or newer) and WordPress %3$s (or newer) to function properly. Your site is using PHP %4$s and WordPress %5$s. Please upgrade. The plugin has been automatically deactivated.', 'awpp' ), 'PLUGIN NAME', '5.3', '4.7', PHP_VERSION, $GLOBALS['wp_version'] );
+		echo sprintf( __( '“%1$s” requires PHP %2$s (or newer) and WordPress %3$s (or newer) to function properly. Your site is using PHP %4$s and WordPress %5$s. Please upgrade. The plugin has been automatically deactivated.', 'awpp' ), 'Advanced WPPerformance', '5.3', '4.7', PHP_VERSION, $GLOBALS['wp_version'] );
 		echo '</p></div>';
 		if ( isset( $_GET['activate'] ) ) {
 			unset( $_GET['activate'] );
