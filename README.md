@@ -1,13 +1,13 @@
 # Advanced WPPerformance
 
 ## Description
-This plugin add several performance improvements to your WordPress site.
+This plugin adds several performance improvements to your WordPress site.
 ### Moves all scripts to footer
-It moves all scripts to the footer and adds a `defer` attribute. This makes sure the scripts won't block the page render process but will stil be executed in the right order. 
+It moves all scripts to the footer and adds a `defer` attribute. This makes sure the scripts won't block the page render process but will still be executed in the right order. 
 
 **Caution:** Could break some inline JS.
 ### minify assets
-This plugin minifies all CSS and JS Files and caches them. It will **not** merge them into on file. This way you are still able to use conditional Assets and if you are using HTTP/2, which I highly recommend, it's not necessary to do so.
+This plugin minifies all CSS and JS Files and caches them. It will **not** merge them into on file. This way you are still able to use conditional assets and if you are using HTTP/2, which I highly recommend, it's not necessary to do so.
 
 **Filter** `awpp_cache_dir`:
 ```php
@@ -44,15 +44,17 @@ index.css
 | | | archive-date-month.css
 | | | archive-date-day.css
 | | archvie-taxonomy.css
-| | archvie-taxonomy-{$taxonomy}.css
-| | archvie-taxonomy-{$term_id}.css
+| | | archvie-taxonomy-{$taxonomy}.css
+| | | | archvie-taxonomy-{$term_id}.css
 | front-page.css
 | 404.css
 | search.css
 ```
 The idea behind this option is that you could just create a bunch of critical CSS Files and put them into your Theme. The Plugin will automaticly look for the most explict file and sets this as your critical CSS.
 
-There are several ways to generate Critical CSS. If you are a theme developer. I use an [NPM module](https://github.com/addyosmani/critical) to extract critical CSS while I'm developing the theme. But we're already working on a way better solution. **More soon..**
+There are several ways to generate Critical CSS. I recommend creating it while developing your theme. For example using [NPM/Gulp](https://github.com/addyosmani/critical).
+
+But we're already working on a way better solution. **More soon..**
 
 ## Changelog
 
