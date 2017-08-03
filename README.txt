@@ -1,10 +1,10 @@
 === Advanced WPPerformance ===
-Contributors: Nico Martin (nico_martin)
+Contributors: nico_martin
 Donate link: https://www.paypal.me/NicoMartin
 Tags: Performance, Pagespeed, scriptloading, autoptimize
 Requires at least: 4.7
 Tested up to: 4.9
-Stable tag: 0.0.1
+Stable tag: 1.0.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -30,6 +30,12 @@ All CSS Files will be removed from the head and loaded asynchronously. This make
 By default this plugin provides a textarea where you can put your critical CSS.
 Read more about [Conditional critical CSS](https://github.com/nico-martin/Advanced-WPPerformance#conditonal-critical-css)
 
+== Screenshots ==
+
+1. Test Critical CSS right from the Admin bar.
+2. Super easy to configure
+3. Powerfull to extend
+
 == Installation ==
 
 1. Upload the plugin folder to the `/wp-content/plugins/` directory or install it from the plugin directory
@@ -38,15 +44,19 @@ Read more about [Conditional critical CSS](https://github.com/nico-martin/Advanc
 
 == Frequently Asked Questions ==
 
+= No questions yet =
+
 There are no at the moment. Please use the support forum. I'll update this section as soon as there are actually some FAQs.
 
-== Screenshots ==
+== Contribute ==
 
-1. Test Critical CSS right from the Admin bar.
-2. Super easy to configure
-3. Powerfull to extend
+A development version of this plugin is hosted on github. If you have some ideas for improvements, feel free to dive into the code:
+[https://github.com/nico-martin/Advanced-WPPerformance](https://github.com/nico-martin/Advanced-WPPerformance)
 
 == Changelog ==
+
+= 1.0.0 =
+* Stable version
 
 = 0.0.1 =
 * Initial version.

@@ -51,11 +51,6 @@ class Settings {
 						printf( __( 'This Plugin was created by %s.', 'awpp' ), '<a href="https://nicomartin.ch" target="_blank">Nico Martin</a> - <a href="https://sayhello.ch" target="_blank">Say Hello GmbH</a>' );
 						?>
 					</p>
-					<p><b>Beta:</b> <?php
-						// translators: Still in development: {{Link to Github}}
-						printf( __( 'Still in development: %s.', 'awpp' ), '<a href="https://github.com/nico-martin/Advanced-WPPerformance" target="_blank">github.com/nico-martin/Advanced-WPPerformance</a>' );
-						?>
-					</p>
 				</div>
 				<?php
 				submit_button();
