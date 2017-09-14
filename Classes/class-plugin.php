@@ -29,7 +29,10 @@ class Plugin {
 
 			if ( get_option( awpp_get_instance()->option_key ) ) {
 				$data = get_option( awpp_get_instance()->option_key );
+			} elseif ( function_exists( 'get_plugin_data' ) ) {
+				$data = get_plugin_data( $file );
 			} else {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
 				$data = get_plugin_data( $file );
 			}
 
