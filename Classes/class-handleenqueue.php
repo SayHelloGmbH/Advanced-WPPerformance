@@ -18,7 +18,7 @@ class HandleEnqueue {
 
 		if ( awpp_is_frontend() && 'off' != $this->options['scripts_to_footer'] ) {
 			add_action( 'wp_enqueue_scripts', [ $this, 'remove_header_scripts' ] );
-			add_filter( 'clean_url', [ $this, 'defer_scripts' ], 11, 1 );
+			add_filter( 'script_loader_tag', [ $this, 'add_defer_attribute' ], 10, 2 );
 		}
 
 		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
@@ -34,13 +34,8 @@ class HandleEnqueue {
 		remove_action( 'wp_head', 'wp_enqueue_scripts', 1 );
 	}
 
-	public function defer_scripts( $url ) {
-
-		if ( false === strpos( $url, '.js' ) ) {
-			return $url;
-		}
-
-		return "$url' defer onload='";
+	public function add_defer_attribute( $tag, $handle ) {
+		return str_replace( ' src', ' defer="defer" src', $tag );
 	}
 
 	public function add_loadcss() {
