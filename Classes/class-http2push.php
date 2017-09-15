@@ -10,11 +10,14 @@ class Http2Push {
 	public $header_size_accumulator = 0;
 
 	public function __construct() {
-		$this->max_header_size = 1024 * 4;
+		$this->max_header_size         = 1024 * 4;
 		$this->header_size_accumulator = 0;
 	}
 
 	public function run() {
+		if ( isset( $_GET['nopush'] ) ) {
+			return;
+		}
 		add_action( 'init', [ $this, 'ob_start' ] );
 		add_filter( 'script_loader_src', [ $this, 'link_preload_header' ], 99, 1 );
 		add_filter( 'style_loader_src', [ $this, 'link_preload_header' ], 99, 1 );
@@ -34,13 +37,13 @@ class Http2Push {
 			$preload_src = apply_filters( 'http2_link_preload_src', $src );
 
 			if ( ! empty( $preload_src ) ) {
-				$header = sprintf( 'Link: <%s>; rel=preload; as=%s', esc_url( $this->link_url_to_relative_path( $preload_src ) ), sanitize_html_class( http2_link_resource_hint_as( current_filter() ) ) );
+				$header = sprintf( 'Link: <%s>; rel=preload; as=%s', esc_url( $this->link_url_to_relative_path( $preload_src ) ), sanitize_html_class( $this->link_resource_hint_as( current_filter() ) ) );
 				if ( ( $this->header_size_accumulator + strlen( $header ) ) < $this->max_header_size ) {
 					$this->header_size_accumulator += strlen( $header );
 					header( $header, false );
 				}
 
-				$GLOBALS[ 'http2_' . http2_link_resource_hint_as( current_filter() ) . '_srcs' ][] = $this->link_url_to_relative_path( $preload_src );
+				$GLOBALS[ 'http2_' . $this->link_resource_hint_as( current_filter() ) . '_srcs' ][] = $this->link_url_to_relative_path( $preload_src );
 			}
 		}
 
@@ -82,5 +85,9 @@ class Http2Push {
 
 	public function should_render_prefetch_headers() {
 		return apply_filters( 'http2_render_resource_hints', ! function_exists( 'wp_resource_hints' ) );
+	}
+
+	public function link_resource_hint_as( $current_hook ) {
+		return 'style_loader_src' === $current_hook ? 'style' : 'script';
 	}
 }
