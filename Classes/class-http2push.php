@@ -15,13 +15,13 @@ class Http2Push {
 	}
 
 	public function run() {
-		if ( isset( $_GET['nopush'] ) ) {
+		if ( isset( $_GET['nopush'] ) || is_admin() ) {
 			return;
 		}
 		add_action( 'init', [ $this, 'ob_start' ] );
 		add_filter( 'script_loader_src', [ $this, 'link_preload_header' ], 99, 1 );
 		add_filter( 'style_loader_src', [ $this, 'link_preload_header' ], 99, 1 );
-		if ( ! is_admin() && $this->should_render_prefetch_headers() ) {
+		if ( $this->should_render_prefetch_headers() ) {
 			add_action( 'wp_head', [ $this, 'resource_hints' ], 99, 1 );
 		}
 	}
@@ -34,7 +34,7 @@ class Http2Push {
 
 		if ( strpos( $src, home_url() ) !== false ) {
 
-			$preload_src = apply_filters( 'http2_link_preload_src', $src );
+			$preload_src = apply_filters( 'awpp_link_preload_src', $src );
 
 			if ( ! empty( $preload_src ) ) {
 				$header = sprintf( 'Link: <%s>; rel=preload; as=%s', esc_url( $this->link_url_to_relative_path( $preload_src ) ), sanitize_html_class( $this->link_resource_hint_as( current_filter() ) ) );
@@ -43,7 +43,7 @@ class Http2Push {
 					header( $header, false );
 				}
 
-				$GLOBALS[ 'http2_' . $this->link_resource_hint_as( current_filter() ) . '_srcs' ][] = $this->link_url_to_relative_path( $preload_src );
+				$GLOBALS[ 'awpp_' . $this->link_resource_hint_as( current_filter() ) . '_srcs' ][] = $this->link_url_to_relative_path( $preload_src );
 			}
 		}
 
@@ -68,7 +68,7 @@ class Http2Push {
 	public function get_resources( $globals = null, $resource_type ) {
 
 		$globals           = ( null === $globals ) ? $GLOBALS : $globals;
-		$resource_type_key = "http2_{$resource_type}_srcs";
+		$resource_type_key = "awpp_{$resource_type}_srcs";
 
 		if ( ! ( is_array( $globals ) && isset( $globals[ $resource_type_key ] ) ) ) {
 			return array();
@@ -84,7 +84,7 @@ class Http2Push {
 	}
 
 	public function should_render_prefetch_headers() {
-		return apply_filters( 'http2_render_resource_hints', ! function_exists( 'wp_resource_hints' ) );
+		return apply_filters( 'awpp_render_resource_hints', ! function_exists( 'wp_resource_hints' ) );
 	}
 
 	public function link_resource_hint_as( $current_hook ) {
