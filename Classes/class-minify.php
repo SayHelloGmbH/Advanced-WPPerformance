@@ -14,8 +14,8 @@ class Minify {
 	public function __construct() {
 
 		$this->base_path          = ABSPATH;
-		$this->base_url           = awpp_maybe_add_slash( get_home_url() );
-		$this->default_cache_path = str_replace( $this->base_url, $this->base_path, awpp_maybe_add_slash( content_url() ) . 'awpp/assets/' );
+		$this->base_url           = trailingslashit( get_home_url() );
+		$this->default_cache_path = str_replace( $this->base_url, $this->base_path, trailingslashit( content_url() ) . 'cache/awpp/' );
 		$this->options            = get_option( awpp_get_instance()->Settings->settings_option );
 	}
 
@@ -194,7 +194,7 @@ class Minify {
 	public function get_cache_dir() {
 
 		$cache_dir = apply_filters( 'awpp_cache_dir', $this->default_cache_path );
-		$cache_dir = awpp_maybe_add_slash( $cache_dir );
+		$cache_dir = trailingslashit( $cache_dir );
 		if ( '' == $cache_dir || '/' == $cache_dir ) {
 			$cache_dir = $this->default_cache_path;
 		}

@@ -1,21 +1,5 @@
 <?php
 
-function awpp_check_format( $string ) {
-
-	$string = preg_replace( '/[^A-Za-z0-9\/\-\_\\\: ]/', '', $string );
-
-	return $string;
-}
-
-function awpp_maybe_add_slash( $string ) {
-
-	if ( substr( $string, - 1 ) != '/' ) {
-		$string = $string . '/';
-	}
-
-	return $string;
-}
-
 function awpp_get_critical_keys() {
 
 	$ids = [ 'index' ];
