@@ -72,6 +72,9 @@ The second option puts all files to push inside you .htaccess. This way they are
 
 ## Changelog
 
+### 1.2.0
+* added cachify support
+
 ### 1.1.0
 * little Bugfixes
 

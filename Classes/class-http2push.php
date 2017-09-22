@@ -118,6 +118,17 @@ class Http2Push {
 	 */
 
 	public function scan_frontpage_files() {
+
+		if ( has_action( 'cachify_flush_cache' ) ) {
+			do_action( 'cachify_flush_cache' );
+		} elseif ( function_exists( 'w3tc_pgcache_flush' ) ) {
+			w3tc_pgcache_flush();
+		} elseif ( function_exists( 'wp_cache_clear_cache' ) ) {
+			wp_cache_clear_cache();
+		} elseif ( function_exists( 'rocket_clean_domain' ) ) {
+			rocket_clean_domain();
+		}
+
 		$return = [];
 		$file   = file_get_contents( get_home_url() );
 
