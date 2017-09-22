@@ -37,7 +37,7 @@ class Settings {
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ] );
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar' ], 90 );
-		//add_action( 'admin_init', 'awpp_maybe_add_serverpush_htaccess' );
+		add_action( 'admin_init', [ $this, 'http2_check' ] );
 
 	}
 
@@ -223,6 +223,18 @@ class Settings {
 			],
 		];
 		$wp_admin_bar->add_node( $args );
+	}
+
+	public function http2_check() {
+
+		add_action( 'admin_notices', function () {
+			if ( get_current_screen()->id != 'settings_page_' . $this->settings_page || getenv( 'X_SPDY' ) != '' ) {
+				return;
+			}
+			// translators: To get the maximum out of Advanced WPPerformance you should upgrade to HTTP/2. Currenty your server supports HTTP/1
+			$message = sprintf( __( 'To get the maximum out of %1$1s you should upgrade to HTTP/2. Currently your server supports %2$2s', 'awpp' ), '<b>' . awpp_get_instance()->name . '</b>', $_SERVER['SERVER_PROTOCOL'] );
+			printf( '<div class="notice notice-warning"><p>%s</p></div>', $message );
+		} );
 	}
 
 	/**
