@@ -79,7 +79,7 @@ class Settings {
 		add_settings_field( 'scripts_to_footer', __( 'Move all scripts to footer', 'awpp' ), [ $this, 'scripts_to_footer_callback' ], $this->settings_page, $section );
 		add_settings_field( 'minify', __( 'Minify CSS and JS Files', 'awpp' ), [ $this, 'minify_callback' ], $this->settings_page, $section );
 		add_settings_field( 'loadcss', __( 'Load CSS async', 'awpp' ), [ $this, 'loadcss_callback' ], $this->settings_page, $section );
-		add_settings_field( 'serverpush', __( 'HTTP\2 Server Push', 'awpp' ), [ $this, 'serverpush_callback' ], $this->settings_page, $section );
+		add_settings_field( 'serverpush', __( 'HTTP/2 Server Push', 'awpp' ), [ $this, 'serverpush_callback' ], $this->settings_page, $section );
 	}
 
 	public function sanitize( $input ) {
