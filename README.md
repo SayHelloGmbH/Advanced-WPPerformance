@@ -1,7 +1,7 @@
 # Advanced WPPerformance
 
 ## Description
-This plugin adds several performance improvements to your WordPress site.
+This plugin adds several performance improvements to your WordPress site. In contrst to other performance Plugins, this one sets focus on HTTP\2 Standards (like Server Push and SPDY).
 ### Moves all scripts to footer
 It moves all scripts to the footer and adds a `defer` attribute. This makes sure the scripts won't block the page render process but will still be executed in the right order. 
 
@@ -56,7 +56,32 @@ There are several ways to generate Critical CSS. I recommend creating it while d
 
 But we're already working on a way better solution. **More soon..**
 
+## HTTP/2 Server Push
+Server push is a HTTP/2 feature that allows you to send site assets to the user before they’ve even asked for them.
+There are two ways to achieve this. Both have their pros and cons. So this plugin supports both, the decision is up to you.
+
+### PHP
+While WordPress builds your site, this plugin gets all enqueued scripts and styles and adds them as a link attribute to the response headers. That way you can be certain only files are being pushed, that are actually needed.
+
+**But:** Since they are set while the server builds your site, this won't work if you're using a server caching (which I highly recommend).
+
+### .htaccess
+The second option puts all files to push inside you .htaccess. This way they are being pushed also if you're using server caching.
+
+**But:** If your assets change (new versions / depreciated scripts), don't forget to update the .htaccess. This can be done with one click while saving the settings.
+
 ## Changelog
+
+### 1.1.0
+* **Added HTTP/2 Sever Push**
+    * Server Push php: pushes all enqueued scripts and styles as php headers
+    * Server Push .htaccess: it scans your front-page so you gan choose which assets should be pushed within your .htaccess
+* added HTTP version check
+* changed default directories to `wp-content/cache/awpp/`
+* small improvements
+
+### 1.0.0
+* little Bugfixes
 
 ### 0.0.1
 * Initial version from 2017
