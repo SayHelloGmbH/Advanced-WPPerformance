@@ -27,7 +27,7 @@ class Http2Push {
 		add_action( 'wp_ajax_' . $this->serverpush_scan_action, [ $this, 'ajax_get_frontpage_files' ] );
 		add_action( 'update_option_' . awpp_get_instance()->Settings->settings_option, [ $this, 'add_serverpush_htaccess_onoption' ], 100, 2 );
 
-		if ( 'php' == $this->options['serverpush'] ) {
+		if ( 'php' == $this->options['serverpush'] && ! is_admin() ) {
 			add_action( 'init', [ $this, 'ob_start' ] );
 			add_filter( 'script_loader_src', [ $this, 'link_preload_header' ], 99, 1 );
 			add_filter( 'style_loader_src', [ $this, 'link_preload_header' ], 99, 1 );
