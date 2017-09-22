@@ -82,26 +82,55 @@ module.exports = __webpack_require__(2);
 
     $(function () {
 
-        var $wrapper = $('.awpp-settings-wrap');
-        if (!$wrapper.length) {
-            return;
-        }
-        var $checkbox = $wrapper.find('input#loadcss');
-        var $critical_textarea = $wrapper.find('textarea#criticalcss');
-        var $critical_container = $critical_textarea.parents('tr');
+        var $container = $('.awpp-settings-wrap ');
+        var $trigger = $container.find('a#scan-page');
+        var $loader = $container.find('.loader');
+        var action = $trigger.attr('data-action');
+        var ajaxUrl = $trigger.attr('data-ajaxurl');
 
-        showhide_criticalcss();
-        $checkbox.on('change', function () {
-            showhide_criticalcss();
+        $trigger.on('click', function () {
+            $loader.fadeIn();
+
+            jQuery.ajax({
+                url: ajaxUrl,
+                type: 'POST',
+                dataType: 'json',
+                data: 'action=' + action
+            }).done(function (data) {
+
+                if (data['type'] === null || data['type'] !== 'success') {
+
+                    /**
+                     * error
+                     */
+
+                    var msg_content = data['message'];
+                    if (msg_content === '' || msg_content === undefined) {
+                        msg_content = 'Error';
+                    }
+
+                    alert(msg_content);
+                } else {
+
+                    console.log(data['add']);
+                    $.each(data['add'], function (key, data) {
+                        if (key !== 'styles' && key !== 'scripts') {
+                            return true;
+                        }
+                        var $list = $('ul.files-list#' + key);
+                        var $last = $list.find('li.no-items');
+                        $.each(data, function (id, url) {
+                            if ($list.find('li#' + id).length) {
+                                return true;
+                            }
+                            $('<li id="' + id + '"><label title="' + url + '"><input type="checkbox" name="awpp-option[serverpush_files][' + key + '][' + id + ']"/> ' + id + '</label></li>').insertBefore($last);
+                        });
+                    });
+                }
+
+                $loader.fadeOut();
+            });
         });
-
-        function showhide_criticalcss() {
-            if ($checkbox.prop('checked')) {
-                $critical_container.show();
-            } else {
-                $critical_container.hide();
-            }
-        }
     });
 })(jQuery);
 
@@ -111,6 +140,34 @@ module.exports = __webpack_require__(2);
 
 "use strict";
 
+
+(function ($) {
+
+    $(function () {
+
+        var $container = $('.awpp-settings-wrap');
+        var $loadCSS = $container.find('input#loadcss');
+        var $ServerPush = $container.find('select#serverpush');
+
+        $loadCSS.on('click', function () {
+            var $ccss_container = $(this).next('.settings-critical-css-container');
+            if ($(this).prop('checked')) {
+                $ccss_container.slideDown();
+            } else {
+                $ccss_container.slideUp();
+            }
+        });
+
+        $ServerPush.on('change', function () {
+            var $htaccess_container = $(this).next('.settings-htaccess-push-container');
+            if ($(this).val() === 'htaccess') {
+                $htaccess_container.slideDown();
+            } else {
+                $htaccess_container.slideUp();
+            }
+        });
+    });
+})(jQuery);
 
 /***/ })
 /******/ ]);

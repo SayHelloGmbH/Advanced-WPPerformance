@@ -12,6 +12,8 @@ class HandleEnqueue {
 
 	public function run() {
 
+		add_filter( 'script_loader_tag', [ $this, 'add_id_to_scripts' ], 10, 2 );
+
 		if ( is_admin() ) {
 			return;
 		}
@@ -25,6 +27,10 @@ class HandleEnqueue {
 			add_action( 'wp_head', [ $this, 'add_loadcss' ], 1 );
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 9999, 3 );
 		}
+	}
+
+	public function add_id_to_scripts( $tag, $handle ) {
+		return str_replace( ' src', ' id="' . $handle . '" src', $tag );
 	}
 
 	public function remove_header_scripts() {

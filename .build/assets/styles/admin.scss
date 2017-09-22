@@ -1,3 +1,9 @@
 @import "compass/css3";
+@import 'admin-bar/spinner';
+
+$default-box-shadow-color: rgba(#000, 0.05);
+$default-box-shadow-h-offset: 0px;
+$default-box-shadow-v-offset: 1px;
+$default-box-shadow-blur: 1px;
 
 @import "admin/settings-wrap";

@@ -8,22 +8,44 @@ class Http2Push {
 
 	public $max_header_size = 0;
 	public $header_size_accumulator = 0;
+	public $options = '';
+
+	public $serverpush_scan_action = '';
+	public $serverpush_possfiles_option = '';
 
 	public function __construct() {
 		$this->max_header_size         = 1024 * 4;
 		$this->header_size_accumulator = 0;
+		$this->options                 = get_option( awpp_get_instance()->Settings->settings_option );
+
+		$this->serverpush_scan_action      = 'awpp_scan_htaccess_push';
+		$this->serverpush_possfiles_option = 'awpp_serverpush_possible_files';
 	}
 
 	public function run() {
-		if ( isset( $_GET['nopush'] ) || is_admin() ) {
-			return;
+
+		add_action( 'wp_ajax_' . $this->serverpush_scan_action, [ $this, 'ajax_get_frontpage_files' ] );
+		add_action( 'update_option_' . awpp_get_instance()->Settings->settings_option, [ $this, 'add_serverpush_htaccess_onoption' ], 100, 2 );
+
+		if ( 'php' == $this->options['serverpush'] ) {
+			add_action( 'init', [ $this, 'ob_start' ] );
+			add_filter( 'script_loader_src', [ $this, 'link_preload_header' ], 99, 1 );
+			add_filter( 'style_loader_src', [ $this, 'link_preload_header' ], 99, 1 );
+			if ( $this->should_render_prefetch_headers() ) {
+				add_action( 'wp_head', [ $this, 'resource_hints' ], 99, 1 );
+			}
 		}
-		add_action( 'init', [ $this, 'ob_start' ] );
-		add_filter( 'script_loader_src', [ $this, 'link_preload_header' ], 99, 1 );
-		add_filter( 'style_loader_src', [ $this, 'link_preload_header' ], 99, 1 );
-		if ( $this->should_render_prefetch_headers() ) {
-			add_action( 'wp_head', [ $this, 'resource_hints' ], 99, 1 );
-		}
+	}
+
+	public function ajax_get_frontpage_files() {
+
+		$add = $this->scan_frontpage_files();
+
+		awpp_exit_ajax( 'success', 'test', $add );
+	}
+
+	public function add_serverpush_htaccess_onoption( $oldvalue, $newvalue ) {
+		$this->add_serverpush_htaccess( $newvalue );
 	}
 
 	public function ob_start() {
@@ -62,7 +84,7 @@ class Http2Push {
 
 
 	/**
-	 * Helpers
+	 * PHP Helpers
 	 */
 
 	public function get_resources( $globals = null, $resource_type ) {
@@ -89,5 +111,106 @@ class Http2Push {
 
 	public function link_resource_hint_as( $current_hook ) {
 		return 'style_loader_src' === $current_hook ? 'style' : 'script';
+	}
+
+	/**
+	 * Server Push Helpers
+	 */
+
+	public function scan_frontpage_files() {
+		$return = [];
+		$file   = file_get_contents( get_home_url() );
+
+		//echo $file;
+		//awpp_exit_ajax( 'error', $file );
+
+		$attr_regex    = '/([a-zA-Z0-9-]+)="([^"]+)"/';
+		$styles_regex  = '/<link rel=\'stylesheet\' (.*?)>/';
+		$scripts_regex = '/<script type=\'text\/javascript\' (.*?)><\/script>/';
+
+		preg_match_all( $styles_regex, $file, $styles, PREG_SET_ORDER, 0 );
+		foreach ( $styles as $style ) {
+			preg_match_all( $attr_regex, str_replace( '\'', '"', $style[1] ), $attributes, PREG_SET_ORDER, 0 );
+			$id  = '';
+			$url = '';
+			foreach ( $attributes as $a ) {
+				$attr = $a[1];
+				$val  = $a[2];
+				if ( 'id' == $attr ) {
+					$id = $val;
+				} elseif ( 'href' == $attr ) {
+					$url = $val;
+				}
+			}
+			if ( strpos( $url, get_home_url() ) !== 0 || '' == $id || '' == $url ) {
+				continue;
+			}
+			$return['styles'][ $id ] = $url;
+		}
+
+		preg_match_all( $scripts_regex, $file, $scripts, PREG_SET_ORDER, 0 );
+		foreach ( $scripts as $script ) {
+			preg_match_all( $attr_regex, str_replace( '\'', '"', $script[1] ), $attributes, PREG_SET_ORDER, 0 );
+			$id  = '';
+			$url = '';
+			foreach ( $attributes as $a ) {
+				$attr = $a[1];
+				$val  = $a[2];
+				if ( 'id' == $attr ) {
+					$id = $val;
+				} elseif ( 'src' == $attr ) {
+					$url = $val;
+				}
+			}
+			if ( strpos( $url, get_home_url() ) !== 0 ) {
+				continue;
+			}
+			if ( strpos( $url, get_home_url() ) !== 0 || '' == $id || '' == $url ) {
+				continue;
+			}
+			$return['scripts'][ $id ] = $url;
+		}
+
+		update_option( $this->serverpush_possfiles_option, $return );
+
+		return $return;
+	}
+
+	public function add_serverpush_htaccess( $options = '', $files = '' ) {
+
+		if ( '' == $options ) {
+			$options = $this->options;
+		}
+
+		if ( 'htaccess' == $options['serverpush'] ) {
+
+			if ( '' == $files ) {
+				$files = $this->scan_frontpage_files();
+			}
+
+			$lines   = [];
+			$lines[] = '<IfModule mod_headers.c>';
+			$lines[] = '<FilesMatch "\.(php|html|htm|gz)$">';
+			foreach ( [ 'styles', 'scripts' ] as $type ) {
+				$lines[] = '# ' . $type;
+
+				$as = 'style';
+				if ( 'scripts' == $type ) {
+					$as = 'script';
+				}
+				if ( is_array( $options['serverpush_files'][ $type ] ) ) {
+					foreach ( $options['serverpush_files'][ $type ] as $id => $val ) {
+						$lines[] = 'Header add Link "<' . $this->link_url_to_relative_path( $files[ $type ][ $id ] ) . '>; rel=preload; as=' . $as . '"';
+					}
+				}
+			}
+			$lines[] = '</FilesMatch>';
+			$lines[] = '</IfModule>';
+
+			awpp_get_instance()->htaccess->set( implode( "\n", $lines ) );
+
+		} else {
+			awpp_get_instance()->htaccess->delete( implode( "\n", $lines ) );
+		}
 	}
 }

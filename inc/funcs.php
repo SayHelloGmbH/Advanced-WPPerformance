@@ -1,5 +1,9 @@
 <?php
 
+function awpp_add_serverpush_htaccess() {
+	awpp_get_instance()->Http2Push->add_serverpush_htaccess();
+}
+
 function awpp_get_critical_keys() {
 
 	$ids = [ 'index' ];
@@ -74,5 +78,19 @@ function awpp_is_frontend() {
 	if ( is_admin() || 'wp-login.php' == $GLOBALS['pagenow'] ) {
 		return false;
 	}
+
 	return true;
+}
+
+function awpp_exit_ajax( $type, $msg = '', $add = [] ) {
+
+	$return = [
+		'type'    => $type,
+		'message' => $msg,
+		'add'     => $add,
+	];
+
+	echo json_encode( $return );
+
+	wp_die();
 }
