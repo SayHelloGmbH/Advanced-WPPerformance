@@ -130,10 +130,14 @@ class Http2Push {
 		}
 
 		$return = [];
-		$file   = file_get_contents( get_home_url() );
 
-		//echo $file;
-		//awpp_exit_ajax( 'error', $file );
+		$agent = awpp_get_instance()->name . ' User Agent';
+		$ch    = curl_init( get_home_url() );
+		curl_setopt( $ch, CURLOPT_URL, get_home_url() );
+		curl_setopt( $ch, CURLOPT_USERAGENT, $agent );
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+		$file = curl_exec( $ch );
+		curl_close( $ch );
 
 		$attr_regex    = '/([a-zA-Z0-9-]+)="([^"]+)"/';
 		$styles_regex  = '/<link rel=\'stylesheet\' (.*?)>/';
