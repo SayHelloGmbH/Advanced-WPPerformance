@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/NicoMartin
 Tags: Performance, Pagespeed, scriptloading, autoptimize, http2, server push, SPDY
 Requires at least: 4.7
 Tested up to: 4.9
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 Requires PHP: 5.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -71,6 +71,9 @@ A development version of this plugin is hosted on github. If you have some ideas
 [https://github.com/nico-martin/Advanced-WPPerformance](https://github.com/nico-martin/Advanced-WPPerformance)
 
 == Changelog ==
+
+### 1.1.1
+* little Bugfixes
 
 ### 1.1.0
 * Added HTTP/2 Sever Push

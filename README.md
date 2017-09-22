@@ -73,6 +73,9 @@ The second option puts all files to push inside you .htaccess. This way they are
 ## Changelog
 
 ### 1.1.0
+* little Bugfixes
+
+### 1.1.0
 * **Added HTTP/2 Sever Push**
     * Server Push php: pushes all enqueued scripts and styles as php headers
     * Server Push .htaccess: it scans your front-page so you gan choose which assets should be pushed within your .htaccess
