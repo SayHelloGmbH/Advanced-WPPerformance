@@ -32,19 +32,23 @@
                     alert(msg_content);
                 } else {
 
-                    console.log(data['add']);
+                    //console.log(data['add']);
                     $.each(data['add'], function (key, data) {
                         if (key !== 'styles' && key !== 'scripts') {
                             return true;
                         }
                         const $list = $('ul.files-list#' + key);
                         const $last = $list.find('li.no-items');
+                        $list.find('li').addClass('remove');
+                        $last.removeClass('remove');
                         $.each(data, function (id, url) {
                             if ($list.find('li#' + id).length) {
+                                $list.find('li#' + id).removeClass('remove');
                                 return true;
                             }
                             $(`<li id="${id}"><label title="${url}"><input type="checkbox" name="awpp-option[serverpush_files][${key}][${id}]"/> ${id}</label></li>`).insertBefore($last);
                         });
+                        $list.find('li.remove').remove();
 
                     });
                 }

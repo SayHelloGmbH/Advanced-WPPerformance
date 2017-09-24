@@ -40,8 +40,11 @@ class Http2Push {
 	public function ajax_get_frontpage_files() {
 
 		$add = $this->scan_frontpage_files();
+		if ( 'success' != $add['status'] ) {
+			awpp_exit_ajax( $add['status'], $add['msg'] );
+		}
 
-		awpp_exit_ajax( 'success', 'test', $add );
+		awpp_exit_ajax( 'success', '', $add );
 	}
 
 	public function add_serverpush_htaccess_onoption( $oldvalue, $newvalue ) {
@@ -136,8 +139,18 @@ class Http2Push {
 		curl_setopt( $ch, CURLOPT_URL, get_home_url() );
 		curl_setopt( $ch, CURLOPT_USERAGENT, $agent );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		$file = curl_exec( $ch );
+		$file      = curl_exec( $ch );
+		$http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
 		curl_close( $ch );
+
+		if ( $http_code >= 300 ) {
+			return [
+				'status' => 'error',
+				'msg'    => 'invalid HTTP Code: ' . $http_code,
+			];
+		} else {
+			$return['status'] = 'success';
+		}
 
 		$attr_regex    = '/([a-zA-Z0-9-]+)="([^"]+)"/';
 		$styles_regex  = '/<link rel=\'stylesheet\' (.*?)>/';
@@ -199,31 +212,38 @@ class Http2Push {
 
 		if ( 'htaccess' == $options['serverpush'] ) {
 
+			$set_htaccess = true;
+
 			if ( '' == $files ) {
 				$files = $this->scan_frontpage_files();
+				if ( 'success' != $files['status'] ) {
+					$set_htaccess = false;
+				}
 			}
 
-			$lines   = [];
-			$lines[] = '<IfModule mod_headers.c>';
-			$lines[] = '<FilesMatch "\.(php|html|htm|gz)$">';
-			foreach ( [ 'styles', 'scripts' ] as $type ) {
-				$lines[] = '# ' . $type;
+			if ( $set_htaccess ) {
 
-				$as = 'style';
-				if ( 'scripts' == $type ) {
-					$as = 'script';
-				}
-				if ( is_array( $options['serverpush_files'][ $type ] ) ) {
-					foreach ( $options['serverpush_files'][ $type ] as $id => $val ) {
-						$lines[] = 'Header add Link "<' . $this->link_url_to_relative_path( $files[ $type ][ $id ] ) . '>; rel=preload; as=' . $as . '"';
+				$lines   = [];
+				$lines[] = '<IfModule mod_headers.c>';
+				$lines[] = '<FilesMatch "\.(php|html|htm|gz)$">';
+				foreach ( [ 'styles', 'scripts' ] as $type ) {
+					$lines[] = '# ' . $type;
+
+					$as = 'style';
+					if ( 'scripts' == $type ) {
+						$as = 'script';
+					}
+					if ( is_array( $options['serverpush_files'][ $type ] ) ) {
+						foreach ( $options['serverpush_files'][ $type ] as $id => $val ) {
+							$lines[] = 'Header add Link "<' . $this->link_url_to_relative_path( $files[ $type ][ $id ] ) . '>; rel=preload; as=' . $as . '"';
+						}
 					}
 				}
+				$lines[] = '</FilesMatch>';
+				$lines[] = '</IfModule>';
+
+				awpp_get_instance()->htaccess->set( implode( "\n", $lines ) );
 			}
-			$lines[] = '</FilesMatch>';
-			$lines[] = '</IfModule>';
-
-			awpp_get_instance()->htaccess->set( implode( "\n", $lines ) );
-
 		} else {
 			awpp_get_instance()->htaccess->delete( implode( "\n", $lines ) );
 		}
