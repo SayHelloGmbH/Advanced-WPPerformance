@@ -154,14 +154,14 @@ class Http2Push {
 		$http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
 		curl_close( $ch );
 
-		if ( $http_code >= 300 ) {
+		//if ( $http_code >= 300 ) {
 			return [
 				'status' => 'error',
 				'msg'    => 'invalid HTTP Code: ' . $http_code,
 			];
-		} else {
+		/*} else {
 			$return['status'] = 'success';
-		}
+		}*/
 
 		$attr_regex    = '/([a-zA-Z0-9-]+)="([^"]+)"/';
 		$styles_regex  = '/<link rel=\'stylesheet\' (.*?)>/';
