@@ -82,7 +82,7 @@
             }
         };
 
-        if (preload_support() || navigator.userAgent.includes('Page Speed')) {
+        if (preload_support() || navigator.userAgent.includes('Chrome')) {
             return;
         }
 
