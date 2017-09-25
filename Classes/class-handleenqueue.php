@@ -25,7 +25,7 @@ class HandleEnqueue {
 
 		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 999, 4 );
-			add_action( 'wp_head', [ $this, 'add_relpreload_js' ], 999 );
+			add_action( 'wp_head', [ $this, 'add_relpreload_js' ], 1 );
 		}
 	}
 
@@ -57,11 +57,6 @@ class HandleEnqueue {
 	}
 
 	public function add_relpreload_js() {
-
-		$google_psi = 'Google Page Speed Insights';
-		if ( strpos( $_SERVER['HTTP_USER_AGENT'], $google_psi ) != false ) {
-			return;
-		}
 
 		$loadcss = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/loadCSS.min.js';
 		$preload = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/cssrelpreload.min.js';
