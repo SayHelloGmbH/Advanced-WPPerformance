@@ -74,6 +74,7 @@ class HandleEnqueue {
                 }
             };
             if(!support()) {
+                console.log('not');
 	            <?php echo file_get_contents( $loadcss ) . "\n"; ?>
 	            <?php echo file_get_contents( $preload ) . "\n"; ?>
             }
