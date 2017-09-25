@@ -168,6 +168,7 @@ class Http2Push {
 		$styles_regex  = '/<link rel=\'stylesheet\' (.*?)>/';
 		$scripts_regex = '/<script type=\'text\/javascript\' (.*?)><\/script>/';
 
+		$return['styles'] = [];
 		preg_match_all( $styles_regex, $file, $styles, PREG_SET_ORDER, 0 );
 		foreach ( $styles as $style ) {
 			preg_match_all( $attr_regex, str_replace( '\'', '"', $style[1] ), $attributes, PREG_SET_ORDER, 0 );
@@ -188,6 +189,7 @@ class Http2Push {
 			$return['styles'][ $id ] = $url;
 		}
 
+		$return['scripts'] = [];
 		preg_match_all( $scripts_regex, $file, $scripts, PREG_SET_ORDER, 0 );
 		foreach ( $scripts as $script ) {
 			preg_match_all( $attr_regex, str_replace( '\'', '"', $script[1] ), $attributes, PREG_SET_ORDER, 0 );
@@ -209,6 +211,13 @@ class Http2Push {
 				continue;
 			}
 			$return['scripts'][ $id ] = $url;
+		}
+
+		if ( empty( $return['scripts'] ) && empty( $return['styles'] ) ) {
+			return [
+				'status' => 'error',
+				'msg'    => 'No scripts and styles found',
+			];
 		}
 
 		update_option( $this->serverpush_possfiles_option, $return );
