@@ -17,7 +17,7 @@
         const $scripts = $('head link[rel=preload][as=style]');
 
         $scripts.each(function (i, e) {
-            $(e).attr('rel', 'stylesheet');
+            //$(e).attr('rel', 'stylesheet');
             //console.log($(e).attr('id'));
         });
     });
