@@ -64,11 +64,20 @@ class HandleEnqueue {
 			wp_die( 'loadcss.min.js or cssrelpreload.min.js not found!' );
 		}
 
-		echo '<script id="loadCSS">';
-		echo 'document.addEventListener(\'DOMContentLoaded\', function(){';
-		echo file_get_contents( $loadcss );
-		echo file_get_contents( $preload );
-		echo '}, false)';
-		echo '</script>';
+		?>
+		<script id="loadCSS">
+            var support = function () {
+                try {
+                    return document.createElement("link").relList.supports("preload");
+                } catch (e) {
+                    return false;
+                }
+            };
+            if(!support()) {
+	            <?php echo file_get_contents( $loadcss ) . "\n"; ?>
+	            <?php echo file_get_contents( $preload ) . "\n"; ?>
+            }
+		</script>
+		<?php
 	}
 }
