@@ -65,8 +65,10 @@ class HandleEnqueue {
 		}
 
 		echo '<script id="loadCSS">';
+		echo 'document.addEventListener(\'DOMContentLoaded\', function(){';
 		echo file_get_contents( $loadcss );
 		echo file_get_contents( $preload );
+		echo '}, false)';
 		echo '</script>';
 	}
 }
