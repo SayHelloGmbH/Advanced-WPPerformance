@@ -76,10 +76,18 @@
         var preload = 'preload';
         var $styles = $('head link[as=style][rel=' + preload + ']');
 
-        $styles.each(function (i, e) {
-            $(e).attr('rel', 'stylesheet');
-            console.log($(e).attr('id') + ': parsed');
-        });
+        var s = document.createElement('link');
+        s.rel = 'PRELOAD';
+        var supports = s.rel === 'preload';
+
+        console.log(supports);
+
+        if (!supports) {
+            $styles.each(function (i, e) {
+                $(e).attr('rel', 'stylesheet');
+                console.log($(e).attr('id') + ': parsed');
+            });
+        }
     });
 })(jQuery);
 

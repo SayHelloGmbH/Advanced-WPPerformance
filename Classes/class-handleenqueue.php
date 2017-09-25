@@ -25,7 +25,7 @@ class HandleEnqueue {
 
 		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 999, 4 );
-			add_action( 'wp_footer', [ $this, 'add_relpreload_js' ] );
+			add_action( 'wp_head', [ $this, 'add_relpreload_js' ], 999 );
 		}
 	}
 
@@ -51,9 +51,9 @@ class HandleEnqueue {
 	public function render_loadcss( $html, $handle, $href, $media ) {
 
 		$html = str_replace( '\'', '"', $html );
-		$html = str_replace( 'rel="stylesheet"', 'rel="preload" as="style"', $html );
+		$html = str_replace( 'rel="stylesheet"', 'rel="preload" as="style" onload="this.rel=\'stylesheet\'"', $html );
 
-		return "$html";//<noscript><link rel='stylesheet' data-push-id='$handle' id='$handle' href='$href' type='text/css' media='$media'></noscript>\n";
+		return "$html<noscript><link rel='stylesheet' data-push-id='$handle' id='$handle' href='$href' type='text/css' media='$media'></noscript>\n";
 	}
 
 	public function add_relpreload_js() {
@@ -65,9 +65,8 @@ class HandleEnqueue {
 		}
 
 		echo '<script id="loadCSS">';
-		//echo file_get_contents( $loadcss );
-		//echo file_get_contents( $preload );
-		//echo 'preloadFill.run(\'preload_\');';
+		echo file_get_contents( $loadcss );
+		echo file_get_contents( $preload );
 		echo '</script>';
 	}
 }
