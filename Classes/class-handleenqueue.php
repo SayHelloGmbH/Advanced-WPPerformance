@@ -53,7 +53,7 @@ class HandleEnqueue {
 		$html = str_replace( '\'', '"', $html );
 		$html = str_replace( 'rel="stylesheet"', 'rel="preload" as="style" onload="this.rel=\'stylesheet\'"', $html );
 
-		return "$html<noscript><link rel='stylesheet' data-push-id='$handle' id='$handle' href='$href' type='text/css' media='$media'></noscript>\n";
+		return "<noscript><link rel='stylesheet' data-push-id='$handle' id='$handle' href='$href' type='text/css' media='$media'></noscript>\n";
 	}
 
 	public function add_relpreload_js() {
