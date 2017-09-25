@@ -94,6 +94,6 @@ class CriticalCSS {
 			$content .= file_get_contents( $path . $critical_id . '.css' );
 		}
 
-		echo "<style type='text/css' id='criticalCSS' media='all'>$content\n</style>\n";
+		echo "<style type='text/css' id='criticalCSS' media='all'>\n{$content}\n</style>\n";
 	}
 }
