@@ -70,30 +70,7 @@
 "use strict";
 
 
-(function ($) {
-
-    $(function () {
-
-        var preload_support = function preload_support() {
-            try {
-                return document.createElement("link").relList.supports("preload");
-            } catch (e) {
-                return false;
-            }
-        };
-
-        if (preload_support() || navigator.userAgent.includes('Chrome')) {
-            return;
-        }
-
-        var $scripts = $('head link[rel=preload][as=style]');
-
-        $scripts.each(function (i, e) {
-            $(e).attr('rel', 'stylesheet');
-            //console.log($(e).attr('id'));
-        });
-    });
-})(jQuery);
+(function ($) {})(jQuery);
 
 /***/ })
 /******/ ]);

@@ -25,6 +25,7 @@ class HandleEnqueue {
 
 		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 999, 4 );
+			add_action( 'wp_head', [ $this, 'add_relpreload_js' ], 1 );
 		}
 	}
 
@@ -53,5 +54,21 @@ class HandleEnqueue {
 		$html = str_replace( 'rel="stylesheet"', 'rel="preload" as="style" onload="this.rel=\'stylesheet\'"', $html );
 
 		return "$html<noscript><link rel='stylesheet' data-push-id='$handle' id='$handle' href='$href' type='text/css' media='$media'></noscript>\n";
+	}
+
+	public function add_relpreload_js() {
+
+		$loadcss = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/loadCSS.min.js';
+		$preload = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/awpp_relpreload.min.js';
+		if ( ! file_exists( $loadcss ) || ! file_exists( $preload ) ) {
+			wp_die( 'loadcss.min.js or awpp_relpreload.min.js not found!' );
+		}
+
+		?>
+		<script id="loadCSS">
+			<?php echo file_get_contents( $loadcss ) . "\n"; ?>
+			<?php echo file_get_contents( $preload ) . "\n"; ?>
+		</script>
+		<?php
 	}
 }
