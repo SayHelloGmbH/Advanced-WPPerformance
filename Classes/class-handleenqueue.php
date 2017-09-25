@@ -51,7 +51,7 @@ class HandleEnqueue {
 	public function render_loadcss( $html, $handle, $href, $media ) {
 
 		$html = str_replace( '\'', '"', $html );
-		$html = str_replace( 'rel="stylesheet"', 'rel="preload" as="style" onload="this.rel=\'stylesheet\'"', $html );
+		$html = str_replace( 'rel="stylesheet"', 'rel="preload" as="style"', $html );
 
 		return "$html";//<noscript><link rel='stylesheet' data-push-id='$handle' id='$handle' href='$href' type='text/css' media='$media'></noscript>\n";
 	}
@@ -66,7 +66,8 @@ class HandleEnqueue {
 
 		echo '<script id="loadCSS">';
 		//echo file_get_contents( $loadcss );
-		echo file_get_contents( $preload );
+		//echo file_get_contents( $preload );
+		//echo 'preloadFill.run(\'preload_\');';
 		echo '</script>';
 	}
 }

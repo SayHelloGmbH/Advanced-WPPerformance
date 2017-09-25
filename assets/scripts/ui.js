@@ -67,76 +67,18 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(1);
-module.exports = __webpack_require__(2);
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 
 
 (function ($) {
-
-    $(function () {});
-})(jQuery);
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-(function ($) {
-
-    var $container = '';
-    var $button = '';
 
     $(function () {
+        var preload = 'preload';
+        var $styles = $('head link[as=style][rel=' + preload + ']');
 
-        $container = $('#wp-admin-bar-awpp_adminbar-minify');
-        $button = $container.find('#awpp-clear-cache');
-        if (!$container.length || !$button.length) {
-            return;
-        }
-
-        var ajaxUrl = $button.attr('data-ajaxurl');
-        var nonce = $button.attr('data-nonce');
-        var action = 'awpp_do_clear_minify_cache';
-
-        $button.on('click', function () {
-
-            $container.addClass('loading');
-
-            jQuery.ajax({
-                url: ajaxUrl,
-                type: 'POST',
-                dataType: 'json',
-                data: 'action=' + action + '&nonce=' + nonce
-            }).done(function (data) {
-
-                if (data['type'] === null || data['type'] !== 'success') {
-
-                    /**
-                     * error
-                     */
-
-                    var msg_content = data['message'];
-                    if (msg_content === '' || msg_content === undefined) {
-                        msg_content = 'Error';
-                    }
-
-                    alert(msg_content);
-                } else {
-                    $container.find('.count').text('0');
-                    $container.find('.size').text('0 B');
-                }
-
-                $container.removeClass('loading');
-            });
+        $styles.each(function (i, e) {
+            $(e).attr('rel', 'stylesheet');
+            //console.log($(e).attr('id') + ': parsed');
         });
     });
 })(jQuery);
