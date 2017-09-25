@@ -24,8 +24,8 @@ class HandleEnqueue {
 		}
 
 		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
-			add_action( 'wp_footer', [ $this, 'add_loadcss' ], 1 );
-			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 9999, 3 );
+			//add_action( 'wp_footer', [ $this, 'add_loadcss_js' ], 1 );
+			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 999, 4 );
 			add_action( 'wp_head', [ $this, 'add_noscript_styles' ] );
 			add_action( 'wp_footer', [ $this, 'add_loadcss_styles' ] );
 		}
@@ -50,7 +50,26 @@ class HandleEnqueue {
 	 * Styles
 	 */
 
-	public function add_loadcss() {
+	public function render_loadcss( $html, $handle, $href, $media ) {
+
+		$this->styles[ $handle ] = [
+			'handle' => $handle,
+			'url'    => $href,
+			'media'  => $media,
+		];
+
+		return '';
+	}
+
+	public function add_noscript_styles() {
+		echo '<noscript>';
+		foreach ( $this->styles as $handle => $atts ) {
+			echo "<link rel='stylesheet' id='{$atts['handle']}' href='{$atts['url']}' type='text/css' media='{$atts['media']}'>";
+		}
+		echo '</noscript>';
+	}
+
+	public function add_loadcss_styles() {
 
 		$file = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/loadCSS.min.js';
 		if ( ! file_exists( $file ) ) {
@@ -59,26 +78,9 @@ class HandleEnqueue {
 
 		echo '<script id="loadCSS">';
 		echo file_get_contents( $file );
+		foreach ( $this->styles as $handle => $atts ) {
+			echo "\nloadCSS('{$atts['url']}', 0, '{$atts['media']}', '{$atts['handle']}' );";
+		}
 		echo '</script>';
-	}
-
-	public function render_loadcss( $html, $handle, $href ) {
-		/*
-		$this->styles[ $handle ] = $href;
-
-		return '';*/
-
-		$dom = new \DOMDocument();
-		$dom->loadHTML( $html );
-		$a = $dom->getElementById( $handle . '-css' );
-
-		$href  = $a->getAttribute( 'href' );
-		$media = $a->getAttribute( 'media' );
-		$id    = $a->getAttribute( 'id' );
-
-		$return = "<script>loadCSS('$href', 0, '$media', '$id' );</script>\n";
-		$return .= "<noscript><link rel='stylesheet' id='$id' href='$href' type='text/css' media='$media'></noscript>\n";
-
-		return $return;
 	}
 }
