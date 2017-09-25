@@ -59,9 +59,9 @@ class HandleEnqueue {
 	public function add_relpreload_js() {
 
 		$loadcss = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/loadCSS.min.js';
-		$preload = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/awpp_relpreload.min.js';
+		$preload = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/awpp_relpreload_polyfill.min.js';
 		if ( ! file_exists( $loadcss ) || ! file_exists( $preload ) ) {
-			wp_die( 'loadcss.min.js or awpp_relpreload.min.js not found!' );
+			wp_die( 'loadcss.min.js or awpp_relpreload_polyfill.min.js not found!' );
 		}
 
 		?>
