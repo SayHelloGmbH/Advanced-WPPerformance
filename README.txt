@@ -1,9 +1,9 @@
 === Advanced WPPerformance ===
 Contributors: nico_martin
 Donate link: https://www.paypal.me/NicoMartin
-Tags: Performance, Pagespeed, scriptloading, autoptimize, http2, server push, SPDY
+Tags: Performance, Pagespeed, scriptloading, autoptimize, http2, server push, SPDY, preload
 Requires at least: 4.7
-Tested up to: 4.9
+Tested up to: 4.8.2
 Stable tag: 1.2.0
 Requires PHP: 5.4
 License: GPLv3
