@@ -8,9 +8,7 @@
             return false;
         }
     };
-    console.log(support());
-    if (support() || navigator.userAgent.indexOf('Page Speed') !== -1) {
-        console.log(navigator.userAgent);
+    if (support()) {
         return;
     }
 
