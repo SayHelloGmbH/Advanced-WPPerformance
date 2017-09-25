@@ -10,7 +10,7 @@
             }
         };
 
-        if (preload_support() || navigator.userAgent.indexOf('Page Speed') !== -1) {
+        if (preload_support() || navigator.userAgent.includes('Page Speed')) {
             return;
         }
 
