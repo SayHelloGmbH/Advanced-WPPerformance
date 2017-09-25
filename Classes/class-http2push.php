@@ -155,10 +155,11 @@ class Http2Push {
 		curl_close( $ch );
 
 		//if ( $http_code >= 300 ) {
-			return [
-				'status' => 'error',
-				'msg'    => 'invalid HTTP Code: ' . $http_code,
-			];
+		return [
+			'status' => 'error',
+			'msg'    => 'invalid HTTP Code: ' . $http_code,
+			'body'   => $file,
+		];
 		/*} else {
 			$return['status'] = 'success';
 		}*/
