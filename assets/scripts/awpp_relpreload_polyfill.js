@@ -1,3 +1,4 @@
+/*! loadCSS rel=preload polyfill (adjustments for Advanced WPPerformance). [c]2017 Filament Group, Inc. MIT License */
 (function (w) {
     "use strict";
 
@@ -8,7 +9,9 @@
             return false;
         }
     };
-    if (support()) {
+
+    // check if the browser supports rel="preload" or if it's PSI (A bit hacky but there is a bug in PSI)
+    if (support() || navigator.userAgent.indexOf('Page Speed') !== -1) {
         return;
     }
 

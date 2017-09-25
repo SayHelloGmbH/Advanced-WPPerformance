@@ -25,7 +25,7 @@ class HandleEnqueue {
 
 		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 999, 4 );
-			add_action( 'wp_head', [ $this, 'add_relpreload_js' ], 1 );
+			add_action( 'wp_footer', [ $this, 'add_relpreload_js' ] );
 		}
 	}
 
@@ -64,11 +64,9 @@ class HandleEnqueue {
 			wp_die( 'loadcss.min.js or awpp_relpreload_polyfill.min.js not found!' );
 		}
 
-		?>
-		<script id="loadCSS">
-			<?php echo file_get_contents( $loadcss ) . "\n"; ?>
-			<?php echo file_get_contents( $preload ) . "\n"; ?>
-		</script>
-		<?php
+		echo '<script id="loadCSS">';
+		echo file_get_contents( $loadcss );
+		echo file_get_contents( $preload );
+		echo '</script>';
 	}
 }
