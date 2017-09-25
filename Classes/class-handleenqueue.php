@@ -25,8 +25,7 @@ class HandleEnqueue {
 
 		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 999, 4 );
-			add_action( 'wp_head', [ $this, 'add_noscript_styles' ] );
-			add_action( 'wp_footer', [ $this, 'add_loadcss_styles' ] );
+			add_action( 'wp_footer', [ $this, 'add_relpreload_js' ] );
 		}
 	}
 
@@ -51,37 +50,23 @@ class HandleEnqueue {
 
 	public function render_loadcss( $html, $handle, $href, $media ) {
 
-		$this->styles[ $handle ] = [
-			'handle' => $handle,
-			'url'    => $href,
-			'media'  => $media,
-		];
+		$html = str_replace( '\'', '"', $html );
+		$html = str_replace( 'rel="stylesheet"', 'rel="preload" as="style" onload="this.rel=\'stylesheet\'"', $html );
 
-		return '';
+		return "$html<noscript><link rel='stylesheet' data-push-id='$handle' id='$handle' href='$href' type='text/css' media='$media'></noscript>\n";
 	}
 
-	public function add_noscript_styles() {
-		echo '<noscript>';
-		foreach ( $this->styles as $handle => $atts ) {
-			echo "<link rel='stylesheet' data-push-id='{$atts['handle']}' id='{$atts['handle']}' href='{$atts['url']}' type='text/css' media='{$atts['media']}'>";
-		}
-		echo '</noscript>';
-	}
+	public function add_relpreload_js() {
 
-	public function add_loadcss_styles() {
-
-		$file = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/loadCSS.min.js';
-		if ( ! file_exists( $file ) ) {
-			wp_die( 'loadCSS.min.js not found!' );
+		$loadcss = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/loadCSS.min.js';
+		$preload = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/cssrelpreload.min.js';
+		if ( ! file_exists( $loadcss ) || ! file_exists( $preload ) ) {
+			wp_die( 'loadcss.min.js or cssrelpreload.min.js not found!' );
 		}
 
 		echo '<script id="loadCSS">';
-		echo file_get_contents( $file );
-		echo 'document.addEventListener(\'DOMContentLoaded\', function(){';
-		foreach ( $this->styles as $handle => $atts ) {
-			echo "\nloadCSS('{$atts['url']}', 0, '{$atts['media']}', '{$atts['handle']}' );";
-		}
-		echo '}, false);';
+		echo file_get_contents( $loadcss );
+		echo file_get_contents( $preload );
 		echo '</script>';
 	}
 }

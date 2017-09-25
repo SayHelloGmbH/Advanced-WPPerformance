@@ -1,12 +1,8 @@
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 (function (w) {
     "use strict";
     /* exported loadCSS */
-    var loadCSS = function (href, before, media, handle) {
-
-        if (handle === undefined) {
-            handle = '';
-        }
-
+    var loadCSS = function (href, before, media) {
         // Arguments explained:
         // `href` [REQUIRED] is the URL for your CSS file.
         // `before` [OPTIONAL] is the element the script should use as a reference for injecting our stylesheet <link> before
@@ -26,7 +22,6 @@
         var sheets = doc.styleSheets;
         ss.rel = "stylesheet";
         ss.href = href;
-        ss.id = handle;
         // temporarily set media to something inapplicable to ensure it'll fetch without blocking render
         ss.media = "only x";
 
