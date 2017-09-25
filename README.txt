@@ -74,6 +74,8 @@ A development version of this plugin is hosted on github. If you have some ideas
 
 ### 1.2.0
 * added support for Cachify, W3 Total Cache, WP Super Cache and WP Rocket
+* `rel="preload"` for CSS Files, `loadCSS` as Fallback
+* little improvements
 
 ### 1.1.1
 * little Bugfixes

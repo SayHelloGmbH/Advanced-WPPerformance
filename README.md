@@ -17,7 +17,7 @@ function prefix_my_cache_dir( $path ) {
 }
 ```
 ### Critical CSS / LoadCSS
-All CSS Files will be removed from the head and loaded asynchronously. This makes sure your CSS Files won't delay the page rendering. To reduce the flash of unstyled content (FOUT) I recommend adding a Critical CSS.
+All CSS Files will be removed from the head and loaded asynchronously using `rel="preload"` (`loadCSS` as Fallback). This makes sure your CSS Files won't delay the page rendering. To reduce the flash of unstyled content (FOUT) I recommend adding a Critical CSS.
 #### conditonal Critical CSS
 By default this plugin provides a textarea where you can put your critical CSS.
 **But there's more!** You can use a filter `awpp_critical_dir` where you can define your own critical CSS Folder:
@@ -74,8 +74,10 @@ The second option puts all files to push inside you .htaccess. This way they are
 
 ### 1.2.0
 * added support for Cachify, W3 Total Cache, WP Super Cache and WP Rocket
+* `rel="preload"` for CSS Files, `loadCSS` as Fallback
+* little improvements
 
-### 1.1.0
+### 1.1.1
 * little Bugfixes
 
 ### 1.1.0
