@@ -52,7 +52,7 @@ class Http2Push {
 
 		$add = $this->scan_frontpage_files();
 		if ( 'success' != $add['status'] ) {
-			awpp_exit_ajax( $add['status'], $add['msg'] );
+			awpp_exit_ajax( $add['status'], $add['msg'], $add );
 		}
 
 		awpp_exit_ajax( 'success', '', $add );
