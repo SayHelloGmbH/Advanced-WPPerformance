@@ -25,7 +25,7 @@ class HandleEnqueue {
 
 		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 999, 4 );
-			//add_action( 'wp_footer', [ $this, 'add_relpreload_js' ] );
+			add_action( 'wp_footer', [ $this, 'add_relpreload_js' ] );
 		}
 	}
 
@@ -65,7 +65,7 @@ class HandleEnqueue {
 		}
 
 		echo '<script id="loadCSS">';
-		echo file_get_contents( $loadcss );
+		//echo file_get_contents( $loadcss );
 		echo file_get_contents( $preload );
 		echo '</script>';
 	}
