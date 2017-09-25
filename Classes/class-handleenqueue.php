@@ -62,6 +62,7 @@ class HandleEnqueue {
 		if ( $_SERVER['HTTP_USER_AGENT'] == $google_psi ) {
 			return;
 		}
+		return;
 
 		$loadcss = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/loadCSS.min.js';
 		$preload = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/cssrelpreload.min.js';
