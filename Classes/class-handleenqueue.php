@@ -25,7 +25,7 @@ class HandleEnqueue {
 
 		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 999, 4 );
-			//add_action( 'wp_head', [ $this, 'add_noscript_styles' ] );
+			add_action( 'wp_head', [ $this, 'add_noscript_styles' ] );
 			add_action( 'wp_footer', [ $this, 'add_loadcss_styles' ] );
 		}
 	}
