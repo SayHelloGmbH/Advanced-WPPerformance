@@ -77,9 +77,11 @@ class HandleEnqueue {
 
 		echo '<script id="loadCSS">';
 		echo file_get_contents( $file );
+		echo 'document.addEventListener(\'DOMContentLoaded\', function(){';
 		foreach ( $this->styles as $handle => $atts ) {
 			echo "\nloadCSS('{$atts['url']}', 0, '{$atts['media']}', '{$atts['handle']}' );";
 		}
+		echo '}, false);';
 		echo '</script>';
 	}
 }
