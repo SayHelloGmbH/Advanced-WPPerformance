@@ -24,6 +24,9 @@ class Http2Push {
 
 	public function run() {
 
+		add_filter( 'script_loader_tag', [ $this, 'add_push_id_to_assets' ], 10, 2 );
+		add_filter( 'style_loader_tag', [ $this, 'add_push_id_to_assets' ], 10, 2 );
+
 		add_action( 'wp_ajax_' . $this->serverpush_scan_action, [ $this, 'ajax_get_frontpage_files' ] );
 		add_action( 'update_option_' . awpp_get_instance()->Settings->settings_option, [ $this, 'add_serverpush_htaccess_onoption' ], 100, 2 );
 
@@ -35,6 +38,14 @@ class Http2Push {
 				add_action( 'wp_head', [ $this, 'resource_hints' ], 99, 1 );
 			}
 		}
+	}
+
+	public function add_push_id_to_assets( $html, $id ) {
+		if ( current_filter() == 'script_loader_tag' ) {
+			return str_replace( ' src', ' data-push-id="' . $id . '" src', $html );
+		}
+
+		return str_replace( ' href', ' data-push-id="' . $id . '" href', $html );
 	}
 
 	public function ajax_get_frontpage_files() {
@@ -164,7 +175,7 @@ class Http2Push {
 			foreach ( $attributes as $a ) {
 				$attr = $a[1];
 				$val  = $a[2];
-				if ( 'id' == $attr ) {
+				if ( 'data-push-id' == $attr ) {
 					$id = $val;
 				} elseif ( 'href' == $attr ) {
 					$url = $val;
@@ -184,7 +195,7 @@ class Http2Push {
 			foreach ( $attributes as $a ) {
 				$attr = $a[1];
 				$val  = $a[2];
-				if ( 'id' == $attr ) {
+				if ( 'data-push-id' == $attr ) {
 					$id = $val;
 				} elseif ( 'src' == $attr ) {
 					$url = $val;

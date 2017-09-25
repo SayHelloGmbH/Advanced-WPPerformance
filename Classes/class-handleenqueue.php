@@ -5,14 +5,14 @@ namespace nicomartin\AdvancedWPPerformance;
 class HandleEnqueue {
 
 	public $options = '';
+	public $styles = '';
 
 	public function __construct() {
 		$this->options = get_option( awpp_get_instance()->Settings->settings_option );
+		$this->styles  = [];
 	}
 
 	public function run() {
-
-		add_filter( 'script_loader_tag', [ $this, 'add_id_to_scripts' ], 10, 2 );
 
 		if ( is_admin() ) {
 			return;
@@ -24,14 +24,16 @@ class HandleEnqueue {
 		}
 
 		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
-			add_action( 'wp_head', [ $this, 'add_loadcss' ], 1 );
+			add_action( 'wp_footer', [ $this, 'add_loadcss' ], 1 );
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 9999, 3 );
+			add_action( 'wp_head', [ $this, 'add_noscript_styles' ] );
+			add_action( 'wp_footer', [ $this, 'add_loadcss_styles' ] );
 		}
 	}
 
-	public function add_id_to_scripts( $tag, $handle ) {
-		return str_replace( ' src', ' id="' . $handle . '" src', $tag );
-	}
+	/**
+	 * Scripts
+	 */
 
 	public function remove_header_scripts() {
 
@@ -44,12 +46,15 @@ class HandleEnqueue {
 		return str_replace( ' src', ' defer="defer" src', $tag );
 	}
 
+	/**
+	 * Styles
+	 */
+
 	public function add_loadcss() {
 
 		$file = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/loadCSS.min.js';
 		if ( ! file_exists( $file ) ) {
-			echo 'loadCSS.min.js not found!';
-			die;
+			wp_die( 'loadCSS.min.js not found!' );
 		}
 
 		echo '<script id="loadCSS">';
@@ -58,6 +63,10 @@ class HandleEnqueue {
 	}
 
 	public function render_loadcss( $html, $handle, $href ) {
+		/*
+		$this->styles[ $handle ] = $href;
+
+		return '';*/
 
 		$dom = new \DOMDocument();
 		$dom->loadHTML( $html );
