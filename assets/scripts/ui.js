@@ -73,21 +73,25 @@
 (function ($) {
 
     $(function () {
-        var preload = 'preload';
-        var $styles = $('head link[as=style][rel=' + preload + ']');
 
-        var s = document.createElement('link');
-        s.rel = 'PRELOAD';
-        var supports = s.rel === 'preload';
+        var preload_support = function preload_support() {
+            try {
+                return document.createElement("link").relList.supports("preload");
+            } catch (e) {
+                return false;
+            }
+        };
 
-        console.log(supports);
-
-        if (!supports) {
-            $styles.each(function (i, e) {
-                $(e).attr('rel', 'stylesheet');
-                console.log($(e).attr('id') + ': parsed');
-            });
+        if (preload_support()) {
+            return;
         }
+
+        var $scripts = $('head link[rel=preload][as=style]');
+
+        $scripts.each(function (i, e) {
+            $(e).attr('rel', 'stylesheet');
+            //console.log($(e).attr('id'));
+        });
     });
 })(jQuery);
 
