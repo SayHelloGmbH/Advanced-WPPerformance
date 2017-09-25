@@ -6,7 +6,7 @@
 
         $styles.each(function (i, e) {
             $(e).attr('rel', 'stylesheet');
-            //console.log($(e).attr('id') + ': parsed');
+            console.log($(e).attr('id') + ': parsed');
         })
     });
 })(jQuery);
