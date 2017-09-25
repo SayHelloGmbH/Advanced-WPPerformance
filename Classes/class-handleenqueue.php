@@ -24,7 +24,6 @@ class HandleEnqueue {
 		}
 
 		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
-			//add_action( 'wp_footer', [ $this, 'add_loadcss_js' ], 1 );
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 999, 4 );
 			add_action( 'wp_head', [ $this, 'add_noscript_styles' ] );
 			add_action( 'wp_footer', [ $this, 'add_loadcss_styles' ] );
@@ -64,7 +63,7 @@ class HandleEnqueue {
 	public function add_noscript_styles() {
 		echo '<noscript>';
 		foreach ( $this->styles as $handle => $atts ) {
-			echo "<link rel='stylesheet' id='{$atts['handle']}' href='{$atts['url']}' type='text/css' media='{$atts['media']}'>";
+			echo "<link rel='stylesheet' data-push-id='{$atts['handle']}' id='{$atts['handle']}' href='{$atts['url']}' type='text/css' media='{$atts['media']}'>";
 		}
 		echo '</noscript>';
 	}
