@@ -82,7 +82,7 @@
             }
         };
 
-        if (preload_support()) {
+        if (preload_support() || navigator.userAgent.indexOf('Page Speed') !== -1) {
             return;
         }
 
