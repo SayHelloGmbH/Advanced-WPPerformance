@@ -58,6 +58,11 @@ class HandleEnqueue {
 
 	public function add_relpreload_js() {
 
+		$google_psi = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.8 (KHTML, like Gecko; Google Page Speed Insights) Chrome/19.0.1084.36 Safari/536.8';
+		if ( $_SERVER['HTTP_USER_AGENT'] == $google_psi ) {
+			return;
+		}
+
 		$loadcss = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/loadCSS.min.js';
 		$preload = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/cssrelpreload.min.js';
 		if ( ! file_exists( $loadcss ) || ! file_exists( $preload ) ) {
