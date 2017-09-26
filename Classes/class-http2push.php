@@ -246,7 +246,7 @@ class Http2Push {
 
 				$lines   = [];
 				$lines[] = '<IfModule mod_headers.c>';
-				$lines[] = '<FilesMatch "\.(php|html|htm|gz)$">';
+				$lines[] = '<FilesMatch "(index\.php|\.(html|htm|gz)$)">';
 				foreach ( [ 'styles', 'scripts' ] as $type ) {
 					$lines[] = '# ' . $type;
 

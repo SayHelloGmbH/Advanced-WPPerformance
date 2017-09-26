@@ -72,6 +72,9 @@ The second option puts all files to push inside you .htaccess. This way they are
 
 ## Changelog
 
+### 1.2.1
+* little Bugfixes
+
 ### 1.2.0
 * added support for Cachify, W3 Total Cache, WP Super Cache and WP Rocket
 * `rel="preload"` for CSS Files, `loadCSS` as Fallback
