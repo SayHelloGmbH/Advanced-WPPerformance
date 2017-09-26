@@ -196,7 +196,7 @@ class Settings {
 				}
 				foreach ( $scanned_files[ $type ] as $id => $url ) {
 					$checked = '';
-					if ( 'on' == $this->options['serverpush_files'][ $type ][ $id ] ) {
+					if ( isset( $this->options['serverpush_files'][ $type ][ $id ] ) && 'on' == $this->options['serverpush_files'][ $type ][ $id ] ) {
 						$checked = 'checked';
 					}
 					echo "<li id='$id'><label title='$url'><input type='checkbox' $checked name='awpp-option[serverpush_files][$type][$id]'/> $id</label></li>";
