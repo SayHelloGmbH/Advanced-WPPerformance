@@ -12,9 +12,9 @@ class Minify {
 
 	public function __construct() {
 
-		$this->base_path          = ABSPATH;
+		$this->base_path          = trailingslashit( ABSPATH );
 		$this->base_url           = trailingslashit( get_home_url() );
-		$this->default_cache_path = str_replace( $this->base_url, $this->base_path, trailingslashit( content_url() ) . 'cache/awpp/' );
+		$this->default_cache_path = trailingslashit( WP_CONTENT_DIR ) . 'cache/awpp/';
 
 		$this->options = get_option( awpp_get_instance()->Settings->settings_option );
 	}
@@ -40,7 +40,7 @@ class Minify {
 
 			$dir = $cache_dir . $folder . '/';
 
-			if ( ! file_exists( $dir ) ) {
+			if ( ! is_dir( $dir ) ) {
 				mkdir( $dir, 0777, true );
 			}
 
@@ -163,6 +163,7 @@ class Minify {
 			return false;
 		}
 		$objects = scandir( $path );
+		$count   = 0;
 		foreach ( $objects as $object ) {
 			if ( '.' != $object && '..' != $object ) {
 				if ( filetype( $path . '/' . $object ) == 'dir' ) {
@@ -181,6 +182,11 @@ class Minify {
 
 		$cache_dir = apply_filters( 'awpp_cache_dir', $this->default_cache_path );
 		$cache_dir = trailingslashit( $cache_dir );
+
+		if ( strpos( $cache_dir, $this->base_url ) !== false ) {
+			$cache_dir = str_replace( $this->base_url, ABSPATH, $cache_dir );
+		}
+
 		if ( '' == $cache_dir || '/' == $cache_dir ) {
 			$cache_dir = $this->default_cache_path;
 		}
