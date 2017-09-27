@@ -38,7 +38,6 @@ class Settings {
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar' ], 90 );
 		add_action( 'admin_init', [ $this, 'http2_check' ] );
-
 	}
 
 	public function add_menu_page() {

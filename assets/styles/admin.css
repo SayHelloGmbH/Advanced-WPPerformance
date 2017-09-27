@@ -114,3 +114,13 @@
 .awpp-settings-wrap .files-list li.no-items {
   font-size: smaller;
 }
+
+.awpp-criticalapi-settings-wrap .form-table {
+  margin: 20px 0;
+  width: 100%;
+  max-width: 600px;
+}
+.awpp-criticalapi-settings-wrap .form-table input[type=text],
+.awpp-criticalapi-settings-wrap .form-table input[type=textarea] {
+  width: 100%;
+}
