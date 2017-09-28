@@ -84,6 +84,7 @@ class Settings {
 			<h1><?php echo awpp_get_instance()->name; ?></h1>
 			<form method="post" action="options.php">
 				<?php
+				settings_errors( $this->settings_option . 'errors' );
 				settings_fields( $this->settings_group );
 				do_settings_sections( $this->settings_page );
 				submit_button();
@@ -157,6 +158,10 @@ class Settings {
 			$new_input['criticalcss'] = $input['criticalcss'];
 		}
 
+		/*if ( 'api' == $new_input['loadcss'] ) {
+			add_settings_error( $this->settings_option . 'errors', 'criticalapi-message', 'test', 'updated' );
+		}*/
+
 		return $new_input;
 	}
 
@@ -186,9 +191,9 @@ class Settings {
 	}
 
 	public function print_section_info() {
-		echo '<pre>';
-		print_r( $this->options );
-		echo '</pre>';
+		//echo '<pre>';
+		//print_r( $this->options );
+		//echo '</pre>';
 	}
 
 	public function scripts_to_footer_callback() {
@@ -222,7 +227,7 @@ class Settings {
 		//printf( '<input type="checkbox" name="%1$s[%2$s]" id="%2$s" %3$s />', $this->settings_option, $key, ( 'on' == $val ? 'checked' : '' ) );
 		?>
 		<div class="settings-sub settings-sub-loadcss-api" style="display:<?php echo( 'api' == $val ? 'block' : 'none' ); ?>">
-			<p>Test</p>
+			<p><?php _e( 'This feature is still in development. After saving this option you will find a "Critical API" menu item in your navigation on the left, where you are able to configure your "above the fold" CSS.', 'awpp' ); ?></p>
 		</div>
 
 		<div class="settings-sub settings-sub-loadcss-classic" style="display:<?php echo( 'classic' == $val ? 'block' : 'none' ); ?>">
@@ -246,7 +251,7 @@ class Settings {
 				$key      = 'criticalcss';
 				$file_url = str_replace( awpp_get_instance()->CriticalCSS->base_path, awpp_get_instance()->CriticalCSS->base_url, $file );
 				$val      = file_get_contents( $file );
-				printf( '<textarea type="text" rows="10" cols="70" name="%1$s[%2$s]" id="%2$s">%3$s</textarea>', $this->settings_option, $key, $val );
+				printf( '<textarea type="text" rows="10" name="%1$s[%2$s]" id="%2$s">%3$s</textarea>', $this->settings_option, $key, $val );
 				echo "<p>File: <a target='_blank' href='$file_url'>$file_url</a></p>";
 			}
 			?>

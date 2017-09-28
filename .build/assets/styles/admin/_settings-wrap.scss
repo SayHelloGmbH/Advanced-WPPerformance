@@ -10,6 +10,9 @@
 		select {
 			width: 150px;
 		}
+		textarea {
+			width: 100%;
+		}
 	}
 
 	.beta p {
@@ -23,15 +26,16 @@
 
 	.settings-sub {
 		margin-top: 20px;
+		max-width: 430px;
+		width: 100%;
 	}
 
 	.settings-sub-serverpush-htaccess {
-		max-width: 100%;
-		width: 400px;
 		background-color: #fff;
 		border: 1px solid #e5e5e5;
 		@include box-shadow();
 		padding: 15px;
+		max-width: 400px;
 		position: relative;
 		.loader {
 			display: none;
