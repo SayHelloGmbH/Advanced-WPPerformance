@@ -44,6 +44,9 @@
 .awpp-settings-wrap form select {
   width: 150px;
 }
+.awpp-settings-wrap .beta p {
+  font-size: smaller;
+}
 .awpp-settings-wrap p.error {
   font-weight: bold;
   color: red;
@@ -51,7 +54,7 @@
 .awpp-settings-wrap .settings-sub {
   margin-top: 20px;
 }
-.awpp-settings-wrap .settings-htaccess-push-container {
+.awpp-settings-wrap .settings-sub-serverpush-htaccess {
   max-width: 100%;
   width: 400px;
   background-color: #fff;
@@ -62,7 +65,7 @@
   padding: 15px;
   position: relative;
 }
-.awpp-settings-wrap .settings-htaccess-push-container .loader {
+.awpp-settings-wrap .settings-sub-serverpush-htaccess .loader {
   display: none;
   background-color: rgba(255, 255, 255, 0.6);
   position: absolute;
@@ -71,7 +74,7 @@
   left: 0;
   top: 0;
 }
-.awpp-settings-wrap .settings-htaccess-push-container .loader:after {
+.awpp-settings-wrap .settings-sub-serverpush-htaccess .loader:after {
   position: absolute;
   content: '';
   top: 50%;
@@ -94,7 +97,7 @@
   -webkit-animation: awpp-spinner-animation 0.65s infinite linear;
   animation: awpp-spinner-animation 0.65s infinite linear;
 }
-.awpp-settings-wrap .settings-htaccess-push-container .info {
+.awpp-settings-wrap .settings-sub-serverpush-htaccess .info {
   font-size: smaller;
   margin-bottom: 20px;
 }

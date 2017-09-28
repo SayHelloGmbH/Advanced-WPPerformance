@@ -150,26 +150,51 @@ module.exports = __webpack_require__(2);
     $(function () {
 
         var $container = $('.awpp-settings-wrap');
-        var $loadCSS = $container.find('input#loadcss');
+        var $loadCSS = $container.find('select#loadcss');
         var $ServerPush = $container.find('select#serverpush');
+        var $trigger = $container.find('select#serverpush, select#loadcss');
 
+        $trigger.each(function () {
+
+            var $e = $(this);
+            var event = 'click';
+            var $sub_container = $e.parents('td').find('.settings-sub');
+
+            if ($e.prop('nodeName') === 'SELECT') {
+                event = 'change';
+            }
+
+            $e.on(event, function () {
+                var val = $(this).val();
+                var id = $(this).attr('id');
+                $sub_container.each(function () {
+                    if ($(this).hasClass('settings-sub-' + id + '-' + val)) {
+                        $(this).slideDown();
+                    } else {
+                        $(this).slideUp();
+                    }
+                });
+            });
+        });
+
+        /*
         $loadCSS.on('click', function () {
-            var $ccss_container = $(this).next('.settings-critical-css-container');
+            const $ccss_container = $(this).next('.settings-critical-css-container');
             if ($(this).prop('checked')) {
                 $ccss_container.slideDown();
             } else {
                 $ccss_container.slideUp();
             }
         });
-
-        $ServerPush.on('change', function () {
-            var $htaccess_container = $(this).next('.settings-htaccess-push-container');
+          $ServerPush.on('change', function () {
+            const $htaccess_container = $(this).next('.settings-htaccess-push-container');
             if ($(this).val() === 'htaccess') {
                 $htaccess_container.slideDown();
             } else {
                 $htaccess_container.slideUp();
             }
         });
+        */
     });
 })(jQuery);
 

@@ -26,7 +26,7 @@ class CriticalCSS {
 
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar_item' ] );
 
-		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
+		if ( awpp_is_frontend() && 'disabled' != $this->options['loadcss'] ) {
 			add_action( 'wp_head', [ $this, 'add_critical_css' ], 1 );
 		}
 	}
@@ -55,7 +55,7 @@ class CriticalCSS {
 			],
 		];
 
-		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
+		if ( awpp_is_frontend() && 'disabled' != $this->options['loadcss'] ) {
 			$args['meta']['html'] = '<div class="ab-item ab-empty-item">' . $html . '</div>';
 		}
 		$wp_admin_bar->add_node( $args );

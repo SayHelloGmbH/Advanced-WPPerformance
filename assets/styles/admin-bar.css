@@ -48,7 +48,7 @@
   border-radius: 50%;
   background-color: green;
 }
-#wpadminbar .awpp-adminbar .ab-sub-wrapper li.off:before {
+#wpadminbar .awpp-adminbar .ab-sub-wrapper li.disabled:before {
   background-color: red;
 }
 

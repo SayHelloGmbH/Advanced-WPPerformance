@@ -266,7 +266,7 @@ class Http2Push {
 				awpp_get_instance()->htaccess->set( implode( "\n", $lines ) );
 			}
 		} else {
-			awpp_get_instance()->htaccess->delete( implode( "\n", $lines ) );
-		}
+			awpp_get_instance()->htaccess->delete();
+		}// End if().
 	}
 }

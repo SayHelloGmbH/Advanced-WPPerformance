@@ -12,7 +12,6 @@ class Settings extends Init {
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ] );
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
 		add_action( 'admin_action_awpp_remove_apikey', [ $this, 'remove_apikey' ] );
-
 	}
 
 	public function remove_apikey() {

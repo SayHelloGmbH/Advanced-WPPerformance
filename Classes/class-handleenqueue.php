@@ -18,12 +18,12 @@ class HandleEnqueue {
 			return;
 		}
 
-		if ( awpp_is_frontend() && 'off' != $this->options['scripts_to_footer'] ) {
+		if ( awpp_is_frontend() && 'disabled' != $this->options['scripts_to_footer'] ) {
 			add_action( 'wp_enqueue_scripts', [ $this, 'remove_header_scripts' ] );
 			add_filter( 'script_loader_tag', [ $this, 'add_defer_attribute' ], 10, 2 );
 		}
 
-		if ( awpp_is_frontend() && 'off' != $this->options['loadcss'] ) {
+		if ( awpp_is_frontend() && 'disabled' != $this->options['loadcss'] ) {
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 999, 4 );
 			add_action( 'wp_footer', [ $this, 'add_relpreload_js' ] );
 		}

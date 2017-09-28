@@ -11,9 +11,10 @@ class Settings {
 	public $settings_key = '';
 	public $adminbar_id = '';
 
-	public $server_push_choices = '';
+	public $select_choices = '';
 
 	private $options = '';
+	public $beta = '';
 
 	public function __construct() {
 
@@ -24,20 +25,53 @@ class Settings {
 		$this->settings_section = $this->settings_key . '-section';
 		$this->adminbar_id      = awpp_get_instance()->prefix . '_adminbar';
 
-		$this->server_push_choices = [
+		$this->select_choices['serverpush'] = [
 			'disabled' => __( 'Disabled', 'awpp' ),
 			'php'      => __( 'PHP', 'awpp' ),
 			'htaccess' => __( '.htaccess', 'awpp' ),
 		];
 
+		$this->select_choices['loadcss'] = [
+			'disabled' => __( 'Disabled', 'awpp' ),
+			'classic'  => __( 'Classic', 'awpp' ),
+		];
+
 		$this->options = get_option( $this->settings_option );
+
+		$this->beta = false;
+		if ( get_option( 'awpp_beta' ) == 1 ) {
+			$this->beta = true;
+		}
+
+		if ( $this->beta ) {
+			$this->select_choices['loadcss']['api'] = __( 'API (beta)', 'awpp' );
+		}
 	}
 
 	public function run() {
+		add_action( 'admin_action_awpp_beta_mode', [ $this, 'awpp_beta_mode_option' ] );
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ] );
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar' ], 90 );
 		add_action( 'admin_init', [ $this, 'http2_check' ] );
+		add_action( 'awpp_on_activate', [ $this, 'set_default_settings' ] );
+		add_action( 'awpp_on_update', [ $this, 'set_default_settings' ] );
+	}
+
+	public function awpp_beta_mode_option() {
+		if ( false === current_user_can( $this->capability ) ) {
+			wp_die( esc_html__( 'Access denied.', 'awpp' ) );
+		}
+
+		$val = false;
+		if ( isset( $_GET['val'] ) && 'true' == $_GET['val'] ) {
+			$val = true;
+		}
+		update_option( 'awpp_beta', $val );
+
+		$sendback = wp_get_referer();
+		wp_redirect( esc_url_raw( $sendback ) );
+		exit;
 	}
 
 	public function add_menu_page() {
@@ -52,6 +86,7 @@ class Settings {
 				<?php
 				settings_fields( $this->settings_group );
 				do_settings_sections( $this->settings_page );
+				submit_button();
 				?>
 				<div class="about-text">
 					<p>
@@ -61,9 +96,19 @@ class Settings {
 						?>
 					</p>
 				</div>
-				<?php
-				submit_button();
-				?>
+				<div class="beta">
+					<p>
+						<?php
+						$link = '<a href="admin.php?action=awpp_beta_mode&val=true&site=' . get_current_blog_id() . '"">' . __( 'enable', 'awpp' ) . '</a>';
+						if ( $this->beta ) {
+							$link = '<a href="admin.php?action=awpp_beta_mode&val=false&site=' . get_current_blog_id() . '"">' . __( 'disable', 'awpp' ) . '</a>';
+						}
+
+						// translators: Beta Mode enabled (disable)
+						printf( __( 'Latest beta features: %1$1s (%2$2s)', 'awpp' ), '<b>' . ( $this->beta ? 'enabled' : 'disabled' ) . '</b>', $link );
+						?>
+					</p>
+				</div>
 			</form>
 		</div>
 		<?php
@@ -83,24 +128,45 @@ class Settings {
 
 	public function sanitize( $input ) {
 
-		$checkboxes = [ 'scripts_to_footer', 'defer_scripts', 'loadcss', 'minify' ];
+		$new_input = [];
+
+		$checkboxes = [ 'scripts_to_footer', 'minify' ];
+		$select     = [ 'loadcss', 'serverpush' ];
 
 		foreach ( $checkboxes as $key ) {
 			if ( ! isset( $input[ $key ] ) ) {
-				$input[ $key ] = 'off';
+				$new_input[ $key ] = 'disabled';
+			} else {
+				$new_input[ $key ] = $input[ $key ];
 			}
 		}
 
-		if ( ! array_key_exists( $input['serverpush'], $this->server_push_choices ) ) {
-			$input['serverpush'] = array_keys( $input['serverpush'] )[0];
+		foreach ( $select as $key ) {
+			if ( ! array_key_exists( $input[ $key ], $this->select_choices[ $key ] ) ) {
+				$new_input[ $key ] = array_keys( $this->select_choices[ $key ] )[0];
+			} else {
+				$new_input[ $key ] = $input[ $key ];
+			}
 		}
 
-		return $input;
+		if ( 'htaccess' == $new_input['serverpush'] && isset( $input['serverpush_files'] ) ) {
+			$new_input['serverpush_files'] = $input['serverpush_files'];
+		}
+
+		if ( 'classic' == $new_input['loadcss'] && isset( $input['criticalcss'] ) ) {
+			$new_input['criticalcss'] = $input['criticalcss'];
+		}
+
+		return $new_input;
 	}
 
 	public function update_file( $input ) {
 
 		if ( apply_filters( 'awpp_critical_dir', awpp_get_instance()->CriticalCSS->default_critical_path ) != awpp_get_instance()->CriticalCSS->default_critical_path ) {
+			return $input;
+		}
+
+		if ( ! isset( $input['criticalcss'] ) ) {
 			return $input;
 		}
 
@@ -120,9 +186,9 @@ class Settings {
 	}
 
 	public function print_section_info() {
-		//echo '<pre>';
-		//print_r( $this->options );
-		//echo '</pre>';
+		echo '<pre>';
+		print_r( $this->options );
+		echo '</pre>';
 	}
 
 	public function scripts_to_footer_callback() {
@@ -139,10 +205,27 @@ class Settings {
 
 	public function loadcss_callback() {
 		$key = 'loadcss';
-		$val = $this->get_val( $key, 'on' );
-		printf( '<input type="checkbox" name="%1$s[%2$s]" id="%2$s" %3$s />', $this->settings_option, $key, ( 'on' == $val ? 'checked' : '' ) );
+		$val = $this->get_val( $key, 'disabled' );
+		if ( 'on' == $val ) {
+			$val = 'classic';
+		}
+
+		echo '<select name="' . $this->settings_option . '[' . $key . ']" id="' . $key . '">';
+		foreach ( $this->select_choices[ $key ] as $choice => $name ) {
+			echo '<option value="' . $choice . '" ' . ( $choice == $val ? 'selected' : '' ) . '>' . $name . '</option>';
+		}
+		echo '</select>';
+
+		//return;
+
+		//$val = $this->get_val( $key, 'on' );
+		//printf( '<input type="checkbox" name="%1$s[%2$s]" id="%2$s" %3$s />', $this->settings_option, $key, ( 'on' == $val ? 'checked' : '' ) );
 		?>
-		<div class="settings-sub settings-critical-css-container" style="display:<?php echo( 'on' == $val ? 'block' : 'none' ); ?>">
+		<div class="settings-sub settings-sub-loadcss-api" style="display:<?php echo( 'api' == $val ? 'block' : 'none' ); ?>">
+			<p>Test</p>
+		</div>
+
+		<div class="settings-sub settings-sub-loadcss-classic" style="display:<?php echo( 'classic' == $val ? 'block' : 'none' ); ?>">
 			<p><b><?php _e( 'Critical CSS', 'awpp' ); ?></b></p>
 			<?php
 			$path = apply_filters( 'awpp_critical_dir', awpp_get_instance()->CriticalCSS->default_critical_path );
@@ -176,17 +259,23 @@ class Settings {
 		$val = $this->get_val( $key, 'disabled' );
 
 		echo '<select name="' . $this->settings_option . '[' . $key . ']" id="' . $key . '">';
-		foreach ( $this->server_push_choices as $choice => $name ) {
+		foreach ( $this->select_choices[ $key ] as $choice => $name ) {
 			echo '<option value="' . $choice . '" ' . ( $choice == $val ? 'selected' : '' ) . '>' . $name . '</option>';
 		}
 		echo '</select>';
 		?>
-		<div class="settings-sub settings-htaccess-push-container" style="display:<?php echo( 'htaccess' == $val ? 'block' : 'none' ); ?>">
+		<div class="settings-sub settings-sub-serverpush-htaccess" style="display:<?php echo( 'htaccess' == $val ? 'block' : 'none' ); ?>">
 			<p class="info">
 				<?php _e( 'This option will add server push rules directly to your .htaccess Please select all files that should be pushed on every pageload (Frontpage and all subpages).', 'awpp' ) ?>
 			</p>
 			<?php
 			$scanned_files = get_option( awpp_get_instance()->Http2Push->serverpush_possfiles_option );
+			if ( ! is_array( $scanned_files ) || empty( $scanned_files ) ) {
+				$scanned_files = [
+					'styles'  => [],
+					'scripts' => [],
+				];
+			}
 			foreach ( [ 'styles', 'scripts' ] as $type ) {
 				echo '<p><b>' . ucfirst( $type ) . '</b></p>';
 				echo '<ul id="' . $type . '" class="files-list">';
@@ -234,6 +323,25 @@ class Settings {
 			$message = sprintf( __( 'To get the maximum out of %1$1s you should upgrade to HTTP/2. Currently your server supports %2$2s', 'awpp' ), '<b>' . awpp_get_instance()->name . '</b>', $_SERVER['SERVER_PROTOCOL'] );
 			printf( '<div class="notice notice-warning"><p>%s</p></div>', $message );
 		} );
+	}
+
+	public function set_default_settings() {
+		$options = $this->options;
+
+		$defaults = [
+			'scripts_to_footer' => 'on',
+			'minify'            => 'on',
+			'loadcss'           => 'disabled',
+			'serverpush'        => 'disabled',
+		];
+
+		foreach ( $defaults as $key => $default ) {
+			if ( ! isset( $options[ $key ] ) ) {
+				$options[ $key ] = $default;
+			}
+		}
+
+		update_option( $this->settings_option, $options );
 	}
 
 	/**
