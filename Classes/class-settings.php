@@ -34,7 +34,7 @@ class Settings {
 		$this->select_choices['loadcss'] = [
 			'disabled' => __( 'Disabled', 'awpp' ),
 			'classic'  => __( 'Classic', 'awpp' ),
-			'api'      => __( 'API (beta)', 'awpp' ),
+			//'api'      => __( 'API (beta)', 'awpp' ),
 		];
 
 		$this->options = get_option( $this->settings_option );
