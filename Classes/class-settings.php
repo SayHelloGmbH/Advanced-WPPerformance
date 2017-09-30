@@ -34,18 +34,10 @@ class Settings {
 		$this->select_choices['loadcss'] = [
 			'disabled' => __( 'Disabled', 'awpp' ),
 			'classic'  => __( 'Classic', 'awpp' ),
+			'api'      => __( 'API (beta)', 'awpp' ),
 		];
 
 		$this->options = get_option( $this->settings_option );
-
-		$this->beta = false;
-		if ( get_option( 'awpp_beta' ) == 1 ) {
-			$this->beta = true;
-		}
-
-		if ( $this->beta ) {
-			$this->select_choices['loadcss']['api'] = __( 'API (beta)', 'awpp' );
-		}
 	}
 
 	public function run() {
@@ -56,22 +48,6 @@ class Settings {
 		add_action( 'admin_init', [ $this, 'http2_check' ] );
 		add_action( 'awpp_on_activate', [ $this, 'set_default_settings' ] );
 		add_action( 'awpp_on_update', [ $this, 'set_default_settings' ] );
-	}
-
-	public function awpp_beta_mode_option() {
-		if ( false === current_user_can( $this->capability ) ) {
-			wp_die( esc_html__( 'Access denied.', 'awpp' ) );
-		}
-
-		$val = false;
-		if ( isset( $_GET['val'] ) && 'true' == $_GET['val'] ) {
-			$val = true;
-		}
-		update_option( 'awpp_beta', $val );
-
-		$sendback = wp_get_referer();
-		wp_redirect( esc_url_raw( $sendback ) );
-		exit;
 	}
 
 	public function add_menu_page() {
@@ -94,19 +70,6 @@ class Settings {
 						<?php
 						// translators: This Plugin was created by ...
 						printf( __( 'This Plugin was created by %s.', 'awpp' ), '<a href="https://nicomartin.ch" target="_blank">Nico Martin</a> - <a href="https://sayhello.ch" target="_blank">Say Hello GmbH</a>' );
-						?>
-					</p>
-				</div>
-				<div class="beta">
-					<p>
-						<?php
-						$link = '<a href="admin.php?action=awpp_beta_mode&val=true&site=' . get_current_blog_id() . '"">' . __( 'enable', 'awpp' ) . '</a>';
-						if ( $this->beta ) {
-							$link = '<a href="admin.php?action=awpp_beta_mode&val=false&site=' . get_current_blog_id() . '"">' . __( 'disable', 'awpp' ) . '</a>';
-						}
-
-						// translators: Beta Mode enabled (disable)
-						printf( __( 'Latest beta features: %1$1s (%2$2s)', 'awpp' ), '<b>' . ( $this->beta ? 'enabled' : 'disabled' ) . '</b>', $link );
 						?>
 					</p>
 				</div>
