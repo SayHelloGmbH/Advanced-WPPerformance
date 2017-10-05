@@ -57,7 +57,7 @@ class Http2Push {
 		 */
 		if ( version_compare( PHP_VERSION, '7.0.0', '>=' ) ) {
 			$content = '<p class="awpp-check awpp-check--good">' . __( 'Great!', 'awpp' ) . '</p>';
-			$content .= '<p class="awpp-smaller">' . __( 'Your are using PHP 7.0.0 or higher.', 'awpp' ) . '</p>';
+			$content .= '<p class="awpp-smaller">' . __( 'Your are using PHP 7 or higher.', 'awpp' ) . '</p>';
 		} else {
 			$content = '<p class="awpp-check awpp-check--bad">' . __( 'Needs work!', 'awpp' ) . '</p>';
 			// translators: Currently you are using PHP Version {PHP_VERSION}. Version 7.0.0 brought some enormous performance improvements. We highly recommend to contact you hosting provider to upgrade to min PHP Version 7.0.0

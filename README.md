@@ -2,10 +2,6 @@
 
 ## Description
 This plugin adds several performance improvements to your WordPress site. In contrst to other performance Plugins, this one sets focus on HTTP\2 Standards (like Server Push and SPDY).
-### Moves all scripts to footer
-It moves all scripts to the footer and adds a `defer` attribute. This makes sure the scripts won't block the page render process but will still be executed in the right order. 
-
-**Caution:** Could break some inline JS.
 ### minify assets
 This plugin minifies all CSS and JS Files and caches them. It will **not** merge them into on file. This way you are still able to use conditional assets and if you are using HTTP/2, which I highly recommend, it's not necessary to do so.
 
@@ -16,7 +12,11 @@ function prefix_my_cache_dir( $path ) {
     return ABSPATH . 'assets/';
 }
 ```
-### Critical CSS / LoadCSS
+### Optimizes JS Delivery
+It moves all scripts to the footer and adds a `defer` attribute. This makes sure the scripts won't block the page render process but will still be executed in the right order. 
+
+**Caution:** Could break some inline JS.
+### Optimizes CSS Delivery
 All CSS Files will be removed from the head and loaded asynchronously using `rel="preload"` (`loadCSS` as Fallback). This makes sure your CSS Files won't delay the page rendering. To reduce the flash of unstyled content (FOUT) I recommend adding a Critical CSS.
 #### conditonal Critical CSS
 By default this plugin provides a textarea where you can put your critical CSS.
@@ -71,6 +71,12 @@ The second option puts all files to push inside you .htaccess. This way they are
 **But:** If your assets change (new versions / depreciated scripts), don't forget to update the .htaccess. This can be done with one click while saving the settings.
 
 ## Changelog
+
+### 1.3
+* complete UI rework
+* added one-click speed tests
+* better documentation
+* little Bugfixes
 
 ### 1.2.1
 * little Bugfixes

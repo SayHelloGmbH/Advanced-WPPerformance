@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/NicoMartin
 Tags: Performance, Pagespeed, scriptloading, autoptimize, http2, server push, SPDY, preload
 Requires at least: 4.7
 Tested up to: 4.8.2
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 Requires PHP: 5.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -12,16 +12,16 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 == Description ==
 
 This plugin adds several performance improvements to your WordPress site. In contrst to other performance Plugins, this one sets focus on HTTP\2 Standards (like Server Push and SPDY).
-= Moves all scripts to footer =
-
-It moves all scripts to the footer and adds a `defer` attribute. This makes sure the scripts won't block the page render process but will still be executed in the right order.
-In some cases, this could break inline JavaScript
-
 = minify assets =
 
 This plugin minifies all CSS and JS Files and caches them. It will **not** merge them into on file. This way you are still able to use conditional assets and if you are using HTTP/2, which I highly recommend, it's not necessary to do so.
 
-= Critical CSS / LoadCSS =
+= Optimizes JS Delivery =
+
+It moves all scripts to the footer and adds a `defer` attribute. This makes sure the scripts won't block the page render process but will still be executed in the right order.
+In some cases, this could break inline JavaScript
+
+= Optimizes CSS Delivery =
 
 All CSS Files will be removed from the head and loaded asynchronously. This makes sure your CSS Files won't delay the page rendering. To reduce the flash of unstyled content (FOUT) I recommend adding a Critical CSS.
 
@@ -71,6 +71,12 @@ A development version of this plugin is hosted on github. If you have some ideas
 [https://github.com/nico-martin/Advanced-WPPerformance](https://github.com/nico-martin/Advanced-WPPerformance)
 
 == Changelog ==
+
+### 1.3
+* complete UI rework
+* added one-click speed tests
+* better documentation
+* little Bugfixes
 
 ### 1.2.1
 * little Bugfixes
