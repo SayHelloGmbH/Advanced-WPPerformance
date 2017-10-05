@@ -30,7 +30,7 @@ class Upgrade {
 			$awpp_settings['deliverycss'] = true;
 		}
 		$awpp_settings['serverpush'] = $old_settings['serverpush'];
-		update_option( 'awpp_settings', $awpp_settings );
+		update_option( 'awpp-settings', $awpp_settings );
 
 		$awpp_serverpush_files = $old_settings['serverpush_files'];
 		update_option( 'awpp_serverpush_files', $awpp_serverpush_files );
