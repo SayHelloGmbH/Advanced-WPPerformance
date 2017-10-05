@@ -5,7 +5,7 @@
 
     $(function () {
 
-        $container = $('#wp-admin-bar-awpp_adminbar-criticalcss');
+        $container = $('#wp-admin-bar-awpp-admin-bar-criticalcss');
         $checkbox = $container.find('input#awpp-check-criticalcss');
         if (!$container.length || !$checkbox.length) {
             return;

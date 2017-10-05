@@ -86,7 +86,7 @@ module.exports = __webpack_require__(3);
 
     $(function () {
 
-        $container = $('#wp-admin-bar-awpp_adminbar-criticalcss');
+        $container = $('#wp-admin-bar-awpp-admin-bar-criticalcss');
         $checkbox = $container.find('input#awpp-check-criticalcss');
         if (!$container.length || !$checkbox.length) {
             return;
@@ -144,53 +144,53 @@ module.exports = __webpack_require__(3);
 
 (function ($) {
 
-    var $container = '';
-    var $button = '';
+	var $container = '';
+	var $button = '';
 
-    $(function () {
+	$(function () {
 
-        $container = $('#wp-admin-bar-awpp_adminbar-minify');
-        $button = $container.find('#awpp-clear-cache');
-        if (!$container.length || !$button.length) {
-            return;
-        }
+		$container = $('#wp-admin-bar-awpp-admin-bar-minify');
+		$button = $container.find('#awpp-clear-cache');
+		if (!$container.length || !$button.length) {
+			return;
+		}
 
-        var ajaxUrl = $button.attr('data-ajaxurl');
-        var nonce = $button.attr('data-nonce');
-        var action = 'awpp_do_clear_minify_cache';
+		var ajaxUrl = $button.attr('data-ajaxurl');
+		var nonce = $button.attr('data-nonce');
+		var action = 'awpp_do_clear_minify_cache';
 
-        $button.on('click', function () {
+		$button.on('click', function () {
 
-            $container.addClass('loading');
+			$container.addClass('loading');
 
-            jQuery.ajax({
-                url: ajaxUrl,
-                type: 'POST',
-                dataType: 'json',
-                data: 'action=' + action + '&nonce=' + nonce
-            }).done(function (data) {
+			jQuery.ajax({
+				url: ajaxUrl,
+				type: 'POST',
+				dataType: 'json',
+				data: 'action=' + action + '&nonce=' + nonce
+			}).done(function (data) {
 
-                if (data['type'] === null || data['type'] !== 'success') {
+				if (data['type'] === null || data['type'] !== 'success') {
 
-                    /**
-                     * error
-                     */
+					/**
+      * error
+      */
 
-                    var msg_content = data['message'];
-                    if (msg_content === '' || msg_content === undefined) {
-                        msg_content = 'Error';
-                    }
+					var msg_content = data['message'];
+					if (msg_content === '' || msg_content === undefined) {
+						msg_content = 'Error';
+					}
 
-                    alert(msg_content);
-                } else {
-                    $container.find('.count').text('0');
-                    $container.find('.size').text('0 B');
-                }
+					alert(msg_content);
+				} else {
+					$container.find('.count').text('0');
+					$container.find('.size').text('0 B');
+				}
 
-                $container.removeClass('loading');
-            });
-        });
-    });
+				$container.removeClass('loading');
+			});
+		});
+	});
 })(jQuery);
 
 /***/ })

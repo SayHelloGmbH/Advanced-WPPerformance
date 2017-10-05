@@ -2,7 +2,7 @@
 
 namespace nicomartin\AdvancedWPPerformance;
 
-class Settings {
+class SettingsPages {
 
 	public $capability = '';
 	public $icon = '';
@@ -20,7 +20,7 @@ class Settings {
 
 		$this->capability       = 'administrator';
 		$this->settings_page    = awpp_get_instance()->prefix . '-settings';
-		$this->settings_option  = awpp_get_instance()->prefix . '-option';
+		$this->settings_option  = AWPP_SETTINGS_OPTION;
 		$this->settings_group   = $this->settings_key . '-group';
 		$this->settings_section = $this->settings_key . '-section';
 		$this->adminbar_id      = awpp_get_instance()->prefix . '_adminbar';
@@ -51,7 +51,7 @@ class Settings {
 	}
 
 	public function add_menu_page() {
-		add_submenu_page( 'options-general.php', awpp_get_instance()->name, awpp_get_instance()->name, $this->capability, $this->settings_page, [ $this, 'register_settings_page' ] );
+		add_submenu_page( AWPP_SETTINGS_PARENT, awpp_get_instance()->name, awpp_get_instance()->name, $this->capability, $this->settings_page, [ $this, 'register_settings_page' ] );
 	}
 
 	public function register_settings_page() {

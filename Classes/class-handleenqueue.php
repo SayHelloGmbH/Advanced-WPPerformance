@@ -8,32 +8,46 @@ class HandleEnqueue {
 	public $styles = '';
 
 	public function __construct() {
-		$this->options = get_option( awpp_get_instance()->Settings->settings_option );
+
+		$this->options = get_option( AWPP_SETTINGS_OPTION );
 		$this->styles  = [];
 	}
 
 	public function run() {
 
+		add_action( 'awpp_settings', [ $this, 'register_settings' ] );
+
 		if ( is_admin() ) {
 			return;
 		}
 
-		if ( awpp_is_frontend() && 'disabled' != $this->options['scripts_to_footer'] ) {
-			add_action( 'wp_enqueue_scripts', [ $this, 'remove_header_scripts' ] );
+		if ( awpp_is_frontend() ) {
+			add_action( 'wp_enqueue_scripts', [ $this, 'move_scripts_to_footer' ] );
 			add_filter( 'script_loader_tag', [ $this, 'add_defer_attribute' ], 10, 2 );
-		}
 
-		if ( awpp_is_frontend() && 'disabled' != $this->options['loadcss'] ) {
 			add_filter( 'style_loader_tag', [ $this, 'render_loadcss' ], 999, 4 );
 			add_action( 'wp_footer', [ $this, 'add_relpreload_js' ] );
 		}
+	}
+
+	public function register_settings() {
+
+		global $awpp_settings_page_assets;
+		$section = awpp_settings()->add_section( $awpp_settings_page_assets, 'delivery_opt', __( 'Delivery Optimization' ) );
+
+		awpp_settings()->add_checkbox( $section, 'deliverycss', __( 'Optimize CSS Delivery', 'awpp' ) );
+		awpp_settings()->add_checkbox( $section, 'deliveryjs', __( 'Optimize JS Delivery', 'awpp' ) );
 	}
 
 	/**
 	 * Scripts
 	 */
 
-	public function remove_header_scripts() {
+	public function move_scripts_to_footer() {
+
+		if ( ! awpp_get_setting( 'deliveryjs' ) ) {
+			return;
+		}
 
 		remove_action( 'wp_head', 'wp_print_scripts' );
 		remove_action( 'wp_head', 'wp_print_head_scripts', 9 );
@@ -41,7 +55,11 @@ class HandleEnqueue {
 	}
 
 	public function add_defer_attribute( $tag, $handle ) {
-		return str_replace( ' src', ' defer="defer" src', $tag );
+		if ( ! awpp_get_setting( 'deliveryjs' ) ) {
+			return $tag;
+		}
+
+		return str_replace( ' src', ' defer = "defer" src', $tag );
 	}
 
 	/**
@@ -50,6 +68,10 @@ class HandleEnqueue {
 
 	public function render_loadcss( $html, $handle, $href, $media ) {
 
+		if ( ! awpp_get_setting( 'deliverycss' ) ) {
+			return $html;
+		}
+
 		$html = str_replace( '\'', '"', $html );
 		$html = str_replace( 'rel="stylesheet"', 'rel="preload" as="style" onload="this.rel=\'stylesheet\'"', $html );
 
@@ -57,6 +79,10 @@ class HandleEnqueue {
 	}
 
 	public function add_relpreload_js() {
+
+		if ( ! awpp_get_setting( 'deliverycss' ) ) {
+			return;
+		}
 
 		$loadcss = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/loadCSS.min.js';
 		$preload = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/awpp_relpreload_polyfill.min.js';

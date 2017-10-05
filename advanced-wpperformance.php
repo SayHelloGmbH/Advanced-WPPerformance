@@ -5,7 +5,7 @@ Plugin Name: Advanced WPPerformance
 Plugin URI: https://github.com/nico-martin/Advanced-WPPerformance
 Description: This plugin adds several performance improvements to your WordPress site
 Author: Nico Martin
-Version: 1.2.8-dev
+Version: 1.2.9-dev
 Author URI: https://nicomartin.ch
 Text Domain: awpp
 Domain Path: /languages
@@ -35,25 +35,43 @@ if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION,
 
 } else {
 
-	require_once 'inc/funcs.php';
-	require_once 'Classes/class-plugin.php';
+	define( 'AWPP_SETTINGS_PARENT', 'advanced-wpperformance' );
+	define( 'AWPP_SETTINGS_OPTION', 'awpp-option' );
 
+	require_once 'inc/funcs.php';
+
+	/**
+	 * Init Plugin
+	 */
+	require_once 'Classes/class-plugin.php';
 	function awpp_get_instance() {
 		return nicomartin\AdvancedWPPerformance\Plugin::get_instance( __FILE__ );
 	}
 
 	awpp_get_instance();
 
-	require_once 'Classes/Libs/class-htaccess.php';
-	awpp_get_instance()->htaccess = new nicomartin\Htaccess( 'Advanced WPPerformance' );
-
 	require_once 'Classes/class-init.php';
 	awpp_get_instance()->Init = new nicomartin\AdvancedWPPerformance\Init();
 	awpp_get_instance()->Init->run();
 
-	require_once 'Classes/class-settings.php';
-	awpp_get_instance()->Settings = new nicomartin\AdvancedWPPerformance\Settings();
-	awpp_get_instance()->Settings->run();
+	/**
+	 * Init Settings
+	 */
+
+	require_once 'Classes/Libs/class-settings.php';
+	function awpp_settings() {
+		return nicomartin\Settings::get_instance( 'awpp' );
+	}
+
+	awpp_settings()->set_parent_page( AWPP_SETTINGS_PARENT );
+	//awpp_settings()->set_debug( true );
+
+	$awpp_settings_page_server = awpp_settings()->add_page( 'server', __( 'Server Settings', 'awpp' ) );
+	$awpp_settings_page_assets = awpp_settings()->add_page( 'assets', __( 'Asset Delivery', 'awpp' ) );
+
+	/**
+	 * Features
+	 */
 
 	require_once 'Classes/class-handleenqueue.php';
 	awpp_get_instance()->HandleEnqueue = new nicomartin\AdvancedWPPerformance\HandleEnqueue();
@@ -66,6 +84,9 @@ if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION,
 	require_once 'Classes/class-criticalcss.php';
 	awpp_get_instance()->CriticalCSS = new nicomartin\AdvancedWPPerformance\CriticalCSS();
 	awpp_get_instance()->CriticalCSS->run();
+
+	require_once 'Classes/Libs/class-htaccess.php';
+	$serverpush_htaccess = new nicomartin\Htaccess( 'Advanced WPPerformance Serverpush' );
 
 	require_once 'Classes/class-http2push.php';
 	awpp_get_instance()->Http2Push = new nicomartin\AdvancedWPPerformance\Http2Push();

@@ -7,6 +7,7 @@ class Minify {
 	public $base_path = '';
 	public $base_url = '';
 	public $default_cache_path = '';
+	public $minify_files = '';
 
 	public $options = '';
 
@@ -15,28 +16,36 @@ class Minify {
 		$this->base_path          = trailingslashit( ABSPATH );
 		$this->base_url           = trailingslashit( get_home_url() );
 		$this->default_cache_path = trailingslashit( WP_CONTENT_DIR ) . 'cache/awpp/';
+		$this->minify_files       = [ 'css', 'js' ];
 
-		$this->options = get_option( awpp_get_instance()->Settings->settings_option );
+		$this->options = get_option( AWPP_SETTINGS_OPTION );
 	}
 
 	public function run() {
+		add_action( 'awpp_settings', [ $this, 'register_settings' ] );
+
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar_item' ] );
 		add_action( 'wp_ajax_awpp_do_clear_minify_cache', [ $this, 'clear_cache' ] );
-		if ( awpp_is_frontend() && 'disabled' != $this->options['minify'] ) {
-			add_filter( 'script_loader_src', [ $this, 'change_url' ], 30, 1 );
-			add_filter( 'style_loader_src', [ $this, 'change_url' ], 30, 1 );
-		}
+
+		add_filter( 'script_loader_src', [ $this, 'change_url' ], 30, 1 );
+		add_filter( 'style_loader_src', [ $this, 'change_url' ], 30, 1 );
+	}
+
+	public function register_settings() {
+
+		global $awpp_settings_page_assets;
+		$section = awpp_settings()->add_section( $awpp_settings_page_assets, 'minify', __( 'Minify', 'awpp' ) );
+		awpp_settings()->add_checkbox( $section, 'minify', __( 'Minify CSS and JS Files', 'awpp' ), true );
 	}
 
 	public function add_toolbar_item( $wp_admin_bar ) {
 
 		$cache_dir = $this->get_cache_dir();
 
-		$folders    = [ 'css', 'js' ];
 		$file_count = 0;
 		$file_size  = 0;
 
-		foreach ( $folders as $folder ) {
+		foreach ( $this->minify_files as $folder ) {
 
 			$dir = $cache_dir . $folder . '/';
 
@@ -64,12 +73,12 @@ class Minify {
 		$html .= '</p>';
 
 		$args = [
-			'id'     => awpp_get_instance()->Settings->adminbar_id . '-minify',
-			'parent' => awpp_get_instance()->Settings->adminbar_id,
+			'id'     => awpp_get_instance()->Init->admin_bar_id . '-minify',
+			'parent' => awpp_get_instance()->Init->admin_bar_id,
 			'title'  => 'Minify Cache',
 			'href'   => '',
 			'meta'   => [
-				'class' => awpp_get_instance()->prefix . '-adminbar-minify ' . $this->options['minify'],
+				'class' => awpp_get_instance()->prefix . '-adminbar-minify ' . ( awpp_get_setting( 'minify' ) ? '' : 'disabled' ),
 				'html'  => '<div class="ab-item ab-empty-item">' . $html . '</div><div class="loader"></div>',
 			],
 		];
@@ -83,20 +92,34 @@ class Minify {
 		}
 
 		$cache_dir     = $this->get_cache_dir();
-		$files_deleted = $this->rrmdir( $cache_dir );
+		$files_deleted = 0;
+		foreach ( $this->minify_files as $folder ) {
+			$files_deleted = $files_deleted + $this->rrmdir( "{$cache_dir}{$folder}/" );
+		}
 
 		awpp_exit_ajax( 'success', sprintf( '%s Files deleted', $files_deleted ) );
 	}
 
 	public function change_url( $url ) {
 
+		if ( is_admin() ) {
+			return $url;
+		}
+
+		if ( ! awpp_get_setting( 'minify' ) ) {
+			return $url;
+		}
+
 		$cache_dir = $this->get_cache_dir();
 
-		if ( strpos( $url, '.js' ) !== false ) {
-			$type = 'js';
-		} elseif ( strpos( $url, '.css' ) !== false ) {
-			$type = 'css';
-		} else {
+		$type = '';
+		foreach ( $this->minify_files as $file ) {
+			if ( strpos( $url, '.' . $file ) !== false ) {
+				$type = $file;
+			}
+		}
+
+		if ( '' == $type ) {
 			return $url;
 		}
 

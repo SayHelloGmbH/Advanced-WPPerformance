@@ -1,4 +1,25 @@
 #wpadminbar .awpp-adminbar {
+	&>.ab-item {
+		padding-left: 25px;
+		position: relative;
+		.icon {
+			position: absolute;
+			top: 50%;
+			margin-top: -9px;
+			left: 5px;
+			font-size: 18px;
+			line-height: 100%;
+			svg {
+				height: 18px;
+				color: rgba(240,245,250,.6);
+			}
+		}
+	}
+
+	&:hover .ab-item .icon svg {
+		color: #00b9eb;
+	}
+
 	ul li {
 		border-bottom: 1px solid rgba(#fff, .3);
 		margin-top: 5px;

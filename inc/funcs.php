@@ -94,3 +94,7 @@ function awpp_exit_ajax( $type, $msg = '', $add = [] ) {
 
 	wp_die();
 }
+
+function awpp_get_setting( $key ) {
+	return awpp_settings()->get_setting( $key );
+}
