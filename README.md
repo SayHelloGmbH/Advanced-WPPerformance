@@ -72,6 +72,12 @@ The second option puts all files to push inside you .htaccess. This way they are
 
 ## Changelog
 
+### 1.4
+* added DEFLATE compression
+* added chaching headers
+* added German
+* little Bugfixes
+
 ### 1.3
 * complete UI rework
 * added one-click speed tests
