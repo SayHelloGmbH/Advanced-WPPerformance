@@ -59,12 +59,12 @@ class Init {
 		echo '<p>';
 		// translators: This Plugin was developed by Nico Martin to deliver the best pagespeed performance possible.
 		echo sprintf( __( 'This Plugin was developed by %s to deliver the best pagespeed performance possible.', 'awpp' ), '<a href="https://niomartin.ch" target="_blank">Nico Martin</a> - <a href="https://sayhello.ch" target="_blank">Say Hello GmbH</a>' );
-		echo '<br>' . __( 'In contrst to other performance Plugins, this one sets focus on HTTP\2 Standards (like Server Push and SPDY).', 'awpp' );
+		echo '<br>' . __( 'In contrst to other performance Plugins, this one sets focus on HTTP/2 Standards (like Server Push and SPDY).', 'awpp' );
 		echo '</p>';
 		$buyabeer = '<a href="https://www.paypal.me/NicoMartin" target="_blank">' . __( 'buy me a beer', 'awpp' ) . '</a>';
 		$github   = '<a href="https://github.com/nico-martin/Advanced-WPPerformance" target="_blank">GitHub</a>';
 		// translators: If you like this Plugin feel free to buy me a beer or get involved in the development on GitHub
-		echo '<p>' . sprintf( __( 'If you like this Plugin feel free to %1$1s or get involved with the development on %2$2s', 'awpp' ), $buyabeer, $github ) . '</p>';
+		echo '<p>' . sprintf( __( 'If you like this Plugin feel free to %1$s or get involved with the development on %2$s', 'awpp' ), $buyabeer, $github ) . '</p>';
 		echo '</div>';
 	}
 
@@ -117,7 +117,7 @@ class Init {
 		$args = [
 			'id'    => $this->admin_bar_id,
 			'title' => "<span class='icon'>{$icon}</span> {$this->menu_title}",
-			'href'  => admin_url( 'options-general.php?page=' . AWPP_SETTINGS_PARENT ),
+			'href'  => admin_url( 'admin.php?page=' . AWPP_SETTINGS_PARENT ),
 			'meta'  => [
 				'class' => awpp_get_instance()->prefix . '-adminbar',
 			],

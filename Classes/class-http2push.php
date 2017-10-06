@@ -13,6 +13,7 @@ class Http2Push {
 	public $serverpush_scan_action = '';
 	public $serverpush_files_option = '';
 	public $serverpush_possfiles_option = '';
+	public $htaccess = '';
 
 	public function __construct() {
 		$this->max_header_size         = 1024 * 4;
@@ -21,11 +22,11 @@ class Http2Push {
 		$this->serverpush_scan_action      = 'awpp_scan_htaccess_push';
 		$this->serverpush_files_option     = 'awpp_serverpush_files';
 		$this->serverpush_possfiles_option = 'awpp_serverpush_possible_files';
+		$this->htaccess                    = new \nicomartin\Htaccess( 'Serverpush' );
 	}
 
 	public function run() {
 
-		add_action( 'awpp_settings', [ $this, 'register_system_recs' ] );
 		add_action( 'awpp_settings', [ $this, 'register_settings' ] );
 
 		add_filter( 'script_loader_tag', [ $this, 'add_push_id_to_assets' ], 10, 2 );
@@ -35,7 +36,8 @@ class Http2Push {
 		add_action( 'awpp_sanitize', [ $this, 'save_serverpush_files' ] );
 		add_action( 'awpp_sanitize', [ $this, 'maybe_do_serverpush_cron' ] );
 		add_action( 'awpp_renew_htaccess_cron', [ $this, 'add_serverpush_htaccess' ] );
-		register_uninstall_hook( awpp_get_instance()->file, [ 'unregister_cron' ] );
+
+		register_uninstall_hook( awpp_get_instance()->file, [ 'clean_up' ] );
 
 		if ( ! is_admin() ) {
 			add_action( 'init', [ $this, 'ob_start' ] );
@@ -45,45 +47,6 @@ class Http2Push {
 				add_action( 'wp_head', [ $this, 'resource_hints' ], 99, 1 );
 			}
 		}
-	}
-
-	public function register_system_recs() {
-
-		global $awpp_settings_page_server;
-		$section = awpp_settings()->add_section( $awpp_settings_page_server, 'systemcheck', __( 'System Recommendations', 'awpp' ) );
-
-		/**
-		 * PHP Version
-		 */
-		if ( version_compare( PHP_VERSION, '7.0.0', '>=' ) ) {
-			$content = '<p class="awpp-check awpp-check--good">' . __( 'Great!', 'awpp' ) . '</p>';
-			$content .= '<p class="awpp-smaller">' . __( 'Your are using PHP 7 or higher.', 'awpp' ) . '</p>';
-		} else {
-			$content = '<p class="awpp-check awpp-check--bad">' . __( 'Needs work!', 'awpp' ) . '</p>';
-			// translators: Currently you are using PHP Version {PHP_VERSION}. Version 7.0.0 brought some enormous performance improvements. We highly recommend to contact you hosting provider to upgrade to min PHP Version 7.0.0
-			$content .= '<p class="awpp-smaller">' . sprintf( __( 'Currently you are using PHP Version %1$s. Version 7.0.0 brought some enormous performance improvements. We highly recommend to contact you hosting provider to upgrade to min PHP Version 7.0.0.', 'awpp' ), '<b>' . PHP_VERSION . '</b>' ) . '</p>';
-		}
-
-		awpp_settings()->add_message( $section, 'php7', __( 'PHP Version', 'awpp' ), $content );
-
-		/**
-		 * HTTP Version
-		 */
-
-		$env          = getenv( 'X_SPDY' );
-		$http         = $_SERVER['SERVER_PROTOCOL'];
-		$http_version = explode( '/', $http )[1];
-
-		if ( version_compare( $http_version, '2', '>=' ) || '' != $env ) {
-			$content = '<p class="awpp-check awpp-check--good">' . __( 'Great!', 'awpp' ) . '</p>';
-			$content .= '<p class="awpp-smaller">' . __( 'Your are using min. HTTP/2.', 'awpp' ) . '</p>';
-		} else {
-			$content = '<p class="awpp-check awpp-check--bad">' . __( 'Needs work!', 'awpp' ) . '</p>';
-			// translators: This Plugin uses the advantages of {HTTP_VERSION}. Currently your server supports %1$s. We highly recommend to contact you hosting provider to upgrade to HTTP/2
-			$content .= '<p class="awpp-smaller">' . sprintf( __( 'This Plugin uses the advantages of HTTP/2. Currently your server supports %1$s. We highly recommend to contact you hosting provider to upgrade to HTTP/2', 'awpp' ), $http ) . '</p>';
-		}
-
-		awpp_settings()->add_message( $section, 'http2', __( 'HTTP Version', 'awpp' ), $content );
 	}
 
 	public function register_settings() {
@@ -100,7 +63,7 @@ class Http2Push {
 		$after = '';
 		$after .= '<div class="serverpush-htaccess-info" id="serverpush-htaccess-info" style="display:none">';
 		$after .= '<p class="awpp-smaller infotext">';
-		$after .= __( 'This option will add server push rules directly to your .htaccess Please select all files that should be pushed on every pageload (Frontpage and all subpages).', 'awpp' );
+		$after .= __( 'This option will add server push rules directly to your .htaccess. Please select all files that should be pushed on every pageload (Frontpage and all subpages).', 'awpp' );
 		$after .= '</p>';
 
 		$chosen_files  = get_option( $this->serverpush_files_option );
@@ -175,8 +138,7 @@ class Http2Push {
 		if ( isset( $data['serverpush'] ) ) {
 			if ( 'htaccess' != $data['serverpush'] ) {
 				wp_clear_scheduled_hook( 'awpp_renew_htaccess_cron' );
-				global $serverpush_htaccess;
-				$serverpush_htaccess->delete();
+				$this->htaccess->delete();
 			} elseif ( ! wp_next_scheduled( 'awpp_renew_htaccess_cron' ) ) {
 				wp_schedule_event( time(), 'twicedaily', 'awpp_renew_htaccess_cron' );
 			}
@@ -359,8 +321,6 @@ class Http2Push {
 
 	public function add_serverpush_htaccess( $options = '', $files = '' ) {
 
-		global $serverpush_htaccess;
-
 		if ( '' == $options ) {
 			$options = get_option( $this->serverpush_files_option );
 		}
@@ -397,14 +357,19 @@ class Http2Push {
 				$lines[] = '</FilesMatch>';
 				$lines[] = '</IfModule>';
 
-				$serverpush_htaccess->set( implode( "\n", $lines ) );
+				$this->htaccess->set( implode( "\n", $lines ) );
 			}
 		} else {
-			$serverpush_htaccess->delete();
+			$this->htaccess->delete();
 		}// End if().
 	}
 
-	public function unregister_cron() {
+	/**
+	 * Clean Up
+	 */
+
+	public function clean_up() {
 		wp_clear_scheduled_hook( 'awpp_renew_htaccess_cron' );
+		$this->htaccess->delete();
 	}
 }

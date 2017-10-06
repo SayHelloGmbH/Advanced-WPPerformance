@@ -16,6 +16,8 @@ class Htaccess {
 			wp_die( 'Please add a key to the htaccess class' );
 		}
 
+		$key = preg_replace( "/\r|\n/", '', $key );
+
 		$this->key        = $key;
 		$this->start_file = "# BEGIN $key";
 		$this->end_file   = "# END $key";

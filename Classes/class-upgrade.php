@@ -6,6 +6,7 @@ class Upgrade {
 
 	public function __construct() {
 		add_action( 'awpp_on_update', [ $this, 'update_to_oop_settings' ], 10, 2 );
+		add_action( 'awpp_on_update', [ $this, 'remove_htaccess' ], 10, 2 );
 	}
 
 	public function update_to_oop_settings( $new_version, $old_version ) {
@@ -37,5 +38,16 @@ class Upgrade {
 
 		delete_option( 'awpp-option' );
 
+	}
+
+	public function remove_htaccess( $new_version, $old_version ) {
+		if ( version_compare( $old_version, '1.4', '>=' ) ) {
+			return;
+		}
+		$htaccess = new \nicomartin\Htaccess( 'Advanced WPPerformance Serverpush' );
+		$htaccess->delete();
+
+		$htaccess = new \nicomartin\Htaccess( 'Advanced WPPerformance' );
+		$htaccess->delete();
 	}
 }

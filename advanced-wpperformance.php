@@ -5,7 +5,7 @@ Plugin Name: Advanced WPPerformance
 Plugin URI: https://github.com/nico-martin/Advanced-WPPerformance
 Description: This plugin adds several performance improvements to your WordPress site
 Author: Nico Martin
-Version: 1.3.1-dev
+Version: 1.3.2-dev
 Author URI: https://nicomartin.ch
 Text Domain: awpp
 Domain Path: /languages
@@ -39,6 +39,7 @@ if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION,
 	define( 'AWPP_SETTINGS_OPTION', 'awpp-option' );
 
 	require_once 'inc/funcs.php';
+	require_once 'Classes/Libs/class-htaccess.php';
 
 	/**
 	 * Init Plugin
@@ -87,8 +88,9 @@ if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION,
 	awpp_get_instance()->CriticalCSS = new nicomartin\AdvancedWPPerformance\CriticalCSS();
 	awpp_get_instance()->CriticalCSS->run();
 
-	require_once 'Classes/Libs/class-htaccess.php';
-	$serverpush_htaccess = new nicomartin\Htaccess( 'Advanced WPPerformance Serverpush' );
+	require_once 'Classes/class-server.php';
+	awpp_get_instance()->Server = new nicomartin\AdvancedWPPerformance\Server();
+	awpp_get_instance()->Server->run();
 
 	require_once 'Classes/class-http2push.php';
 	awpp_get_instance()->Http2Push = new nicomartin\AdvancedWPPerformance\Http2Push();
