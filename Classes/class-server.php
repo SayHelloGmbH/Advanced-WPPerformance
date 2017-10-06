@@ -20,7 +20,7 @@ class Server {
 		/**
 		 * PHP Version
 		 */
-		$content = '<p class="awpp-check awpp-check--good">ss' . __( 'Great!', 'awpp' ) . '</p>';
+		$content = '';
 		if ( version_compare( PHP_VERSION, '7.0.0', '>=' ) ) {
 			$content .= '<p class="awpp-check awpp-check--good">' . __( 'Great!', 'awpp' ) . '</p>';
 			$content .= '<p class="awpp-smaller">' . __( 'Your are using PHP 7 or higher.', 'awpp' ) . '</p>';

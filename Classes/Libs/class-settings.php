@@ -128,6 +128,9 @@ class Settings {
 
 		$defaults = $this->get_settings();
 		foreach ( $defaults as $key => $old_val ) {
+			if ( isset( $this->settings[ $key ] ) && 'message' == $this->settings[ $key ]['type'] ) {
+				continue;
+			}
 			if ( isset( $input[ $key ] ) ) {
 				$input[ $key ] = esc_html( apply_filters( "{$this->sanitize_filter}_{$key}", $input[ $key ] ) );
 			} else {
