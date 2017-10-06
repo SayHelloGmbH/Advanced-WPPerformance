@@ -98,3 +98,11 @@ function awpp_exit_ajax( $type, $msg = '', $add = [] ) {
 function awpp_get_setting( $key ) {
 	return awpp_settings()->get_setting( $key );
 }
+
+function awpp_settings_page_server() {
+	return awpp_settings()->add_page( 'server', __( 'Server Settings', 'awpp' ) );
+}
+
+function awpp_settings_page_assets() {
+	return awpp_settings()->add_page( 'assets', __( 'Asset Delivery', 'awpp' ) );
+}

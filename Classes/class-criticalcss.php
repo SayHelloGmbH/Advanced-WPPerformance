@@ -34,8 +34,7 @@ class CriticalCSS {
 
 	public function register_settings() {
 
-		global $awpp_settings_page_assets;
-		$section = awpp_settings()->add_section( $awpp_settings_page_assets, 'ccss', __( 'Above the fold CSS', 'awpp' ) );
+		$section = awpp_settings()->add_section( awpp_settings_page_assets(), 'ccss', __( 'Above the fold CSS', 'awpp' ) );
 
 		if ( ! awpp_get_setting( 'deliverycss' ) ) {
 			$content = '<p>' . __( 'Please enable "Optimize CSS Delivery". With a normal css delivery, this option is not necessary.', 'awpp' ) . '</p>';

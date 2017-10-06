@@ -33,8 +33,7 @@ class Minify {
 
 	public function register_settings() {
 
-		global $awpp_settings_page_assets;
-		$section = awpp_settings()->add_section( $awpp_settings_page_assets, 'minify', __( 'Minify', 'awpp' ) );
+		$section = awpp_settings()->add_section( awpp_settings_page_assets(), 'minify', __( 'Minify', 'awpp' ) );
 		awpp_settings()->add_checkbox( $section, 'minify', __( 'Minify CSS and JS Files', 'awpp' ), true );
 	}
 

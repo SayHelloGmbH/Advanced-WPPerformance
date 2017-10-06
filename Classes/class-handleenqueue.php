@@ -32,8 +32,7 @@ class HandleEnqueue {
 
 	public function register_settings() {
 
-		global $awpp_settings_page_assets;
-		$section = awpp_settings()->add_section( $awpp_settings_page_assets, 'delivery_opt', __( 'Delivery Optimization' ) );
+		$section = awpp_settings()->add_section( awpp_settings_page_assets(), 'delivery_opt', __( 'Delivery Optimization' ) );
 
 		awpp_settings()->add_checkbox( $section, 'deliverycss', __( 'Optimize CSS Delivery', 'awpp' ) );
 		awpp_settings()->add_checkbox( $section, 'deliveryjs', __( 'Optimize JS Delivery', 'awpp' ) );
