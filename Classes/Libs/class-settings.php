@@ -227,7 +227,7 @@ class Settings {
 			$defaults[ $key ] = $vals['default'];
 		}
 
-		return shortcode_atts( $defaults, get_option( $this->option_key ) );
+		return wp_parse_args( get_option( $this->option_key ), $defaults );
 	}
 
 	public function get_setting( $key ) {

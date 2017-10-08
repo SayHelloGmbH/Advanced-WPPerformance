@@ -23,7 +23,9 @@ class CriticalCSS {
 
 	public function run() {
 
-		add_action( 'awpp_settings', [ $this, 'register_settings' ] );
+		if ( ! apply_filters( 'awpp_use_critical_api', false ) ) {
+			add_action( 'awpp_settings', [ $this, 'register_settings' ] );
+		}
 		add_filter( 'awpp_sanitize_criticalcss', [ $this, 'minify_criticalcss' ] );
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar_item' ] );
 
@@ -69,7 +71,7 @@ class CriticalCSS {
 				awpp_settings()->add_textarea( $section, 'criticalcss', __( 'Critical CSS', 'awpp' ), $val, $args );
 
 			}
-		}
+		} // End if().
 	}
 
 	public function minify_criticalcss( $css ) {

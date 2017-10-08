@@ -16,10 +16,13 @@ class Server {
 	}
 
 	public function register_system_recs() {
+
 		$section = awpp_settings()->add_section( awpp_settings_page_server(), 'systemcheck', __( 'System Recommendations', 'awpp' ) );
+
 		/**
 		 * PHP Version
 		 */
+
 		$content = '';
 		if ( version_compare( PHP_VERSION, '7.0.0', '>=' ) ) {
 			$content .= '<p class="awpp-check awpp-check--good">' . __( 'Great!', 'awpp' ) . '</p>';
@@ -34,10 +37,11 @@ class Server {
 		/**
 		 * HTTP Version
 		 */
+
 		$env          = getenv( 'X_SPDY' );
 		$http         = $_SERVER['SERVER_PROTOCOL'];
 		$http_version = explode( '/', $http )[1];
-		if ( version_compare( $http_version, '2', '>=' ) || '' != $env ) {
+		if ( version_compare( $http_version, '2', '>=' ) || ( '' != $env && false == $env ) ) {
 			$content = '<p class="awpp-check awpp-check--good">' . __( 'Great!', 'awpp' ) . '</p>';
 			$content .= '<p class="awpp-smaller">' . __( 'Your are using min. HTTP/2.', 'awpp' ) . '</p>';
 		} else {
@@ -63,33 +67,75 @@ class Server {
 
 	public function do_htaccess( $data ) {
 		if ( isset( $data['compression'] ) || isset( $data['cachingheaders'] ) ) {
+
 			$add = '';
+
 			if ( $data['compression'] ) {
+
+				$deflate_types_pre = [
+					'text'        => [ 'plain', 'html', 'xml', 'shtml', 'css', 'x-component', 'javascript' ],
+					'image'       => [ 'svg+xml', 'image/x-icon' ],
+					'font'        => [ 'opentype' ],
+					'application' => [ 'xml', 'xhtml+xml', 'rss+xml', 'javascript', 'x-javascript', 'json', 'vnd.ms-fontobject', 'x-font-ttf', 'x-web-app-manifest+json' ],
+				];
+
+				$deflate_types = [];
+				foreach ( $deflate_types_pre as $main => $types ) {
+					foreach ( $types as $type ) {
+						$deflate_types[] = $main . '/' . $type;
+					}
+				}
+
+				$deflate_types = apply_filters( 'awpp_deflate_types', $deflate_types );
+
 				$add .= "<IfModule mod_deflate.c>\n";
-				$add .= "AddOutputFilterByType DEFLATE text/plain\n";
-				$add .= "AddOutputFilterByType DEFLATE text/html\n";
-				$add .= "AddOutputFilterByType DEFLATE text/xml\n";
-				$add .= "AddOutputFilterByType DEFLATE text/shtml\n";
-				$add .= "AddOutputFilterByType DEFLATE text/css\n";
-				$add .= "AddOutputFilterByType DEFLATE application/xml\n";
-				$add .= "AddOutputFilterByType DEFLATE application/xhtml+xml\n";
-				$add .= "AddOutputFilterByType DEFLATE application/rss+xml\n";
-				$add .= "AddOutputFilterByType DEFLATE application/javascript\n";
-				$add .= "AddOutputFilterByType DEFLATE application/x-javascript\n";
+				foreach ( $deflate_types as $deflate_type ) {
+					$add .= "AddOutputFilterByType DEFLATE $deflate_type\n";
+				}
 				$add .= "</IfModule>\n";
 			}
+
 			if ( $data['cachingheaders'] ) {
-				$add .= "<IfModule mod_headers.c>\n";
-				$add .= "<filesMatch \".(jpg|jpeg|png|gif|ico)$\">\n";
-				$add .= "Header set Cache-Control \"max-age=31536000, public\"\n";
-				$add .= "</filesMatch>\n";
-				$add .= "<filesMatch \".(css|js)$\">\n";
-				$add .= "Header set Cache-Control \"max-age=2628000, public\"\n";
-				$add .= "</filesMatch>\n";
+
+				$caching_types_pre = [
+					'text'        => [
+						'html'       => '2 seconds',
+						'css'        => '1 months',
+						'js'         => '1 months',
+						'javascript' => '1 months',
+					],
+					'image'       => [
+						'gif'  => '1 years',
+						'jpg'  => '1 years',
+						'jpeg' => '1 years',
+						'png'  => '1 years',
+						'ico'  => '1 years',
+					],
+					'application' => [
+						'javascript' => '1 months',
+					],
+				];
+
+				$caching_types = [];
+
+				foreach ( $caching_types_pre as $main => $types ) {
+					foreach ( $types as $type => $time ) {
+						$caching_types[ $main . '/' . $type ] = $time;
+					}
+				}
+
+				$caching_types = apply_filters( 'awpp_caching_types', $caching_types );
+
+				$add .= "<IfModule mod_expires.c>\n";
+				$add .= "ExpiresActive on\n";
+				$add .= "ExpiresDefault \"access plus 30 seconds\"\n";
+				foreach ( $caching_types as $type => $time ) {
+					$add .= "ExpiresByType $type \"access plus $time\"\n";
+				}
 				$add .= "</IfModule>\n";
-			}
+			} // End if().
 			$this->htaccess->set( $add );
-		}
+		}// End if().
 	}
 
 	public function clean_up() {
