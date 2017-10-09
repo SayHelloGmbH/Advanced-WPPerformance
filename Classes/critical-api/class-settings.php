@@ -1,18 +1,25 @@
 <?php
 
 namespace nicomartin\CriticalAPI;
+
 class Settings extends Init {
+
 	public function __construct() {
 	}
 
 	public function run() {
 
-		add_action( 'awpp_settings', [ $this, 'register_settings' ] );
+		add_action( 'awpp_settings', [ $this, 'register_apikey_settings' ] );
 		add_filter( 'awpp_sanitize_' . self::$apikey_key, [ $this, 'check_apikey' ] );
 		add_action( 'admin_action_awpp_remove_apikey', [ $this, 'remove_apikey' ] );
+
+		add_action( 'awpp_settings', [ $this, 'register_settings' ] );
 	}
 
-	public function register_settings() {
+	/**
+	 * ApiKey
+	 */
+	public function register_apikey_settings() {
 		$section = awpp_settings()->add_section( awpp_settings_page_assets(), 'ccss', __( 'Above the fold CSS', 'awpp' ) . ' - API' );
 		if ( ! $this->apikey_set() ) {
 
@@ -36,6 +43,8 @@ class Settings extends Init {
 			$content = "<input type='text' name='$key' value='$val' disabled/>";
 			awpp_settings()->add_message( $section, self::$apikey_key . '-placeholder', __( 'API Key', 'awpp' ), $content, $args );
 
+			// todo: add screen sizes
+
 		}
 	}
 
@@ -46,7 +55,7 @@ class Settings extends Init {
 		}
 
 		$data    = [
-			'apiKey' => $key,
+			'apiKey'   => $key,
 			'hostname' => get_home_url(),
 		];
 		$request = self::do_request( 'https://api.critical-css.io/key/isValid', $data );
@@ -78,5 +87,24 @@ class Settings extends Init {
 		$sendback = wp_get_referer();
 		wp_redirect( esc_url_raw( $sendback ) );
 		exit;
+	}
+
+	/**
+	 * Settings
+	 */
+	public function register_settings() {
+
+		if ( '' == awpp_get_setting( self::$apikey_key ) || ! awpp_get_setting( self::$apikey_key ) ) {
+			return;
+		}
+
+		$page = awpp_settings()->add_page( 'criticalapi', __( 'Critical API', 'awpp' ) );
+
+		// translators: critical-css.io is a project by {name and link}.
+		$description = '<p>' . sprintf( __( 'critical-css.io is a project by %s.', 'awpp' ), '<a href="https://sayhello.ch" target="_blank">say hello</a>' ) . '</p>';
+		$description .= '<p>' . sprintf( __( 'The service is based on a powerfull API which returns the CSS required for the first screen of a webpage.', 'awpp' ), '<a href="https://sayhello.ch" target="_blank">say hello</a>' ) . '</p>';
+		awpp_settings()->add_section( $page, 'ccss-api-about', __( 'About critical-css.io', 'awpp' ), $description );
+		$section = awpp_settings()->add_section( $page, 'ccss-api-default', __( 'Default Pages', 'awpp' ) );
+
 	}
 }
