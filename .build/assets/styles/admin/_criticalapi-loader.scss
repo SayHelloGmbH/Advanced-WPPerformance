@@ -2,14 +2,14 @@
 	position: relative;
 }
 .criticalapi-loader {
-	position: absolute;
+	position: fixed;
 	bottom: 0;
 	left: 0;
 	right: 0;
 	top: 0;
 	display: none;
 	background-color: rgba(#f1f1f1, .8);
-	&:after {
+	&:before {
 		content: '';
 		display: block;
 		position: absolute;

@@ -216,7 +216,7 @@ input[type=text].criticalapi-generate__input.-error,
 }
 
 .criticalapi-loader {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
@@ -224,7 +224,7 @@ input[type=text].criticalapi-generate__input.-error,
   display: none;
   background-color: rgba(241, 241, 241, 0.8);
 }
-.criticalapi-loader:after {
+.criticalapi-loader:before {
   content: '';
   display: block;
   position: absolute;
