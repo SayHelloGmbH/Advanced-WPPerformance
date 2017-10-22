@@ -97,9 +97,10 @@ __webpack_require__(2);
 		$elements.each(function () {
 			var $e = $(this);
 			var $url_input = $e.find('.criticalapi-generate__input');
-			var $trigger = $e.find('#regenerate-criticalcss');
+			var $trigger_generate = $e.find('#regenerate-criticalcss');
+			var $trigger_delete = $e.find('#delete-criticalcss');
 
-			$trigger.on('click', function () {
+			$trigger_generate.on('click', function () {
 
 				$url_input.removeClass('-error');
 				var url = $url_input.val();
@@ -148,9 +149,38 @@ __webpack_require__(2);
        * success
        */
 
-						var $date = $e.find('.criticalapi-generate__generated');
-						$date.find('.is_generated').text(data['add']['datetime']);
-						$date.removeClass('criticalapi-generate__generated--nofile');
+						$e.find('.is_generated').text(data['add']['datetime']);
+						$e.removeClass('criticalapi-generate--nofile');
+					}
+				});
+			});
+
+			$trigger_delete.on('click', function () {
+
+				var vals = [];
+				vals.push('action=' + $e.find('input[name=action_delete]').val());
+				vals.push('critical_key=' + $e.find('input[name=critical_key]').val());
+
+				var val = vals.join('&');
+
+				$e.removeClass('criticalapi-generate--file');
+				$e.addClass('criticalapi-generate--nofile');
+
+				$.ajax({
+					url: vars['AjaxURL'],
+					type: 'POST',
+					dataType: 'json',
+					data: val
+				}).done(function (data) {
+
+					if (data['type'] === null || data['type'] !== 'success') {
+
+						var msg_content = data['message'];
+						if (msg_content === '' || msg_content === undefined) {
+							msg_content = 'error';
+						}
+
+						alert(msg_content);
 					}
 				});
 			});

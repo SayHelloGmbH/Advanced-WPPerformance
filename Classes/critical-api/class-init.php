@@ -8,8 +8,12 @@ class Init {
 	public static $support_email = 'hello@sayhello.ch';
 
 	public static $ajax_action = 'criticalapi_ajax_generate';
+	public static $ajax_action_delete = 'criticalapi_ajax_delete';
+
+	public static $criticalapi_filesmatch_option = 'critical_filesmatch';
 
 	public function __construct() {
+		//print_r( get_option( self::$criticalapi_filesmatch_option ) );
 	}
 
 	public function run() {
@@ -17,6 +21,7 @@ class Init {
 			add_filter( 'awpp_critical_dir', [ $this, 'change_critical_dir' ] );
 		}
 		add_action( 'wp_ajax_' . self::$ajax_action, [ $this, 'ajax_generate' ] );
+		add_action( 'wp_ajax_' . self::$ajax_action_delete, [ $this, 'ajax_delete' ] );
 	}
 
 	public function change_critical_dir( $dir ) {
@@ -45,11 +50,30 @@ class Init {
 		fwrite( $css_file, $css['message'] );
 		fclose( $css_file );
 
+		if ( isset( $_POST['savepage'] ) && 'yes' == $_POST['savepage'] ) {
+			$filesmatch = get_option( self::$criticalapi_filesmatch_option );
+			if ( ! is_array( $filesmatch ) ) {
+				$filesmatch = [];
+			}
+			$filesmatch[ $key ] = $url;
+			update_option( self::$criticalapi_filesmatch_option, $filesmatch );
+		}
+
 		$data = [
 			'datetime' => self::convert_date(),
 		];
 		// translators: Critical CSS for "{key}" ({url}) generated
 		awpp_exit_ajax( 'success', sprintf( __( 'Critical CSS for "%1$s" (%2$s) generated.', 'awpp' ), $key, $url ), $data );
+	}
+
+	public function ajax_delete() {
+
+		$key  = sanitize_title( $_POST['critical_key'] );
+		$dir  = self::get_critical_dir();
+		$file = $dir . $key . '.css';
+		unlink( $file );
+
+		awpp_exit_ajax( 'success', 'deleted' );
 	}
 
 	/**
@@ -276,44 +300,68 @@ class Init {
 	 */
 	protected function render_criticalapi_generate_list( $critical_key, $title, $urls ) {
 
-		$file = self::get_critical_dir() . $critical_key . '.css';
+		$file         = self::get_critical_dir() . $critical_key . '.css';
+		$has_file     = file_exists( $file );
+		$saved_option = get_option( self::$criticalapi_filesmatch_option );
+		$saved_url    = '';
+		if ( is_array( $saved_option ) && array_key_exists( $critical_key, $saved_option ) ) {
+			$saved_url = $saved_option[ $critical_key ];
+		}
 
-		$return = '<tr class="criticalapi-generate" id="' . $critical_key . '">';
+		$return = '<tr class="criticalapi-generate criticalapi-generate--' . ( $has_file ? 'file' : 'nofile' ) . '" id="' . $critical_key . '">';
 		$return .= '<td>';
 		$return .= '<input name="action" type="hidden" value="' . self::$ajax_action . '"/>';
+		$return .= '<input name="action_delete" type="hidden" value="' . self::$ajax_action_delete . '"/>';
 		$return .= '<input name="critical_key" type="hidden" value="' . $critical_key . '"/>';
 		$return .= '<p><b>' . $title . '</b></p>';
 
 		if ( is_array( $urls ) ) {
 			$return .= '<select name="url" class="criticalapi-generate__input">';
-			foreach ( $urls as $key => $val ) {
-				if ( array_key_exists( 'elements', $val ) && is_array( $val['elements'] ) ) {
-					if ( empty( $val['elements'] ) ) {
-						continue;
+			if ( array_key_exists( 'elements', $urls ) && is_array( $urls['elements'] ) ) {
+				foreach ( $urls['elements'] as $element_key => $element ) {
+					$selected = '';
+					if ( $saved_url == $element['url'] ) {
+						$selected = 'selected';
 					}
-					$return .= "<optgroup label='{$val['name']}'>";
-					foreach ( $val['elements'] as $element_key => $element ) {
-						$return .= "<option data-key='{$element_key}' value='{$element['url']}'>{$element['name']}</option>";
+					$return .= "<option data-key='{$element_key}' value='{$element['url']}' {$selected }>{$element['name']}</option>";
+				}
+			} else {
+				foreach ( $urls as $key => $val ) {
+					if ( array_key_exists( 'elements', $val ) && is_array( $val['elements'] ) ) {
+						if ( empty( $val['elements'] ) ) {
+							continue;
+						}
+						$return .= "<optgroup label='{$val['name']}'>";
+						foreach ( $val['elements'] as $element_key => $element ) {
+							$selected = '';
+							if ( $saved_url == $element['url'] ) {
+								$selected = 'selected';
+							}
+							$return .= "<option data-key='{$element_key}' value='{$element['url']}' {$selected }>{$element['name']}</option>";
+						}
+						$return .= '</optgroup>';
+					} else {
+						$selected = '';
+						if ( $saved_url == $val['url'] ) {
+							$selected = 'selected';
+						}
+						$return .= "<option data-key='{$key}' value='{$val['url']}' {$selected }>{$val['name']}</option>";
 					}
-					$return .= '</optgroup>';
-				} else {
-					$return .= "<option data-key='{$key}' value='{$val['url']}'>{$val['name']}</option>";
 				}
 			}
 			$return .= '</select>';
 			$return .= '<input name="savepage" type="hidden" value="yes"/>';
 		} elseif ( '' == $urls ) {
-			$return .= '<input name="url" type="text" class="criticalapi-generate__input" placeholder="' . trailingslashit( get_home_url() ) . '..."/>';
-			$return .= '<input name="savepage" type="hidden" value="no"/>';
+			$return .= '<input name="url" type="text" class="criticalapi-generate__input" value="' . $saved_url . '" placeholder="' . trailingslashit( get_home_url() ) . '..."/>';
+			$return .= '<input name="savepage" type="hidden" value="yes"/>';
 		} else {
 			$return .= '<input name="url" type="text" value="' . $urls . '" disabled class="criticalapi-generate__input"/>';
-			$return .= '<input name="savepage" type="hidden" value="yes"/>';
-		}
+			$return .= '<input name="savepage" type="hidden" value="no"/>';
+		} // End if().
 		$return .= '</td>';
 
 		// generated
-		$has_file = file_exists( $file );
-		$return   .= '<td class="criticalapi-generate__generated criticalapi-generate__generated--' . ( $has_file ? 'file' : 'nofile' ) . '">';
+		$return .= '<td class="criticalapi-generate__generated">';
 
 		$filedate = '';
 		if ( $has_file ) {
@@ -326,7 +374,7 @@ class Init {
 		// controls
 		$return .= '<td class="criticalapi-generate__controls">';
 		$return .= '<button id="regenerate-criticalcss" class="button criticalapi-generate__regenerate">' . __( 'regenerate', 'awpp' ) . '</button>';
-		$return .= '<br><button style="display: ' . ( $has_file ? 'inline-block' : 'none' ) . '" class="criticalapi-generate__delete">' . __( 'delete', 'awpp' ) . '</button>';
+		$return .= '<br><button id="delete-criticalcss" class="criticalapi-generate__delete">' . __( 'delete', 'awpp' ) . '</button>';
 		$return .= '</td>';
 		$return .= '</tr>';
 

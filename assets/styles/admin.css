@@ -150,21 +150,25 @@ code.block {
   width: 100%;
 }
 
-.criticalapi-generate__generated span {
+.criticalapi-generate span.not_generated {
+  font-style: italic;
+  color: #b1b1b1 !important;
   display: none;
 }
-.criticalapi-generate__generated span.is_generated {
+.criticalapi-generate span.is_generated {
   display: block;
 }
-.criticalapi-generate__generated span.not_generated {
-  color: #b1b1b1 !important;
-  font-style: italic;
+.criticalapi-generate .criticalapi-generate__delete {
+  display: inline-block;
 }
 
-.criticalapi-generate__generated--nofile span.not_generated {
+.criticalapi-generate--nofile span.not_generated {
   display: block;
 }
-.criticalapi-generate__generated--nofile span.is_generated {
+.criticalapi-generate--nofile span.is_generated {
+  display: none;
+}
+.criticalapi-generate--nofile .criticalapi-generate__delete {
   display: none;
 }
 
