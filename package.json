@@ -12,8 +12,6 @@
         "jquery.cookie": "^1.4.1",
         "jquery.transit": "^0.9.12",
         "lazysizes": "^3.0.0",
-        "magnific-popup": "^1.1.0",
-        "svg-morpheus": "^0.3.0",
         "verge": "^1.9.1"
     },
     "devDependencies": {

@@ -1,4 +1,5 @@
 @import "compass/css3";
+@import "../../../assets/settings.json";
 @import 'admin-bar/spinner';
 
 $default-box-shadow-color: rgba(#000, 0.05);
@@ -6,8 +7,12 @@ $default-box-shadow-h-offset: 0px;
 $default-box-shadow-v-offset: 1px;
 $default-box-shadow-blur: 1px;
 
+$default-transition-duration: $settings_easing_speed + 0ms;
+
 @import "admin/awpp-wrap";
 @import "admin/awpp-text";
 //@import "admin/settings-wrap";
 @import "admin/serverpush-settings";
 @import "admin/criticalapi-settings";
+@import "admin/criticalapi-generate";
+@import "admin/criticalapi-loader";

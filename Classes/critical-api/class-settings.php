@@ -10,10 +10,9 @@ class Settings extends Init {
 	public function run() {
 
 		add_action( 'awpp_settings', [ $this, 'register_apikey_settings' ] );
+		add_action( 'awpp_on_sanitize_' . self::$apikey_key, [ $this, 'set_index_css' ] );
 		add_filter( 'awpp_sanitize_' . self::$apikey_key, [ $this, 'check_apikey' ] );
 		add_action( 'admin_action_awpp_remove_apikey', [ $this, 'remove_apikey' ] );
-
-		add_action( 'awpp_settings', [ $this, 'register_settings' ] );
 	}
 
 	/**
@@ -43,9 +42,39 @@ class Settings extends Init {
 			$content = "<input type='text' name='$key' value='$val' disabled/>";
 			awpp_settings()->add_message( $section, self::$apikey_key . '-placeholder', __( 'API Key', 'awpp' ), $content, $args );
 
-			// todo: add screen sizes
+			// translators: The devices and screensizes can be modified with a filter {filter}, which passes the sizes as an array (max two devices).
+			$content = sprintf( __( 'The devices and screensizes can be modified with a filter %1$s, which passes the sizes as an array (max two devices).', 'awpp' ), '<code>awpp_criticalapi_dimensions</code>' );
+			$content .= '<pre><code class="block">' . print_r( self::get_dimensions(), true ) . '</code></pre>';
+			awpp_settings()->add_message( $section, 'screensizes', __( 'Screen Sizes', 'awpp' ), $content );
 
 		}
+	}
+
+	public function set_index_css( $val ) {
+
+		if ( '' == $val ) {
+			return;
+		}
+
+		$dir = self::get_critical_dir();
+
+		if ( ! is_dir( $dir ) ) {
+			mkdir( $dir );
+		}
+
+		$index = $dir . 'index.css';
+		if ( file_exists( $index ) ) {
+			return;
+		}
+
+		$css = self::fetch_css( get_home_url(), $val );
+		if ( 201 != $css['status'] ) {
+			return;
+		}
+
+		$css_file = fopen( $index, 'w' );
+		fwrite( $css_file, $css['message'] );
+		fclose( $css_file );
 	}
 
 	public function check_apikey( $key ) {
@@ -87,24 +116,5 @@ class Settings extends Init {
 		$sendback = wp_get_referer();
 		wp_redirect( esc_url_raw( $sendback ) );
 		exit;
-	}
-
-	/**
-	 * Settings
-	 */
-	public function register_settings() {
-
-		if ( '' == awpp_get_setting( self::$apikey_key ) || ! awpp_get_setting( self::$apikey_key ) ) {
-			return;
-		}
-
-		$page = awpp_settings()->add_page( 'criticalapi', __( 'Critical API', 'awpp' ) );
-
-		// translators: critical-css.io is a project by {name and link}.
-		$description = '<p>' . sprintf( __( 'critical-css.io is a project by %s.', 'awpp' ), '<a href="https://sayhello.ch" target="_blank">say hello</a>' ) . '</p>';
-		$description .= '<p>' . sprintf( __( 'The service is based on a powerfull API which returns the CSS required for the first screen of a webpage.', 'awpp' ), '<a href="https://sayhello.ch" target="_blank">say hello</a>' ) . '</p>';
-		awpp_settings()->add_section( $page, 'ccss-api-about', __( 'About critical-css.io', 'awpp' ), $description );
-		$section = awpp_settings()->add_section( $page, 'ccss-api-default', __( 'Default Pages', 'awpp' ) );
-
 	}
 }

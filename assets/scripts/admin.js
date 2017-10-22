@@ -68,11 +68,131 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-module.exports = __webpack_require__(2);
+__webpack_require__(4);
+module.exports = __webpack_require__(5);
 
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+__webpack_require__(2);
+
+(function ($, vars) {
+
+	var $elements = $('.criticalapi-generate');
+	if (!$elements.length) {
+		return;
+	}
+
+	$(function () {
+
+		var $wpbody = $('body .awpp-wrap__content');
+		$wpbody.append('<div class="criticalapi-loader"></div>');
+		var $loader = $wpbody.find('.criticalapi-loader');
+
+		$elements.each(function () {
+			var $e = $(this);
+			var $url_input = $e.find('.criticalapi-generate__input');
+			var $trigger = $e.find('#regenerate-criticalcss');
+
+			$trigger.on('click', function () {
+
+				$url_input.removeClass('-error');
+				var url = $url_input.val();
+
+				if (!valid_url(url)) {
+					$url_input.addClass('-error');
+					$url_input.addClass('-pop');
+					setTimeout(function () {
+						$url_input.removeClass('-pop');
+					}, settings_easing_speed);
+					return false;
+				}
+
+				var vals = [];
+				$e.find('input, textarea, select').each(function () {
+					vals.push($(this).attr('name') + '=' + $(this).val());
+				});
+
+				var val = vals.join('&');
+				$loader.fadeIn();
+
+				$.ajax({
+					url: vars['AjaxURL'],
+					type: 'POST',
+					dataType: 'json',
+					data: val
+				}).done(function (data) {
+
+					$loader.fadeOut();
+
+					if (data['type'] === null || data['type'] !== 'success') {
+
+						/**
+       * error
+       */
+
+						var msg_content = data['message'];
+						if (msg_content === '' || msg_content === undefined) {
+							msg_content = 'error';
+						}
+
+						alert(msg_content);
+					} else {
+
+						/**
+       * success
+       */
+
+						var $date = $e.find('.criticalapi-generate__generated');
+						$date.find('.is_generated').text(data['add']['datetime']);
+						$date.removeClass('criticalapi-generate__generated--nofile');
+					}
+				});
+			});
+		});
+	});
+
+	function valid_url(url) {
+		var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+		'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+		'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+		'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+		'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+		return pattern.test(url);
+	}
+})(jQuery, AwppJsVars);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _settings = __webpack_require__(3);
+
+var _settings2 = _interopRequireDefault(_settings);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+for (var key in _settings2.default) {
+	window[key] = _settings2.default[key];
+}
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = {"settings_easing_speed":200}
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -153,7 +273,7 @@ module.exports = __webpack_require__(2);
 })(jQuery);
 
 /***/ }),
-/* 2 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

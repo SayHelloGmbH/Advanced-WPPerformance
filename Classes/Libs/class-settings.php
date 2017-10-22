@@ -41,7 +41,7 @@ class Settings {
 		$this->capability      = 'administrator';
 		$this->option_key      = "{$key}-settings";
 		$this->init_action     = "{$key}_settings";
-		$this->sanitize_action = "{$key}_sanitize"; // {sanitize_action}_{field_key}
+		$this->sanitize_action = "{$key}_on_sanitize"; // {sanitize_on_action}_{field_key}
 		$this->sanitize_filter = "{$key}_sanitize"; // {sanitize_filter}_{field_key}
 
 		$this->pages    = [];

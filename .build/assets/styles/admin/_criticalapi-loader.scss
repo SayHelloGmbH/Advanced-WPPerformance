@@ -1,0 +1,22 @@
+.awpp-wrap__content {
+	position: relative;
+}
+.criticalapi-loader {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+	display: none;
+	background-color: rgba(#f1f1f1, .8);
+	&:after {
+		content: '';
+		display: block;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		margin-left: -30px;
+		margin-top: -30px;
+		@include spinner(60px, 6px solid #0073aa);
+	}
+}

@@ -1,14 +1,17 @@
 <?php
+
 namespace nicomartin\AdvancedWPPerformance;
 class Init {
 	public $capability = '';
 	public $admin_bar_id = '';
 	public $menu_title = '';
+
 	public function __construct() {
 		$this->capability   = 'administrator';
 		$this->admin_bar_id = awpp_get_instance()->prefix . '-admin-bar';
 		$this->menu_title   = __( 'WP Performance', 'awpp' );
 	}
+
 	public function run() {
 		// Basics Page
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ] );
@@ -20,7 +23,11 @@ class Init {
 		// Assets
 		add_action( 'wp_enqueue_scripts', [ $this, 'add_assets' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'add_admin_assets' ] );
+
+		// Helper
+		add_action( 'admin_footer', [ $this, 'admin_footer_js' ], 1 );
 	}
+
 	/**
 	 * Basics Page
 	 */
@@ -29,6 +36,7 @@ class Init {
 		add_menu_page( awpp_get_instance()->name, $this->menu_title, $this->capability, AWPP_SETTINGS_PARENT, '', $icon, 100 );
 		add_submenu_page( AWPP_SETTINGS_PARENT, __( 'Basics', 'awpp' ), __( 'Basics', 'awpp' ), $this->capability, AWPP_SETTINGS_PARENT, [ $this, 'basics_menu_page' ] );
 	}
+
 	public function basics_menu_page() {
 		?>
 		<div class="wrap awpp-wrap">
@@ -39,6 +47,7 @@ class Init {
 		</div>
 		<?php
 	}
+
 	public function intro_text() {
 		echo '<div class="awpp-wrap__section">';
 		// translators: Thank you for using plugin_name
@@ -54,6 +63,7 @@ class Init {
 		echo '<p>' . sprintf( __( 'If you like this Plugin feel free to %1$s or get involved with the development on %2$s', 'awpp' ), $buyabeer, $github ) . '</p>';
 		echo '</div>';
 	}
+
 	public function speed_test_link() {
 		$links = [
 			'pagespeed_insights' => [
@@ -80,12 +90,14 @@ class Init {
 		}
 		echo '</div>';
 	}
+
 	public function speed_test_monitoring() {
 		echo '<div class="awpp-wrap__section">';
 		echo '<h2>' . __( 'Monitoring', 'awpp' ) . '</h2>';
 		echo '<p>coming soon..</p>';
 		echo '</div>';
 	}
+
 	/**
 	 * Admin Bar
 	 */
@@ -101,12 +113,13 @@ class Init {
 		];
 		$wp_admin_bar->add_node( $args );
 	}
+
 	/**
 	 * Assets
 	 */
 	public function add_assets() {
 		$script_version = awpp_get_instance()->version;
-		$min = true;
+		$min            = true;
 		if ( awpp_get_instance()->debug && is_user_logged_in() ) {
 			$min = false;
 		}
@@ -118,9 +131,10 @@ class Init {
 			wp_enqueue_script( awpp_get_instance()->prefix . '-admin-bar-script', $dir_uri . 'assets/scripts/admin-bar' . ( $min ? '.min' : '' ) . '.js', [ 'jquery' ], $script_version, true );
 		}
 	}
+
 	public function add_admin_assets() {
 		$script_version = awpp_get_instance()->version;
-		$min = true;
+		$min            = true;
 		if ( awpp_get_instance()->debug && is_user_logged_in() ) {
 			$min = false;
 		}
@@ -129,5 +143,21 @@ class Init {
 		wp_enqueue_script( awpp_get_instance()->prefix . '-admin-script', $dir_uri . '/assets/scripts/admin' . ( $min ? '.min' : '' ) . '.js', [ 'jquery' ], $script_version, true );
 		wp_enqueue_style( awpp_get_instance()->prefix . '-admin-bar-style', $dir_uri . 'assets/styles/admin-bar' . ( $min ? '.min' : '' ) . '.css', [], $script_version );
 		wp_enqueue_script( awpp_get_instance()->prefix . '-admin-bar-script', $dir_uri . 'assets/scripts/admin-bar' . ( $min ? '.min' : '' ) . '.js', [ 'jquery' ], $script_version, true );
+	}
+
+	/**
+	 * Helper
+	 */
+	public function admin_footer_js() {
+		$defaults = [
+			'AjaxURL' => admin_url( 'admin-ajax.php' ),
+			'homeurl' => trailingslashit( get_home_url() ),
+		];
+
+		$vars = apply_filters( 'awpp_admin_footer_js', $defaults );
+
+		echo "<script id='awpp-js-vars'>\r\n";
+		echo 'var AwppJsVars = ' . json_encode( $vars );
+		echo '</script>';
 	}
 }
