@@ -5,7 +5,7 @@ Plugin Name: Advanced WPPerformance
 Plugin URI: https://github.com/nico-martin/Advanced-WPPerformance
 Description: This plugin adds several performance improvements to your WordPress site
 Author: Nico Martin
-Version: 1.4.12-dev
+Version: 1.4.13-dev
 Author URI: https://nicomartin.ch
 Text Domain: awpp
 Domain Path: /languages
@@ -93,18 +93,19 @@ if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION,
 	awpp_get_instance()->Http2Push = new nicomartin\AdvancedWPPerformance\Http2Push();
 	awpp_get_instance()->Http2Push->run();
 
-	if ( apply_filters( 'awpp_use_critical_api', false ) ) {
+	/**
+	 * Critical API
+	 */
 
-		require_once 'Classes/critical-api/class-init.php';
-		awpp_get_instance()->CriticalAPI = new nicomartin\CriticalAPI\Init();
-		awpp_get_instance()->CriticalAPI->run();
+	require_once 'Classes/critical-api/class-init.php';
+	awpp_get_instance()->CriticalAPI = new nicomartin\CriticalAPI\Init();
+	awpp_get_instance()->CriticalAPI->run();
 
-		require_once 'Classes/critical-api/class-settings.php';
-		awpp_get_instance()->CriticalAPI->Settings = new nicomartin\CriticalAPI\Settings();
-		awpp_get_instance()->CriticalAPI->Settings->run();
+	require_once 'Classes/critical-api/class-settings.php';
+	awpp_get_instance()->CriticalAPI->Settings = new nicomartin\CriticalAPI\Settings();
+	awpp_get_instance()->CriticalAPI->Settings->run();
 
-		require_once 'Classes/critical-api/class-adminpage.php';
-		awpp_get_instance()->CriticalAPI->AdminPage = new nicomartin\CriticalAPI\AdminPage();
-		awpp_get_instance()->CriticalAPI->AdminPage->run();
-	}
+	require_once 'Classes/critical-api/class-adminpage.php';
+	awpp_get_instance()->CriticalAPI->AdminPage = new nicomartin\CriticalAPI\AdminPage();
+	awpp_get_instance()->CriticalAPI->AdminPage->run();
 } // End if().

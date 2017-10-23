@@ -35,7 +35,7 @@ class AdminPage extends Init {
 	}
 
 	public function register_subpage() {
-		if ( '' == awpp_get_setting( self::$apikey_key ) || ! awpp_get_setting( self::$apikey_key ) ) {
+		if ( '' == awpp_get_setting( self::$apikey_key ) || ! awpp_get_setting( self::$apikey_key ) || ! apply_filters( 'awpp_use_critical_api', false ) ) {
 			return;
 		}
 		add_submenu_page( AWPP_SETTINGS_PARENT, $this->title, $this->title, $this->capability, $this->key, [ $this, 'adminpage' ] );
