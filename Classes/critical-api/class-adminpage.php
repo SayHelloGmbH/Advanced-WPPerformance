@@ -25,7 +25,11 @@ class AdminPage extends Init {
 		add_action( 'awpp_criticalapi_section', [ $this, 'section_special' ] );
 		add_action( 'awpp_criticalapi_section', [ $this, 'section_date' ] );
 
+		// Singles
 		add_action( 'add_meta_boxes', [ $this, 'register_meta_box' ] );
+		foreach ( self::get_taxonomies() as $key => $name ) {
+			add_action( $key . '_edit_form_fields', [ $this, 'criticalapi_tax_field' ], 10, 2 );
+		}
 	}
 
 	public function register_subpage() {
@@ -184,7 +188,7 @@ class AdminPage extends Init {
 	}
 
 	/**
-	 * Meta Box
+	 *Singles
 	 */
 	public function register_meta_box() {
 		foreach ( self::get_post_types() as $key => $name ) {
@@ -198,5 +202,12 @@ class AdminPage extends Init {
 		} else {
 			echo self::render_criticalapi_generate_single( "singular-{$post->ID}", get_post_permalink( $post->ID ) );
 		}
+	}
+
+	public function criticalapi_tax_field( $term ) {
+		echo '<tr class="form-field term-criticalapi-wrap">';
+		echo '<th scope="row"><label for="description">' . self::$name . '</label></th>';
+		echo '<td>' . self::render_criticalapi_generate_single( "archvie-taxonomy-{$term->term_id}", get_term_link( $term ) ) . '</td>';
+		echo '</tr>';
 	}
 }
