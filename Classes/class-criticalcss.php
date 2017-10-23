@@ -38,39 +38,41 @@ class CriticalCSS {
 
 		$section = awpp_settings()->add_section( awpp_settings_page_assets(), 'ccss', __( 'Above the fold CSS', 'awpp' ) );
 
-		if ( ! awpp_get_setting( 'deliverycss' ) ) {
-			$content = '<p>' . __( 'Please enable "Optimize CSS Delivery". With a normal css delivery, this option is not necessary.', 'awpp' ) . '</p>';
-			awpp_settings()->add_message( $section, 'ccssmessage', __( 'Critical CSS', 'awpp' ), $content );
-		} else {
-			$path = apply_filters( 'awpp_critical_dir', $this->default_critical_path );
-			if ( $this->default_critical_path != $path ) {
-
-				$content = '';
-				// translators: Custom critical directory found: code
-				$content .= '<p>' . sprintf( __( 'Custom critical directory found: %s', 'awpp' ), '<code>' . $path . '</code>' ) . '</p>';
-				if ( ! is_dir( $path ) ) {
-					$content .= '<p class="error">' . __( 'Folder does not exist!', 'awpp' ) . '</p>';
-				}
-				if ( ! is_file( $path . 'index.css' ) ) {
-					$content .= '<p class="error">' . __( 'index.css does not exist!', 'awpp' ) . '</p>';
-				}
+		if ( ! apply_filters( 'awpp_use_critical_api', false ) ) {
+			if ( ! awpp_get_setting( 'deliverycss' ) ) {
+				$content = '<p>' . __( 'Please enable "Optimize CSS Delivery". With a normal css delivery, this option is not necessary.', 'awpp' ) . '</p>';
 				awpp_settings()->add_message( $section, 'ccssmessage', __( 'Critical CSS', 'awpp' ), $content );
-
 			} else {
+				$path = apply_filters( 'awpp_critical_dir', $this->default_critical_path );
+				if ( $this->default_critical_path != $path ) {
 
-				$file = $this->default_critical_path . 'index.css';
-				if ( ! file_exists( $file ) ) {
-					fopen( $file, 'w' );
+					$content = '';
+					// translators: Custom critical directory found: code
+					$content .= '<p>' . sprintf( __( 'Custom critical directory found: %s', 'awpp' ), '<code>' . $path . '</code>' ) . '</p>';
+					if ( ! is_dir( $path ) ) {
+						$content .= '<p class="error">' . __( 'Folder does not exist!', 'awpp' ) . '</p>';
+					}
+					if ( ! is_file( $path . 'index.css' ) ) {
+						$content .= '<p class="error">' . __( 'index.css does not exist!', 'awpp' ) . '</p>';
+					}
+					awpp_settings()->add_message( $section, 'ccssmessage', __( 'Critical CSS', 'awpp' ), $content );
+
+				} else {
+
+					$file = $this->default_critical_path . 'index.css';
+					if ( ! file_exists( $file ) ) {
+						fopen( $file, 'w' );
+					}
+
+					$file_url = str_replace( $this->base_path, $this->base_url, $file );
+					$val      = file_get_contents( $file );
+
+					$args['after_field'] = "<p class='awpp-smaller'>File: <a target='_blank' href='$file_url'>$file_url</a></p>";
+
+					awpp_settings()->add_textarea( $section, 'criticalcss', __( 'Critical CSS', 'awpp' ), $val, $args );
+
 				}
-
-				$file_url = str_replace( $this->base_path, $this->base_url, $file );
-				$val      = file_get_contents( $file );
-
-				$args['after_field'] = "<p class='awpp-smaller'>File: <a target='_blank' href='$file_url'>$file_url</a></p>";
-
-				awpp_settings()->add_textarea( $section, 'criticalcss', __( 'Critical CSS', 'awpp' ), $val, $args );
-
-			}
+			} // End if().
 		} // End if().
 	}
 
