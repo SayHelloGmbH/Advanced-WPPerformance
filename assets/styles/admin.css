@@ -231,7 +231,9 @@ body.post-php .criticalapi-generate__generated .generated_title {
   font-weight: bold;
 }
 
-body.term-php .criticalapi-generate__controls {
+body.term-php .criticalapi-generate__controls,
+body.profile-php .criticalapi-generate__controls,
+body.user-edit-php .criticalapi-generate__controls {
   margin-top: 15px;
   text-align: left;
 }

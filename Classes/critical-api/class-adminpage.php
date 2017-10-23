@@ -30,6 +30,8 @@ class AdminPage extends Init {
 		foreach ( self::get_taxonomies() as $key => $name ) {
 			add_action( $key . '_edit_form_fields', [ $this, 'criticalapi_tax_field' ], 10, 2 );
 		}
+		add_action( 'show_user_profile', [ $this, 'criticalapi_user_field' ], 10, 1 );
+		add_action( 'edit_user_profile', [ $this, 'criticalapi_user_field' ], 10, 1 );
 	}
 
 	public function register_subpage() {
@@ -209,5 +211,14 @@ class AdminPage extends Init {
 		echo '<th scope="row"><label for="description">' . self::$name . '</label></th>';
 		echo '<td>' . self::render_criticalapi_generate_single( "archvie-taxonomy-{$term->term_id}", get_term_link( $term ) ) . '</td>';
 		echo '</tr>';
+	}
+
+	public function criticalapi_user_field( $user ) {
+		echo '<table class="form-table">';
+		echo '<tr class="form-field term-criticalapi-wrap">';
+		echo '<th scope="row"><label for="description">' . self::$name . '</label></th>';
+		echo '<td>' . self::render_criticalapi_generate_single( "archive-author-{$user->user_nicename}", get_author_posts_url( $user->ID ) ) . '</td>';
+		echo '</tr>';
+		echo '</table>';
 	}
 }
