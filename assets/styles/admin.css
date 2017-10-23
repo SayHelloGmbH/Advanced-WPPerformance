@@ -211,6 +211,26 @@ input[type=text].criticalapi-generate__input.-error,
   opacity: 1;
 }
 
+body.post-php .criticalapi-generate {
+  padding: 5px 0;
+}
+body.post-php .criticalapi-generate:after {
+  content: '';
+  clear: both;
+  display: block;
+}
+body.post-php .criticalapi-generate__controls {
+  float: right;
+}
+body.post-php .criticalapi-generate__generated {
+  float: left;
+}
+body.post-php .criticalapi-generate__generated .generated_title {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: bold;
+}
+
 .awpp-wrap__content {
   position: relative;
 }

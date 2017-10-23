@@ -9,7 +9,7 @@ import './modules/settings.js';
 
 	$(function () {
 
-		const $wpbody = $('body .awpp-wrap__content');
+		const $wpbody = $('body #wpcontent');
 		$wpbody.append('<div class="criticalapi-loader"></div>');
 		const $loader = $wpbody.find('.criticalapi-loader');
 

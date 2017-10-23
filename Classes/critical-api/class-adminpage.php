@@ -24,6 +24,8 @@ class AdminPage extends Init {
 		add_action( 'awpp_criticalapi_section', [ $this, 'section_taxonomies' ] );
 		add_action( 'awpp_criticalapi_section', [ $this, 'section_special' ] );
 		add_action( 'awpp_criticalapi_section', [ $this, 'section_date' ] );
+
+		add_action( 'add_meta_boxes', [ $this, 'register_meta_box' ] );
 	}
 
 	public function register_subpage() {
@@ -179,5 +181,22 @@ class AdminPage extends Init {
 		echo self::render_criticalapi_generate_list( 'archive-date-day', '- ' . __( 'Archive Date Day', 'awpp' ), '' );
 		echo '</table>';
 		echo '</div>';
+	}
+
+	/**
+	 * Meta Box
+	 */
+	public function register_meta_box() {
+		foreach ( self::get_post_types() as $key => $name ) {
+			add_meta_box( 'criticalapi-meta-box', self::$name, [ $this, 'criticalapi_meta_box' ], $key, 'side', 'low' );
+		}
+	}
+
+	public function criticalapi_meta_box( $post ) {
+		if ( 'publish' != $post->post_status ) {
+			echo '<p>' . __( 'Please publish the post before generating the Critical CSS.', 'awpp' ) . '</p>';
+		} else {
+			echo self::render_criticalapi_generate_single( "singular-{$post->ID}", get_post_permalink( $post->ID ) );
+		}
 	}
 }

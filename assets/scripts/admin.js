@@ -90,7 +90,7 @@ __webpack_require__(2);
 
 	$(function () {
 
-		var $wpbody = $('body .awpp-wrap__content');
+		var $wpbody = $('body #wpcontent');
 		$wpbody.append('<div class="criticalapi-loader"></div>');
 		var $loader = $wpbody.find('.criticalapi-loader');
 

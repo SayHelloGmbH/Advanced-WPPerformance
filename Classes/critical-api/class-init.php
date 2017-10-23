@@ -18,7 +18,7 @@ class Init {
 
 	public function run() {
 		if ( self::apikey_set() ) {
-			add_filter( 'awpp_critical_dir', [ $this, 'change_critical_dir' ] );
+			add_filter( 'awpp_critical_dir', [ $this, 'change_critical_dir' ], 99 );
 		}
 		add_action( 'wp_ajax_' . self::$ajax_action, [ $this, 'ajax_generate' ] );
 		add_action( 'wp_ajax_' . self::$ajax_action_delete, [ $this, 'ajax_delete' ] );
@@ -373,11 +373,45 @@ class Init {
 
 		// controls
 		$return .= '<td class="criticalapi-generate__controls">';
-		$return .= '<button id="regenerate-criticalcss" class="button criticalapi-generate__regenerate">' . __( 'regenerate', 'awpp' ) . '</button>';
-		$return .= '<br><button id="delete-criticalcss" class="criticalapi-generate__delete">' . __( 'delete', 'awpp' ) . '</button>';
+		$return .= '<a id="regenerate-criticalcss" class="button criticalapi-generate__regenerate">' . __( 'regenerate', 'awpp' ) . '</a>';
+		$return .= '<br><a id="delete-criticalcss" class="criticalapi-generate__delete">' . __( 'delete', 'awpp' ) . '</a>';
 		$return .= '</td>';
 		$return .= '</tr>';
 
 		return $return;
 	}
+
+	protected function render_criticalapi_generate_single( $critical_key, $url ) {
+
+		$file         = self::get_critical_dir() . $critical_key . '.css';
+		$has_file     = file_exists( $file );
+
+		$return = '<div class="criticalapi-generate criticalapi-generate--' . ( $has_file ? 'file' : 'nofile' ) . '" id="' . $critical_key . '">';
+		$return .= '<input name="action" type="hidden" value="' . self::$ajax_action . '"/>';
+		$return .= '<input name="action_delete" type="hidden" value="' . self::$ajax_action_delete . '"/>';
+		$return .= '<input name="critical_key" type="hidden" value="' . $critical_key . '"/>';
+		$return .= '<input name="url" type="hidden" value="' . $url . '"/>';
+
+		// generated
+		$return .= '<div class="criticalapi-generate__generated">';
+
+		$filedate = '';
+		if ( $has_file ) {
+			$filedate = $this->convert_date( filemtime( $file ) );
+		}
+		$return .= '<b class="generated_title">' . __( 'Generated', 'awpp' ) . ':</b>';
+		$return .= '<span class="is_generated">' . $filedate . '</span>';
+		$return .= '<span class="not_generated">' . __( 'not yet generated', 'awpp' ) . '</span>';
+		$return .= '</div>';
+
+		// controls
+		$return .= '<div class="criticalapi-generate__controls">';
+		$return .= '<a id="regenerate-criticalcss" class="button criticalapi-generate__regenerate">' . __( 'regenerate', 'awpp' ) . '</a>';
+		$return .= '<br><a id="delete-criticalcss" class="criticalapi-generate__delete">' . __( 'delete', 'awpp' ) . '</a>';
+		$return .= '</div>';
+		$return .= '</div>';
+
+		return $return;
+	}
+
 }
