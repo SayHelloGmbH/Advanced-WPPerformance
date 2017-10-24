@@ -23,9 +23,7 @@ class CriticalCSS {
 
 	public function run() {
 
-		if ( ! apply_filters( 'awpp_use_critical_api', false ) ) {
-			add_action( 'awpp_settings', [ $this, 'register_settings' ] );
-		}
+		add_action( 'awpp_settings', [ $this, 'register_settings' ] );
 		add_filter( 'awpp_sanitize_criticalcss', [ $this, 'minify_criticalcss' ] );
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar_item' ] );
 
@@ -38,7 +36,7 @@ class CriticalCSS {
 
 		$section = awpp_settings()->add_section( awpp_settings_page_assets(), 'ccss', __( 'Above the fold CSS', 'awpp' ) );
 
-		if ( ! apply_filters( 'awpp_use_critical_api', false ) ) {
+		if ( ! defined( 'AWPP_CRITICALAPI' ) || ! AWPP_CRITICALAPI ) {
 			if ( ! awpp_get_setting( 'deliverycss' ) ) {
 				$content = '<p>' . __( 'Please enable "Optimize CSS Delivery". With a normal css delivery, this option is not necessary.', 'awpp' ) . '</p>';
 				awpp_settings()->add_message( $section, 'ccssmessage', __( 'Critical CSS', 'awpp' ), $content );

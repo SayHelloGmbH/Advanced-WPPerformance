@@ -80,6 +80,9 @@ class Init {
 	 * Helpers
 	 */
 	protected function apikey_set() {
+		if ( ! defined( 'AWPP_CRITICALAPI' ) || ! AWPP_CRITICALAPI ) {
+			return false;
+		}
 		$options = get_option( self::$awpp_settings_key );
 		if ( isset( $options[ self::$apikey_key ] ) && '' != $options[ self::$apikey_key ] ) {
 			return true;
@@ -383,8 +386,8 @@ class Init {
 
 	protected function render_criticalapi_generate_single( $critical_key, $url ) {
 
-		$file         = self::get_critical_dir() . $critical_key . '.css';
-		$has_file     = file_exists( $file );
+		$file     = self::get_critical_dir() . $critical_key . '.css';
+		$has_file = file_exists( $file );
 
 		$return = '<div class="criticalapi-generate criticalapi-generate--' . ( $has_file ? 'file' : 'nofile' ) . '" id="' . $critical_key . '">';
 		$return .= '<input name="action" type="hidden" value="' . self::$ajax_action . '"/>';

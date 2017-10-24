@@ -19,9 +19,6 @@ class Settings extends Init {
 	 * ApiKey
 	 */
 	public function register_apikey_settings() {
-		if ( ! apply_filters( 'awpp_use_critical_api', false ) ) {
-			return;
-		}
 		$section = awpp_settings()->add_section( awpp_settings_page_assets(), 'ccss', __( 'Above the fold CSS', 'awpp' ) . ' - API' );
 		if ( ! $this->apikey_set() ) {
 
