@@ -1,7 +1,7 @@
 === Advanced WPPerformance ===
 Contributors: nico_martin
 Donate link: https://www.paypal.me/NicoMartin
-Tags: Performance, Pagespeed, scriptloading, autoptimize, http2, server push, SPDY, preload
+Tags: Performance, Pagespeed, scriptloading, autoptimize, http2, server push, SPDY, preload, Critical CSS, Critical CSS API
 Requires at least: 4.7
 Tested up to: 4.8.2
 Stable tag: 1.5.0
@@ -76,6 +76,11 @@ A development version of this plugin is hosted on github. If you have some ideas
 [https://github.com/nico-martin/Advanced-WPPerformance](https://github.com/nico-martin/Advanced-WPPerformance)
 
 == Changelog ==
+
+### 1.5
+* updated DEFLATE compression
+* updated chaching headers
+* NEW - hidden beta Feature: Critical CSS API
 
 ### 1.4
 * added DEFLATE compression
