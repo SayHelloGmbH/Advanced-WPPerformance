@@ -54,8 +54,8 @@ The idea behind this option is that you could just create a bunch of critical CS
 
 There are several ways to generate Critical CSS. I recommend creating it while developing your theme. For example using [NPM/Gulp](https://github.com/addyosmani/critical).
 
-### Critical API
-We just created an API which returns the Above the fold CSS for a given page.  
+### Critical CSS API
+We just created an API which returns the "above the fold" CSS for a given page.  
 And yes, it's already implemented in this Plugin!
 
 At the moment it's hidden because it's still in development. To activate it you can define this constant inside `wp-config.php`: `define( 'AWPP_CRITICALAPI', true );`
