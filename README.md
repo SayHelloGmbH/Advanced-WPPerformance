@@ -54,7 +54,14 @@ The idea behind this option is that you could just create a bunch of critical CS
 
 There are several ways to generate Critical CSS. I recommend creating it while developing your theme. For example using [NPM/Gulp](https://github.com/addyosmani/critical).
 
-But we're already working on a way better solution. **More soon..**
+### Critical API
+We just created an API which returns the Above the fold CSS for a given page.  
+And yes, it's already implemented in this Plugin!
+
+At the moment it's hidden because it's still in development. To activate it you can define this constant inside `wp-config.php`: `define( 'AWPP_CRITICALAPI', true );`
+
+Afterwards you should paste an API Key to "WP Performance > Asset Delivery > Above the fold CSS". To get an API Key, contact us at [hello@sayhello.ch](mailto:hello@sayhello.ch)  
+And yes, we'd love to get feedback from you!
 
 ## HTTP/2 Server Push
 Server push is a HTTP/2 feature that allows you to send site assets to the user before they’ve even asked for them.
@@ -71,6 +78,11 @@ The second option puts all files to push inside you .htaccess. This way they are
 **But:** If your assets change (new versions / depreciated scripts), don't forget to update the .htaccess. This can be done with one click while saving the settings.
 
 ## Changelog
+
+### 1.5
+* updated DEFLATE compression
+* updated chaching headers
+* NEW - hidden beta Feature: Critical CSS API
 
 ### 1.4
 * added DEFLATE compression

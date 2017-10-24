@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/NicoMartin
 Tags: Performance, Pagespeed, scriptloading, autoptimize, http2, server push, SPDY, preload
 Requires at least: 4.7
 Tested up to: 4.8.2
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 Requires PHP: 5.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -29,6 +29,11 @@ All CSS Files will be removed from the head and loaded asynchronously. This make
 
 By default this plugin provides a textarea where you can put your critical CSS.
 Read more about [Conditional critical CSS](https://github.com/nico-martin/Advanced-WPPerformance#conditonal-critical-css)
+
+**Critical CSS API**
+
+We implemented an awesome new feature!
+Read more about the [Critical CSS API](https://github.com/nico-martin/Advanced-WPPerformance#critical-css-api).
 
 = HTTP/2 Server Push =
 
