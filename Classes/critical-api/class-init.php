@@ -259,6 +259,9 @@ class Init {
 		], 'objects' );
 
 		foreach ( $post_types_objects as $pt => $object ) {
+			if ( 'attachment' == $pt ) {
+				continue;
+			}
 			$post_types[ $pt ] = $object->labels->name;
 		}
 
