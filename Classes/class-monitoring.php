@@ -121,9 +121,9 @@ class Monitoring {
 
 		$return = $this->do_psi_request( get_home_url(), $_POST['apikey'] );
 
-		if ( 'error' == $return['type'] ) {
-			//update_option( $this->option_psikey, $_POST['apikey'] );
-			//awpp_exit_ajax( 'success', 'test' );
+		if ( 'error' != $return['type'] ) {
+			update_option( $this->option_psikey, $_POST['apikey'] );
+			awpp_exit_ajax( 'success', 'test', $return );
 		}
 
 		awpp_exit_ajax( 'error', 'er', $return );
@@ -155,6 +155,6 @@ class Monitoring {
 		$content = curl_exec( $ch );
 		curl_close( $ch );
 
-		return json_decode( $content );
+		return json_decode( $content, true );
 	}
 }
