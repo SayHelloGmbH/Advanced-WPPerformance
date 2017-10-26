@@ -119,13 +119,14 @@ class Monitoring {
 			awpp_exit_ajax( 'error', '<p>' . sht_error( 'nonce error' ) . '</p>' );
 		}
 
-		$test_url = 'https://www.googleapis.com/pagespeedonline/v2/runPagespeed?url=' . get_home_url() . '&key=' . $_POST['apikey'];
-		$return   = file_get_contents( $test_url );
+		$return = $this->do_psi_request( get_home_url(), $_POST['apikey'] );
 
-		awpp_exit_ajax( 'error', $test_url, $return );
+		if ( 'error' == $return['type'] ) {
+			//update_option( $this->option_psikey, $_POST['apikey'] );
+			//awpp_exit_ajax( 'success', 'test' );
+		}
 
-		update_option( $this->option_psikey, $_POST['apikey'] );
-		awpp_exit_ajax( 'success', 'test' );
+		awpp_exit_ajax( 'error', 'er', $return );
 	}
 
 	public function remove_psikey() {
@@ -138,5 +139,22 @@ class Monitoring {
 		$sendback = wp_get_referer();
 		wp_redirect( esc_url_raw( $sendback ) );
 		exit;
+	}
+
+	public function do_psi_request( $url, $key = '' ) {
+
+		if ( '' == $key ) {
+			$key = get_option( $this->option_psikey );
+		}
+
+		$url = "https://www.googleapis.com/pagespeedonline/v2/runPagespeed?url=$url&key=$key";
+
+		$ch = curl_init( $url );
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, true );
+		$content = curl_exec( $ch );
+		curl_close( $ch );
+
+		return json_decode( $content );
 	}
 }

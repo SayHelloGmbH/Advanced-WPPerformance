@@ -334,6 +334,8 @@ module.exports = {"settings_easing_speed":200}
 					data: data.join('&')
 				}).done(function (data) {
 
+					console.log(data);
+
 					if (data['type'] === null || data['type'] !== 'success') {
 
 						/**

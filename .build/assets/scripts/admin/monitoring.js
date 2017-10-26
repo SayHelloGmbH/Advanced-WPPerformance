@@ -22,6 +22,8 @@
 					data: data.join('&')
 				}).done(function (data) {
 
+					console.log(data);
+
 					if (data['type'] === null || data['type'] !== 'success') {
 
 						/**
