@@ -121,12 +121,13 @@ class Monitoring {
 
 		$return = $this->do_psi_request( get_home_url(), $_POST['apikey'] );
 
-		if ( 'error' != $return['type'] ) {
-			update_option( $this->option_psikey, $_POST['apikey'] );
-			awpp_exit_ajax( 'success', 'test', $return );
+		if ( isset( $return['error'] ) && is_array( $return['error'] ) ) {
+			awpp_exit_ajax( 'error', 'er', $return );
 		}
 
-		awpp_exit_ajax( 'error', 'er', $return );
+		update_option( $this->option_psikey, $_POST['apikey'] );
+		awpp_exit_ajax( 'success', 'test', $return );
+
 	}
 
 	public function remove_psikey() {

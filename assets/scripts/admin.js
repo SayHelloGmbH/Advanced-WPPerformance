@@ -354,7 +354,7 @@ module.exports = {"settings_easing_speed":200}
        * Success
        */
 
-						//location.reload();
+						location.reload();
 					}
 					$button.prop('disabled', false);
 				});

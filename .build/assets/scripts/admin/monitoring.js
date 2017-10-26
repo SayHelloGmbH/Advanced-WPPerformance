@@ -43,7 +43,7 @@
 						 * Success
 						 */
 
-						//location.reload();
+						location.reload();
 					}
 					$button.prop('disabled', false);
 				});
