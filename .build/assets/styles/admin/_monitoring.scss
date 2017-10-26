@@ -1,0 +1,43 @@
+.monitoring-links {
+	width: 100%;
+	border-spacing: 0;
+	td, th {
+		text-align: left;
+		padding: .7em 0;
+		border-bottom: 1px solid #d9d9d9;
+	}
+	th {
+		border-bottom-color: #000;
+	}
+}
+
+td.monitoring-table_link {
+	//padding-left: 1.8rem;
+	position: relative;
+}
+
+.monitoring-table_color {
+	display: inline-block;
+	width: 1.2em;
+	height: 1.2em;
+	margin-top: -.6em;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	display: none;
+}
+
+.monitoring-options-btn {
+	border: none;
+	background-color: transparent;
+	outline: none;
+	cursor: pointer;
+	color: #8a8a8a;
+	@include transition();
+	float: right;
+	text-decoration: none;
+	@include scale(1.4);
+	&:hover {
+		color: #000;
+	}
+}

@@ -275,3 +275,52 @@ body.user-edit-php .criticalapi-generate__controls {
   -webkit-animation: awpp-spinner-animation 0.65s infinite linear;
   animation: awpp-spinner-animation 0.65s infinite linear;
 }
+
+.monitoring-links {
+  width: 100%;
+  border-spacing: 0;
+}
+.monitoring-links td, .monitoring-links th {
+  text-align: left;
+  padding: .7em 0;
+  border-bottom: 1px solid #d9d9d9;
+}
+.monitoring-links th {
+  border-bottom-color: #000;
+}
+
+td.monitoring-table_link {
+  position: relative;
+}
+
+.monitoring-table_color {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: -.6em;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  display: none;
+}
+
+.monitoring-options-btn {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  color: #8a8a8a;
+  -moz-transition: all 200ms;
+  -o-transition: all 200ms;
+  -webkit-transition: all 200ms;
+  transition: all 200ms;
+  float: right;
+  text-decoration: none;
+  -moz-transform: scale(1.4, 1.4);
+  -ms-transform: scale(1.4, 1.4);
+  -webkit-transform: scale(1.4, 1.4);
+  transform: scale(1.4, 1.4);
+}
+.monitoring-options-btn:hover {
+  color: #000;
+}

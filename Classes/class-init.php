@@ -1,6 +1,7 @@
 <?php
 
 namespace nicomartin\AdvancedWPPerformance;
+
 class Init {
 	public $capability = '';
 	public $admin_bar_id = '';
@@ -17,7 +18,6 @@ class Init {
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ] );
 		add_action( 'awpp_basics_section', [ $this, 'intro_text' ], 1 );
 		add_action( 'awpp_basics_section', [ $this, 'speed_test_link' ] );
-		//add_action( 'awpp_basics_section', [ $this, 'speed_test_monitoring' ] );
 		// Admin Bar
 		add_action( 'admin_bar_menu', [ $this, 'add_toolbar' ], 90 );
 		// Assets
@@ -88,13 +88,6 @@ class Init {
 		foreach ( $links as $key => $values ) {
 			echo "<p><b>{$values['title']}</b><br><a href='{$values['url']}' target='_blank'>{$values['url']}</a></p>";
 		}
-		echo '</div>';
-	}
-
-	public function speed_test_monitoring() {
-		echo '<div class="awpp-wrap__section">';
-		echo '<h2>' . __( 'Monitoring', 'awpp' ) . '</h2>';
-		echo '<p>coming soon..</p>';
 		echo '</div>';
 	}
 

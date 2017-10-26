@@ -69,7 +69,8 @@
 
 __webpack_require__(1);
 __webpack_require__(4);
-module.exports = __webpack_require__(5);
+__webpack_require__(5);
+module.exports = __webpack_require__(6);
 
 
 /***/ }),
@@ -304,6 +305,64 @@ module.exports = {"settings_easing_speed":200}
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+(function ($) {
+	$(function () {
+		$('#monitoring-set-psikey').each(function () {
+
+			var $parent = $(this);
+			var $button = $(this).find('button');
+
+			$button.on('click', function () {
+
+				var data = [];
+				$parent.find('input').each(function () {
+					var name = $(this).attr('name');
+					var val = $(this).val();
+					data.push(name + '=' + val);
+				});
+
+				$button.prop('disabled');
+				jQuery.ajax({
+					url: ajaxurl,
+					type: 'POST',
+					dataType: 'json',
+					data: data.join('&')
+				}).done(function (data) {
+
+					if (data['type'] === null || data['type'] !== 'success') {
+
+						/**
+       * error
+       */
+
+						var msg_content = data['message'];
+						if (msg_content === '' || msg_content === undefined) {
+							msg_content = 'error';
+						}
+
+						alert(msg_content);
+					} else {
+
+						/**
+       * Success
+       */
+
+						location.reload();
+					}
+					$button.prop('disabled', false);
+				});
+			});
+		});
+	});
+})(jQuery);
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -106,3 +106,20 @@ function awpp_settings_page_server() {
 function awpp_settings_page_assets() {
 	return awpp_settings()->add_page( 'assets', __( 'Asset Delivery', 'awpp' ) );
 }
+
+function awpp_convert_date( $timestamp = '', $type = 'datetime' ) {
+	if ( '' == $timestamp ) {
+		$timestamp = time();
+	}
+	switch ( $type ) {
+		case 'date':
+			return date( get_option( 'date_format' ), $timestamp );
+			break;
+		case 'time':
+			return date( get_option( 'time_format' ), $timestamp );
+			break;
+		default:
+			return date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $timestamp );
+			break;
+	}
+}
