@@ -324,3 +324,7 @@ td.monitoring-table_link {
 .monitoring-options-btn:hover {
   color: #000;
 }
+
+#monitoring-set-psikey input[name=apikey] {
+  width: 300px;
+}

@@ -79,6 +79,9 @@ The second option puts all files to push inside you .htaccess. This way they are
 
 ## Changelog
 
+### 1.5.1
+* http/2 check improvements
+
 ### 1.5
 * updated DEFLATE compression
 * updated chaching headers

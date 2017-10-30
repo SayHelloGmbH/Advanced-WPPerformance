@@ -41,13 +41,14 @@ class Server {
 		$env          = getenv( 'X_SPDY' );
 		$http         = $_SERVER['SERVER_PROTOCOL'];
 		$http_version = explode( '/', $http )[1];
-		if ( version_compare( $http_version, '2', '>=' ) || ( '' != $env && false == $env ) ) {
+		if ( version_compare( $http_version, '2', '>=' ) || ( '' != $env && false != $env ) ) {
 			$content = '<p class="awpp-check awpp-check--good">' . __( 'Great!', 'awpp' ) . '</p>';
 			$content .= '<p class="awpp-smaller">' . __( 'Your are using min. HTTP/2.', 'awpp' ) . '</p>';
 		} else {
 			$content = '<p class="awpp-check awpp-check--bad">' . __( 'Needs work!', 'awpp' ) . '</p>';
 			// translators: This Plugin uses the advantages of {HTTP_VERSION}. Currently your server supports %1$s. We highly recommend to contact you hosting provider to upgrade to HTTP/2
 			$content .= '<p class="awpp-smaller">' . sprintf( __( 'This Plugin uses the advantages of HTTP/2. Currently your server supports %1$s. We highly recommend to contact you hosting provider to upgrade to HTTP/2', 'awpp' ), $http ) . '</p>';
+			//$content .= $env . '-' . $http;
 		}
 		awpp_settings()->add_message( $section, 'http2', __( 'HTTP Version', 'awpp' ), $content );
 	}
