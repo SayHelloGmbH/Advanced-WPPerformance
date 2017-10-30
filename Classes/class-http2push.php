@@ -1,7 +1,10 @@
 <?php
+
 namespace nicomartin\AdvancedWPPerformance;
 // Based on https://github.com/daveross/http2-server-push/
+
 class Http2Push {
+
 	public $max_header_size = 0;
 	public $header_size_accumulator = 0;
 	public $options = '';
@@ -9,21 +12,29 @@ class Http2Push {
 	public $serverpush_files_option = '';
 	public $serverpush_possfiles_option = '';
 	public $htaccess = '';
+
 	public function __construct() {
-		$this->max_header_size         = 1024 * 4;
-		$this->header_size_accumulator = 0;
+
+		$this->max_header_size             = 1024 * 4;
+		$this->header_size_accumulator     = 0;
 		$this->serverpush_scan_action      = 'awpp_scan_htaccess_push';
 		$this->serverpush_files_option     = 'awpp_serverpush_files';
 		$this->serverpush_possfiles_option = 'awpp_serverpush_possible_files';
 		$this->htaccess                    = new \nicomartin\Htaccess( 'Serverpush' );
 	}
+
 	public function run() {
+
+		echo '<pre id="stest">';
+		echo esc_html( print_r( get_option( 'short_test' ), true ) );
+		echo '</pre>';
+
 		add_action( 'awpp_settings', [ $this, 'register_settings' ] );
 		add_filter( 'script_loader_tag', [ $this, 'add_push_id_to_assets' ], 10, 2 );
 		add_filter( 'style_loader_tag', [ $this, 'add_push_id_to_assets' ], 10, 2 );
 		add_action( 'wp_ajax_' . $this->serverpush_scan_action, [ $this, 'ajax_get_frontpage_files' ] );
-		add_action( 'awpp_sanitize', [ $this, 'save_serverpush_files' ] );
-		add_action( 'awpp_sanitize', [ $this, 'maybe_do_serverpush_cron' ] );
+		add_action( 'awpp_on_sanitize', [ $this, 'save_serverpush_files' ] );
+		add_action( 'awpp_on_sanitize', [ $this, 'maybe_do_serverpush_cron' ] );
 		add_action( 'awpp_renew_htaccess_cron', [ $this, 'add_serverpush_htaccess' ] );
 		register_uninstall_hook( awpp_get_instance()->file, [ 'clean_up' ] );
 		if ( ! is_admin() ) {
@@ -35,18 +46,19 @@ class Http2Push {
 			}
 		}
 	}
+
 	public function register_settings() {
-		$section = awpp_settings()->add_section( awpp_settings_page_server(), 'serverpush', __( 'HTTP/2 Server Push', 'awpp' ) );
-		$choices = [
+		$section       = awpp_settings()->add_section( awpp_settings_page_server(), 'serverpush', __( 'HTTP/2 Server Push', 'awpp' ) );
+		$choices       = [
 			'disabled' => __( 'Disabled', 'awpp' ),
 			'php'      => __( 'PHP', 'awpp' ),
 			'htaccess' => __( '.htaccess', 'awpp' ),
 		];
-		$after = '';
-		$after .= '<div class="serverpush-htaccess-info" id="serverpush-htaccess-info" style="display:none">';
-		$after .= '<p class="awpp-smaller infotext">';
-		$after .= __( 'This option will add server push rules directly to your .htaccess. Please select all files that should be pushed on every pageload (Frontpage and all subpages).', 'awpp' );
-		$after .= '</p>';
+		$after         = '';
+		$after         .= '<div class="serverpush-htaccess-info" id="serverpush-htaccess-info" style="display:none">';
+		$after         .= '<p class="awpp-smaller infotext">';
+		$after         .= __( 'This option will add server push rules directly to your .htaccess. Please select all files that should be pushed on every pageload (Frontpage and all subpages).', 'awpp' );
+		$after         .= '</p>';
 		$chosen_files  = get_option( $this->serverpush_files_option );
 		$scanned_files = get_option( $this->serverpush_possfiles_option );
 		if ( ! is_array( $scanned_files ) || empty( $scanned_files ) ) {
@@ -76,17 +88,20 @@ class Http2Push {
 		$after .= '</p>';
 		$after .= '<div class="loader"></div>';
 		$after .= '</div>';
-		$args = [
+		$args  = [
 			'after_field' => $after,
 		];
 		awpp_settings()->add_select( $section, 'serverpush', __( 'Enable HTTP/2 Server Push', 'awpp' ), $choices, '', $args );
 	}
+
 	public function add_push_id_to_assets( $html, $id ) {
 		if ( current_filter() == 'script_loader_tag' ) {
 			return str_replace( ' src', ' data-push-id="' . $id . '" src', $html );
 		}
+
 		return str_replace( ' href', ' data-push-id="' . $id . '" href', $html );
 	}
+
 	public function ajax_get_frontpage_files() {
 		$add = $this->scan_frontpage_files();
 		if ( 'success' != $add['status'] ) {
@@ -94,7 +109,9 @@ class Http2Push {
 		}
 		awpp_exit_ajax( 'success', '', $add );
 	}
+
 	public function save_serverpush_files( $data ) {
+
 		if ( isset( $data['serverpush'] ) ) {
 			if ( ! isset( $data['serverpush_files'] ) || 'htaccess' != $data['serverpush'] ) {
 				$data['serverpush_files'] = [];
@@ -103,8 +120,10 @@ class Http2Push {
 			$this->add_serverpush_htaccess( $data['serverpush_files'] );
 			unset( $data['serverpush_files'] );
 		}
+
 		return $data;
 	}
+
 	public function maybe_do_serverpush_cron( $data ) {
 		if ( isset( $data['serverpush'] ) ) {
 			if ( 'htaccess' != $data['serverpush'] ) {
@@ -115,11 +134,13 @@ class Http2Push {
 			}
 		}
 	}
+
 	public function ob_start() {
 		if ( 'php' == awpp_get_setting( 'serverpush' ) ) {
 			ob_start();
 		}
 	}
+
 	public function link_preload_header( $src ) {
 		if ( 'php' != awpp_get_setting( 'serverpush' ) ) {
 			return $src;
@@ -135,8 +156,10 @@ class Http2Push {
 				$GLOBALS[ 'awpp_' . $this->link_resource_hint_as( current_filter() ) . '_srcs' ][] = $this->link_url_to_relative_path( $preload_src );
 			}
 		}
+
 		return $src;
 	}
+
 	public function resource_hints() {
 		if ( 'php' != awpp_get_setting( 'serverpush' ) ) {
 			return;
@@ -149,6 +172,7 @@ class Http2Push {
 			} );
 		} );
 	}
+
 	/**
 	 * PHP Helpers
 	 */
@@ -163,15 +187,19 @@ class Http2Push {
 			return $globals[ $resource_type_key ];
 		}
 	}
+
 	public function link_url_to_relative_path( $src ) {
 		return '//' === substr( $src, 0, 2 ) ? preg_replace( '/^\/\/([^\/]*)\//', '/', $src ) : preg_replace( '/^http(s)?:\/\/[^\/]*/', '', $src );
 	}
+
 	public function should_render_prefetch_headers() {
 		return apply_filters( 'awpp_render_resource_hints', ! function_exists( 'wp_resource_hints' ) );
 	}
+
 	public function link_resource_hint_as( $current_hook ) {
 		return 'style_loader_src' === $current_hook ? 'style' : 'script';
 	}
+
 	/**
 	 * Server Push Helpers
 	 */
@@ -186,8 +214,8 @@ class Http2Push {
 			rocket_clean_domain();
 		}
 		$return = [];
-		$agent = awpp_get_instance()->name . ' User Agent';
-		$ch    = curl_init( get_home_url() );
+		$agent  = awpp_get_instance()->name . ' User Agent';
+		$ch     = curl_init( get_home_url() );
 		curl_setopt( $ch, CURLOPT_URL, get_home_url() );
 		curl_setopt( $ch, CURLOPT_USERAGENT, $agent );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
@@ -203,9 +231,9 @@ class Http2Push {
 		} else {
 			$return['status'] = 'success';
 		}
-		$attr_regex    = '/([a-zA-Z0-9-]+)="([^"]+)"/';
-		$styles_regex  = '/<link rel=\'stylesheet\' (.*?)>/';
-		$scripts_regex = '/<script type=\'text\/javascript\' (.*?)><\/script>/';
+		$attr_regex       = '/([a-zA-Z0-9-]+)="([^"]+)"/';
+		$styles_regex     = '/<link rel=\'stylesheet\' (.*?)>/';
+		$scripts_regex    = '/<script type=\'text\/javascript\' (.*?)><\/script>/';
 		$return['styles'] = [];
 		preg_match_all( $styles_regex, $file, $styles, PREG_SET_ORDER, 0 );
 		foreach ( $styles as $style ) {
@@ -256,8 +284,10 @@ class Http2Push {
 			];
 		}
 		update_option( $this->serverpush_possfiles_option, $return );
+
 		return $return;
 	}
+
 	public function add_serverpush_htaccess( $options = '', $files = '' ) {
 		if ( '' == $options ) {
 			$options = get_option( $this->serverpush_files_option );
@@ -276,7 +306,7 @@ class Http2Push {
 				$lines[] = '<FilesMatch "(index\.php|\.(html|htm|gz)$)">';
 				foreach ( [ 'styles', 'scripts' ] as $type ) {
 					$lines[] = '# ' . $type;
-					$as = 'style';
+					$as      = 'style';
 					if ( 'scripts' == $type ) {
 						$as = 'script';
 					}
@@ -294,6 +324,7 @@ class Http2Push {
 			$this->htaccess->delete();
 		}// End if().
 	}
+
 	/**
 	 * Clean Up
 	 */
