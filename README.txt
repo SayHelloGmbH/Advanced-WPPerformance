@@ -77,6 +77,9 @@ A development version of this plugin is hosted on github. If you have some ideas
 
 == Changelog ==
 
+### 1.5.2
+* quickfix
+
 ### 1.5.1
 * http/2 check improvements
 * fix: serverpush settings action

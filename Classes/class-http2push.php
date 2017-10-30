@@ -25,10 +25,6 @@ class Http2Push {
 
 	public function run() {
 
-		echo '<pre id="stest">';
-		echo esc_html( print_r( get_option( 'short_test' ), true ) );
-		echo '</pre>';
-
 		add_action( 'awpp_settings', [ $this, 'register_settings' ] );
 		add_filter( 'script_loader_tag', [ $this, 'add_push_id_to_assets' ], 10, 2 );
 		add_filter( 'style_loader_tag', [ $this, 'add_push_id_to_assets' ], 10, 2 );
