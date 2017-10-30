@@ -79,6 +79,7 @@ A development version of this plugin is hosted on github. If you have some ideas
 
 ### 1.5.1
 * http/2 check improvements
+* fix: serverpush settings action
 
 ### 1.5
 * updated DEFLATE compression

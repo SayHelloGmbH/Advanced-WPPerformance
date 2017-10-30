@@ -81,6 +81,7 @@ The second option puts all files to push inside you .htaccess. This way they are
 
 ### 1.5.1
 * http/2 check improvements
+* fix: serverpush settings action
 
 ### 1.5
 * updated DEFLATE compression
