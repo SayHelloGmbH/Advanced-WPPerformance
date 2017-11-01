@@ -117,7 +117,7 @@ __webpack_require__(2);
 
 				var vals = [];
 				$e.find('input, textarea, select').each(function () {
-					vals.push($(this).attr('name') + '=' + $(this).val());
+					vals.push($(this).attr('data-criticalapi-name') + '=' + $(this).val());
 				});
 
 				var val = vals.join('&');
@@ -159,8 +159,8 @@ __webpack_require__(2);
 			$trigger_delete.on('click', function () {
 
 				var vals = [];
-				vals.push('action=' + $e.find('input[name=action_delete]').val());
-				vals.push('critical_key=' + $e.find('input[name=critical_key]').val());
+				vals.push('action=' + $e.find('input[name=criticalapi_action_delete]').val());
+				vals.push('critical_key=' + $e.find('input[name=criticalapi_key]').val());
 
 				var val = vals.join('&');
 

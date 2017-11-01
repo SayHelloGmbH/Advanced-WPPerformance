@@ -316,13 +316,14 @@ class Init {
 
 		$return = '<tr class="criticalapi-generate criticalapi-generate--' . ( $has_file ? 'file' : 'nofile' ) . '" id="' . $critical_key . '">';
 		$return .= '<td>';
-		$return .= '<input name="action" type="hidden" value="' . self::$ajax_action . '"/>';
-		$return .= '<input name="action_delete" type="hidden" value="' . self::$ajax_action_delete . '"/>';
-		$return .= '<input name="critical_key" type="hidden" value="' . $critical_key . '"/>';
+		$return .= '<input name="criticalapi_action" data-criticalapi-name="action" type="hidden" value="' . self::$ajax_action . '"/>';
+		$return .= '<input name="criticalapi_action_delete" data-criticalapi-name="action_delete" type="hidden" value="' . self::$ajax_action_delete . '"/>';
+		$return .= '<input name="criticalapi_key" data-criticalapi-name="critical_key" type="hidden" value="' . $critical_key . '"/>';
+
 		$return .= '<p><b>' . $title . '</b></p>';
 
 		if ( is_array( $urls ) ) {
-			$return .= '<select name="url" class="criticalapi-generate__input">';
+			$return .= '<select name="criticalapi_url" data-criticalapi-name="url" class="criticalapi-generate__input">';
 			if ( array_key_exists( 'elements', $urls ) && is_array( $urls['elements'] ) ) {
 				foreach ( $urls['elements'] as $element_key => $element ) {
 					$selected = '';
@@ -358,10 +359,10 @@ class Init {
 			$return .= '</select>';
 			$return .= '<input name="savepage" type="hidden" value="yes"/>';
 		} elseif ( '' == $urls ) {
-			$return .= '<input name="url" type="text" class="criticalapi-generate__input" value="' . $saved_url . '" placeholder="' . trailingslashit( get_home_url() ) . '..."/>';
+			$return .= '<input name="criticalapi_url" data-criticalapi-name="url" type="text" class="criticalapi-generate__input" value="' . $saved_url . '" placeholder="' . trailingslashit( get_home_url() ) . '..."/>';
 			$return .= '<input name="savepage" type="hidden" value="yes"/>';
 		} else {
-			$return .= '<input name="url" type="text" value="' . $urls . '" disabled class="criticalapi-generate__input"/>';
+			$return .= '<input name="criticalapi_url" data-criticalapi-name="url" type="text" value="' . $urls . '" disabled class="criticalapi-generate__input"/>';
 			$return .= '<input name="savepage" type="hidden" value="no"/>';
 		} // End if().
 		$return .= '</td>';
@@ -393,10 +394,10 @@ class Init {
 		$has_file = file_exists( $file );
 
 		$return = '<div class="criticalapi-generate criticalapi-generate--' . ( $has_file ? 'file' : 'nofile' ) . '" id="' . $critical_key . '">';
-		$return .= '<input name="action" type="hidden" value="' . self::$ajax_action . '"/>';
-		$return .= '<input name="action_delete" type="hidden" value="' . self::$ajax_action_delete . '"/>';
-		$return .= '<input name="critical_key" type="hidden" value="' . $critical_key . '"/>';
-		$return .= '<input name="url" type="hidden" value="' . $url . '"/>';
+		$return .= '<input name="criticalapi_action" data-criticalapi-name="action" type="hidden" value="' . self::$ajax_action . '"/>';
+		$return .= '<input name="criticalapi_action_delete" data-criticalapi-name="action_delete" type="hidden" value="' . self::$ajax_action_delete . '"/>';
+		$return .= '<input name="criticalapi_key" data-criticalapi-name="critical_key" type="hidden" value="' . $critical_key . '"/>';
+		$return .= '<input name="criticalapi_url" data-criticalapi-name="url" type="hidden" value="' . $url . '"/>';
 
 		// generated
 		$return .= '<div class="criticalapi-generate__generated">';

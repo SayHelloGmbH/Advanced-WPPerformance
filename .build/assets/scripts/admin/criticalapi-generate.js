@@ -35,7 +35,7 @@ import './modules/settings.js';
 
 				let vals = [];
 				$e.find('input, textarea, select').each(function () {
-					vals.push($(this).attr('name') + '=' + $(this).val());
+					vals.push($(this).attr('data-criticalapi-name') + '=' + $(this).val());
 				});
 
 				const val = vals.join('&');
@@ -78,8 +78,8 @@ import './modules/settings.js';
 			$trigger_delete.on('click', function () {
 
 				let vals = [];
-				vals.push('action='+$e.find('input[name=action_delete]').val());
-				vals.push('critical_key='+$e.find('input[name=critical_key]').val());
+				vals.push('action='+$e.find('input[name=criticalapi_action_delete]').val());
+				vals.push('critical_key='+$e.find('input[name=criticalapi_key]').val());
 
 				const val = vals.join('&');
 

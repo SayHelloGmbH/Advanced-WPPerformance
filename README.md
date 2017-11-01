@@ -79,6 +79,9 @@ The second option puts all files to push inside you .htaccess. This way they are
 
 ## Changelog
 
+### 1.5.3
+* Fixed Bug while save/post and CriticalAPI enabled
+
 ### 1.5.2
 * quickfix
 

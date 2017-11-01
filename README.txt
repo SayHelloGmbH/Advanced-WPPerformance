@@ -3,8 +3,8 @@ Contributors: nico_martin
 Donate link: https://www.paypal.me/NicoMartin
 Tags: Performance, Pagespeed, scriptloading, autoptimize, http2, server push, SPDY, preload, Critical CSS, Critical CSS API
 Requires at least: 4.7
-Tested up to: 4.8.2
-Stable tag: 1.5.0
+Tested up to: 4.8.3
+Stable tag: 1.5.3
 Requires PHP: 5.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -76,6 +76,9 @@ A development version of this plugin is hosted on github. If you have some ideas
 [https://github.com/nico-martin/Advanced-WPPerformance](https://github.com/nico-martin/Advanced-WPPerformance)
 
 == Changelog ==
+
+### 1.5.3
+* Fixed Bug while save/post and CriticalAPI enabled
 
 ### 1.5.2
 * quickfix
