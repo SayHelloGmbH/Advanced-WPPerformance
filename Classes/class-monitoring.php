@@ -290,7 +290,8 @@ class Monitoring {
 		];
 
 		foreach ( $urls as $url ) {
-			$file = $dir . sanitize_title( $url ) . '.json';
+			$key  = str_replace( [ 'https://', 'http://', 'www.' ], '', $url );
+			$file = $dir . sanitize_title( $key ) . '.json';
 			if ( ! file_exists( $file ) ) {
 				fopen( $file, 'w' );
 			}
