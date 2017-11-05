@@ -260,11 +260,9 @@ class Monitoring {
 		update_option( $this->option_monitoring, $data );
 
 		wp_clear_scheduled_hook( 'awpp_monitoring_sheduled_psi_request' );
-		wp_schedule_event( time(), $data['frequency'], 'awpp_monitoring_sheduled_psi_request' );
-
-		/**
-		 * TODO:   R E L E A S E   T H E   C R O N ! ! !
-		 */
+		if ( 'never' != $data['frequency'] ) {
+			wp_schedule_event( time(), $data['frequency'], 'awpp_monitoring_sheduled_psi_request' );
+		}
 
 		awpp_exit_ajax( 'success', 'test' );
 	}
