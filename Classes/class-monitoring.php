@@ -40,7 +40,6 @@ class Monitoring {
 		$colors = [ '#ff0000', '#00ff00', '#0000ff' ];
 
 		$psi_apikey = get_option( $this->option_psikey );
-		echo $psi_apikey;
 		$psi_apikey_set = ( '' != $psi_apikey );
 
 		add_thickbox();
@@ -279,7 +278,7 @@ class Monitoring {
 		return $default;
 	}
 
-	public function awpp_monitoring_sheduled_psi_request() {
+	public function sheduled_psi_request() {
 
 		$dir = trailingslashit( WP_CONTENT_DIR ) . 'awpp-monitoring/';
 		if ( ! is_dir( $dir ) ) {
