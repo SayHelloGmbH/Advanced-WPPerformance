@@ -280,7 +280,7 @@ class Monitoring {
 
 	public function sheduled_psi_request() {
 
-		$dir = trailingslashit( WP_CONTENT_DIR ) . 'awpp-monitoring/';
+		$dir = trailingslashit( wp_upload_dir()['basedir'] ) . 'awpp-monitoring/';
 		if ( ! is_dir( $dir ) ) {
 			mkdir( $dir );
 		}
