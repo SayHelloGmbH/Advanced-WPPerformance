@@ -4,20 +4,27 @@ namespace nicomartin\AdvancedWPPerformance;
 
 class Monitoring {
 
+	public $option_monitoring = '';
 	public $option_psikey = '';
 	public $ajax_set_psikey = '';
 	public $action_remove_psikey = '';
+	public $ajax_save_settings = '';
 
 	public function __construct() {
+		$this->option_monitoring    = 'awpp_monitoring';
 		$this->option_psikey        = 'awpp_monitoring_psikey';
 		$this->ajax_set_psikey      = 'awpp_monitoring_set_psikey';
 		$this->action_remove_psikey = 'awpp_monitoring_remove_psikey';
+		$this->ajax_save_settings   = 'awpp_monitoring_save_settings';
 	}
 
 	public function run() {
 		add_action( 'awpp_basics_section', [ $this, 'speed_test_monitoring' ] );
 		add_action( 'wp_ajax_' . $this->ajax_set_psikey, [ $this, 'set_psikey' ] );
 		add_action( 'admin_action_' . $this->action_remove_psikey, [ $this, 'remove_psikey' ] );
+
+		add_filter( 'cron_schedules', [ $this, 'cron_schedules' ] );
+		add_action( 'wp_ajax_' . $this->ajax_save_settings, [ $this, 'ajax_save_settings' ] );
 	}
 
 	public function speed_test_monitoring() {
@@ -42,7 +49,46 @@ class Monitoring {
 		 * Settings
 		 */
 
+		$settings = [
+			'frequency' => [],
+			'email'     => __( 'Email', 'awpp' ),
+
+		];
+
+		foreach ( wp_get_schedules() as $key => $shedule ) {
+			$settings['frequency'][ $key ] = $shedule['display'];
+		}
+
 		echo '<div id="awpp-monitoring-settings" style="display: none;">';
+		echo '<div class="awpp-monitoring-settings">';
+		echo '<h3>' . __( 'Settings', 'awpp' ) . '</h3>';
+		echo '<span class="awpp-monitoring_setting awpp-monitoring_setting--frequency"><label for="frequency">' . __( 'Frequency', 'awpp' ) . '</label>';
+		echo '<select id="frequency" name="frequency">';
+		echo '<option value="never">' . __( 'Never', 'awpp' ) . '</option>';
+		foreach ( wp_get_schedules() as $key => $shedule ) {
+			if ( strpos( $key, 'awpp_' ) === 0 ) {
+				$selected = '';
+				if ( $key == $this->get_setting( 'frequency' ) ) {
+					$selected = 'selected';
+				}
+				echo "<option value='$key' $selected>{$shedule['display']}</option>";
+			}
+		}
+		echo '</select>';
+		echo '</span>';
+		echo '<span class="awpp-monitoring_setting awpp-monitoring_setting--minindex"><label for="minindex">' . __( 'Inform me if result is lower than this index:', 'awpp' ) . '</label>';
+		echo '<input id="minindex" name="minindex" type="number" min="1" max="100" value="' . $this->get_setting( 'minindex', 0 ) . '" />';
+		echo '</span>';
+		echo '<span class="awpp-monitoring_setting awpp-monitoring_setting--email"><label for="email">' . __( 'Email', 'awpp' ) . ':</label>';
+		echo '<input id="email" name="email" type="email" value="' . $this->get_setting( 'email', get_option( 'admin_email' ) ) . '" />';
+		echo '</span>';
+		echo '<span class="awpp-monitoring_setting awpp-monitoring_setting--submit">';
+		echo '<button id="save_settings" type="submit" class="button">' . __( 'Send', 'awpp' ) . '</button>';
+		echo '<input type="hidden" name="action" value="' . $this->ajax_save_settings . '">';
+		echo '</span>';
+
+		echo '<div class="loader"></div>';
+		echo '</div>';
 		echo '</div>';
 
 		/**
@@ -50,7 +96,7 @@ class Monitoring {
 		 */
 
 		echo '<div class="awpp-wrap__section">';
-		echo '<h2>' . __( 'Monitoring', 'awpp' ) . '<a href="#TB_inline?width=600&height=550&inlineId=awpp-monitoring-settings" class="thickbox monitoring-options-btn"><span class="dashicons dashicons-admin-generic"></span></a></h2>';
+		echo '<h2>' . __( 'Monitoring', 'awpp' ) . '<a href="#TB_inline=true&width=300&height=330&inlineId=awpp-monitoring-settings" class="thickbox monitoring-options-btn"><span class="dashicons dashicons-admin-generic"></span></a></h2>';
 		if ( $psi_apikey_set ) {
 			echo '<table class="monitoring-links">';
 			echo '<thead>';
@@ -104,7 +150,7 @@ class Monitoring {
 			echo '<div class="" id="monitoring-set-psikey">';
 			echo '<p><a href="https://console.developers.google.com/apis/library/pagespeedonline.googleapis.com/" target="_blank">' . __( 'Get an API Key', 'awpp' ) . '</a></p>';
 			echo '<input type="text" name="apikey" />';
-			echo 'AIzaSyD1DEAkkZIGqitAhOTn1BbqctWP6f_tAoI';
+			//echo 'AIzaSyD1DEAkkZIGqitAhOTn1BbqctWP6f_tAoI';
 			echo '<input name="action" value="' . $this->ajax_set_psikey . '" type="hidden" />';
 			wp_nonce_field( $this->option_psikey . '_nonce', 'nonce' );
 			echo '<br><br><button class="button">' . __( 'Save', 'awpp' ) . '</button>';
@@ -122,7 +168,8 @@ class Monitoring {
 		$return = $this->do_psi_request( get_home_url(), $_POST['apikey'] );
 
 		if ( isset( $return['error'] ) && is_array( $return['error'] ) ) {
-			awpp_exit_ajax( 'error', 'er', $return );
+			$error = "Error {$return['error']['code']}: {$return['error']['message']}";
+			awpp_exit_ajax( 'error', $error, $return );
 		}
 
 		update_option( $this->option_psikey, $_POST['apikey'] );
@@ -157,5 +204,108 @@ class Monitoring {
 		curl_close( $ch );
 
 		return json_decode( $content, true );
+	}
+
+	public function cron_schedules( $schedules ) {
+
+		$schedules['awpp_hourly'] = [
+			'interval' => ( 60 * 60 ),
+			'display'  => __( 'Every Hour', 'awpp' ),
+		];
+
+		$schedules['awpp_twicedaily'] = [
+			'interval' => ( 60 * 60 * 12 ),
+			'display'  => __( 'Twice Daily', 'awpp' ),
+		];
+
+		$schedules['awpp_daily'] = [
+			'interval' => ( 60 * 60 * 24 ),
+			'display'  => __( 'Daily', 'awpp' ),
+		];
+
+		$schedules['awpp_twiceweekly'] = [
+			'interval' => ( 60 * 60 * 24 * 3.5 ),
+			'display'  => __( 'Twice Weekly', 'awpp' ),
+		];
+
+		$schedules['awpp_weekly'] = [
+			'interval' => ( 60 * 60 * 24 * 7 ),
+			'display'  => __( 'Weekly', 'awpp' ),
+		];
+
+		return $schedules;
+	}
+
+	public function ajax_save_settings() {
+
+		$data = [
+			'frequency' => 'never',
+			'minindex'  => 1,
+			'email'     => '',
+		];
+
+		foreach ( $data as $key => $value ) {
+			if ( ! array_key_exists( $key, $_POST ) ) {
+				continue;
+			}
+			if ( 'minindex' == $key ) {
+				$data[ $key ] = intval( $_POST[ $key ] );
+			} elseif ( 'email' == $key ) {
+				$data[ $key ] = sanitize_email( $_POST[ $key ] );
+			} else {
+				$data[ $key ] = $_POST[ $key ];
+			}
+		}
+
+		update_option( $this->option_monitoring, $data );
+
+		wp_clear_scheduled_hook( 'awpp_monitoring_sheduled_psi_request' );
+		wp_schedule_event( time(), $data['frequency'], 'awpp_monitoring_sheduled_psi_request' );
+
+		/**
+		 * TODO:   R E L E A S E   T H E   C R O N ! ! !
+		 */
+
+		awpp_exit_ajax( 'success', 'test' );
+	}
+
+	public function get_setting( $key, $default = '' ) {
+		$option = get_option( $this->option_monitoring );
+		if ( ! is_array( $option ) ) {
+			return $default;
+		}
+		if ( array_key_exists( $key, $option ) ) {
+			return $option[ $key ];
+		}
+
+		return $default;
+	}
+
+	public function awpp_monitoring_sheduled_psi_request() {
+
+		$dir = trailingslashit( WP_CONTENT_DIR ) . 'awpp-monitoring/';
+		if ( ! is_dir( $dir ) ) {
+			mkdir( $dir );
+		}
+		$urls = [
+			get_home_url(),
+		];
+
+		foreach ( $urls as $url ) {
+			$file = $dir . sanitize_title( $url ) . '.json';
+			if ( ! file_exists( $file ) ) {
+				fopen( $file, 'w' );
+			}
+			$old_data = json_decode( file_get_contents( $file ), true );
+			if ( is_null( $old_data ) ) {
+				$old_data = [];
+			}
+
+			$return = $this->do_psi_request( $url );
+			if ( ! isset( $return['error'] ) ) {
+				$old_data[ time() ] = $return;
+			}
+			file_put_contents( $file, json_encode( $old_data ) );
+		}
 	}
 }

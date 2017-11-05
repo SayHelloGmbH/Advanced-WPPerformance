@@ -327,7 +327,7 @@ module.exports = {"settings_easing_speed":200}
 				});
 
 				$button.prop('disabled');
-				jQuery.ajax({
+				$.ajax({
 					url: ajaxurl,
 					type: 'POST',
 					dataType: 'json',
@@ -357,6 +357,56 @@ module.exports = {"settings_easing_speed":200}
 						location.reload();
 					}
 					$button.prop('disabled', false);
+				});
+			});
+		});
+
+		$('.awpp-monitoring-settings').each(function () {
+
+			var $parent = $(this);
+			var $loader = $parent.find('.loader');
+			var $button = $parent.find('button[type=submit]');
+
+			$button.on('click', function () {
+
+				var data = [];
+				$parent.find('input, select').each(function () {
+					var name = $(this).attr('name');
+					var val = $(this).val();
+					data.push(name + '=' + val);
+				});
+
+				$loader.fadeIn();
+				$.ajax({
+					url: ajaxurl,
+					type: 'POST',
+					dataType: 'json',
+					data: data.join('&')
+				}).done(function (data) {
+
+					console.log(data);
+
+					if (data['type'] === null || data['type'] !== 'success') {
+
+						/**
+       * error
+       */
+
+						var msg_content = data['message'];
+						if (msg_content === '' || msg_content === undefined) {
+							msg_content = 'error';
+						}
+
+						alert(msg_content);
+					} else {
+
+						/**
+       * Success
+       */
+
+						//location.reload();
+					}
+					$loader.fadeOut();
 				});
 			});
 		});

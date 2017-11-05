@@ -45,3 +45,44 @@ td.monitoring-table_link {
 #monitoring-set-psikey input[name=apikey] {
 	width: 300px;
 }
+
+.awpp-monitoring_setting {
+	display: block;
+	margin: 10px 0 20px 0;
+	label {
+		display: block;
+		margin-bottom: 5px;
+		font-weight: bold;
+	}
+	select,
+	input[type=email] {
+		width: 100%;
+	}
+}
+
+.awpp-monitoring_setting--submit {
+	text-align: right;
+}
+
+.awpp-monitoring-settings {
+	position: relative;
+	.loader {
+		position: absolute;
+		bottom: -2px;
+		left: -2px;
+		right: -2px;
+		top: -2px;
+		display: none;
+		background-color: rgba(#fff, .8);
+		&:before {
+			content: '';
+			display: block;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			margin-left: -30px;
+			margin-top: -30px;
+			@include spinner(60px, 6px solid #0073aa);
+		}
+	}
+}

@@ -328,3 +328,58 @@ td.monitoring-table_link {
 #monitoring-set-psikey input[name=apikey] {
   width: 300px;
 }
+
+.awpp-monitoring_setting {
+  display: block;
+  margin: 10px 0 20px 0;
+}
+.awpp-monitoring_setting label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+.awpp-monitoring_setting select,
+.awpp-monitoring_setting input[type=email] {
+  width: 100%;
+}
+
+.awpp-monitoring_setting--submit {
+  text-align: right;
+}
+
+.awpp-monitoring-settings {
+  position: relative;
+}
+.awpp-monitoring-settings .loader {
+  position: absolute;
+  bottom: -2px;
+  left: -2px;
+  right: -2px;
+  top: -2px;
+  display: none;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+.awpp-monitoring-settings .loader:before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -30px;
+  margin-top: -30px;
+  background-color: transparent;
+  border: 6px solid #0073aa;
+  border-radius: 50%;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  width: 60px;
+  height: 60px;
+  display: inline-block;
+  vertical-align: middle;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -moz-animation: awpp-spinner-animation 0.65s infinite linear;
+  -webkit-animation: awpp-spinner-animation 0.65s infinite linear;
+  animation: awpp-spinner-animation 0.65s infinite linear;
+}
