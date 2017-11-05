@@ -39,7 +39,7 @@ class Monitoring {
 		];
 		$colors = [ '#ff0000', '#00ff00', '#0000ff' ];
 
-		$psi_apikey = get_option( $this->option_psikey );
+		$psi_apikey     = get_option( $this->option_psikey );
 		$psi_apikey_set = ( '' != $psi_apikey );
 
 		add_thickbox();
@@ -260,6 +260,7 @@ class Monitoring {
 
 		wp_clear_scheduled_hook( 'awpp_monitoring_sheduled_psi_request' );
 		if ( 'never' != $data['frequency'] ) {
+			$this->sheduled_psi_request();
 			wp_schedule_event( time(), $data['frequency'], 'awpp_monitoring_sheduled_psi_request' );
 		}
 
