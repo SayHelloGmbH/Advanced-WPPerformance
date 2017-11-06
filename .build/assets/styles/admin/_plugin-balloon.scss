@@ -34,36 +34,6 @@ $balloon-arrow-height: 6px;
 	height: $height;
 }
 
-@mixin transition($args...) {
-	-webkit-transition: $args;
-	-moz-transition: $args;
-	-ms-transition: $args;
-	-o-transition: $args;
-	transition: $args;
-}
-
-@mixin transform($val) {
-	-webkit-transform: $val;
-	-moz-transform: $val;
-	-ms-transform: $val;
-	transform: $val;
-}
-
-@mixin transform-origin($val) {
-	-webkit-transform-origin: $val;
-	-moz-transform-origin: $val;
-	-ms-transform-origin: $val;
-	transform-origin: $val;
-}
-
-@mixin opacity($trans) {
-	filter: alpha(opacity=($trans * 100));
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$trans * 100})";
-	-moz-opacity: $trans;
-	-khtml-opacity: $trans;
-	opacity: $trans;
-}
-
 @mixin base-effects() {
 	@include opacity(0);
 	pointer-events: none;
