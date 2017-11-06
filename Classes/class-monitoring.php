@@ -125,22 +125,22 @@ class Monitoring {
 				}
 				echo '<pre>' . print_r( $scores, true ) . '</pre>';
 
-				continue;
 				$color_index = $index % count( $colors );
 				$color       = $colors[ $color_index ];
 
-				$max      = max( $scores );
-				$max_date = time();
-				$min      = min( $scores );
-				$min_date = time();
-				$av       = 0;
+				$max       = max( $scores );
+				$min       = min( $scores );
+				$max_times = [];
+				$min_times = [];
+				$av        = 0;
+
 				foreach ( $scores as $timestamp => $score ) {
 
 					if ( $score == $max ) {
-						$max_date[] = awpp_convert_date( $timestamp );
+						$max_times[] = awpp_convert_date( $timestamp );
 					}
 					if ( $score == $min ) {
-						$min_date[] = awpp_convert_date( $timestamp );
+						$min_times[] = awpp_convert_date( $timestamp );
 					}
 
 					$av = $av + $score;
@@ -155,7 +155,7 @@ class Monitoring {
 				echo "<td class='monitoring-table_remove'></td>";
 				echo '</tr>';
 
-			}
+			} // End foreach().
 			echo '</tbody>';
 			echo '</table>';
 		} // End if().
