@@ -322,16 +322,10 @@ class Monitoring {
 		$return['score'] = $data['ruleGroups']['SPEED']['score'];
 		$return['rules'] = [];
 		foreach ( $data['formattedResults']['ruleResults'] as $key => $val ) {
-			$return['rules'][ $key ]['title'] = $val['localizedRuleName'];
-			$content                          = $val['summary']['format'];
-			foreach ( $val['summary']['format']['args'] as $args ) {
-				if ( 'HYPERLINK' == $args['type'] ) {
-					$content = str_replace( "{{BEGIN_{$args['key']}}}", '<a href="' . $args['value'] . '">', $content );
-					$content = str_replace( "{{END_{$args['key']}}}", '</a>', $content );
-				}
-			}
-			$return['rules'][ $key ]['content'] = $content;
+			$return['rules'][ $key ]['title']   = $val['localizedRuleName'];
+			$return['rules'][ $key ]['content'] = $val['summary']['format'];
 		}
+
 		return $return;
 	}
 }
