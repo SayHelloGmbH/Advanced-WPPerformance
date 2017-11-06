@@ -152,8 +152,8 @@ class Monitoring {
 
 				echo '<tr class="monitoring-table">';
 				echo "<td class='monitoring-table_link'><span class='monitoring-table_color'></span>{$url}</td>";
-				echo "<td class='monitoring-table_lowest'><span data-balloon='" . esc_attr( implode( ', ', $min_times_sliced ) ) . "'></span>$min</td>";
-				echo "<td class='monitoring-table_highest'><span data-balloon='" . esc_attr( implode( ', ', $max_times_sliced ) ) . "'></span>$max</td>";
+				echo "<td class='monitoring-table_lowest'><span data-balloon='" . esc_attr( implode( ', ', $min_times_sliced ) ) . "'>$min</span></td>";
+				echo "<td class='monitoring-table_highest'><span data-balloon='" . esc_attr( implode( ', ', $max_times_sliced ) ) . "'>$max</span></td>";
 				echo "<td class='monitoring-table_average'><b>$average</b></td>";
 				echo "<td class='monitoring-table_remove'></td>";
 				echo '</tr>';
