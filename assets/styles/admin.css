@@ -38,6 +38,7 @@ button[data-balloon] {
 
 [data-balloon] {
   position: relative;
+  display: inline-block;
   cursor: pointer;
 }
 [data-balloon]:after {
