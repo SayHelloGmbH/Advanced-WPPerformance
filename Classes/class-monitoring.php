@@ -9,6 +9,7 @@ class Monitoring {
 	public $ajax_set_psikey = '';
 	public $action_remove_psikey = '';
 	public $ajax_save_settings = '';
+	public $dir = '';
 
 	public function __construct() {
 		$this->option_monitoring    = 'awpp_monitoring';
@@ -16,6 +17,10 @@ class Monitoring {
 		$this->ajax_set_psikey      = 'awpp_monitoring_set_psikey';
 		$this->action_remove_psikey = 'awpp_monitoring_remove_psikey';
 		$this->ajax_save_settings   = 'awpp_monitoring_save_settings';
+		$this->dir                  = trailingslashit( wp_upload_dir()['basedir'] ) . 'awpp-monitoring/';
+		if ( ! is_dir( $this->dir ) ) {
+			mkdir( $this->dir );
+		}
 	}
 
 	public function run() {
@@ -29,7 +34,7 @@ class Monitoring {
 
 	public function speed_test_monitoring() {
 
-		$urls = get_option( 'awpp_monitoring_urls' );
+		$urls = apply_filters( 'awpp_monitoring_urls', [ get_home_url() ] );
 		if ( ! is_array( $urls ) ) {
 			$urls = [ get_home_url() ];
 		}
@@ -107,6 +112,7 @@ class Monitoring {
 			echo '</thead>';
 			echo '<tbody>';
 			foreach ( $urls as $index => $url ) {
+				$key         = $this->filter_monitoring_url_key( $url );
 				$color_index = $index % count( $colors );
 				$color       = $colors[ $color_index ];
 
@@ -282,17 +288,12 @@ class Monitoring {
 
 	public function sheduled_psi_request() {
 
-		$dir = trailingslashit( wp_upload_dir()['basedir'] ) . 'awpp-monitoring/';
-		if ( ! is_dir( $dir ) ) {
-			mkdir( $dir );
-		}
-
 		$urls     = apply_filters( 'awpp_monitoring_urls', [ get_home_url() ] );
 		$settings = get_option( $this->option_monitoring );
 
 		foreach ( $urls as $url ) {
-			$key  = str_replace( [ 'https://', 'http://', 'www.' ], '', $url );
-			$file = $dir . sanitize_title( $key ) . '.json';
+			$key  = $this->filter_monitoring_url_key( $url );
+			$file = $this->dir . $key . '.json';
 			if ( ! file_exists( $file ) ) {
 				fopen( $file, 'w' );
 			}
@@ -328,5 +329,11 @@ class Monitoring {
 		}
 
 		return $return;
+	}
+
+	private function filter_monitoring_url_key( $url ) {
+		$key = str_replace( [ 'https://', 'http://', 'www.' ], '', $url );
+
+		return sanitize_title( $key );
 	}
 }
