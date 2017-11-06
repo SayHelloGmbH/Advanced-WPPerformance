@@ -4,10 +4,6 @@ function awpp_add_serverpush_htaccess() {
 	awpp_get_instance()->Http2Push->add_serverpush_htaccess();
 }
 
-function awpp_monitoring_sheduled_psi_request() {
-	awpp_get_instance()->Monitoring->sheduled_psi_request();
-}
-
 function awpp_get_critical_keys() {
 
 	$ids = [ 'index' ];
