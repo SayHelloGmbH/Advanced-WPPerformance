@@ -703,7 +703,7 @@ body.user-edit-php .criticalapi-generate__controls {
 }
 
 [data-balloon] {
-  display: block;
+  display: inline-block;
 }
 
 td.monitoring-table_link {

@@ -152,12 +152,19 @@ class Monitoring {
 				$average = round( $av / count( $scores ), 2 );
 
 				$max_times_sliced = array_slice( $max_times, 0, 5 );
+				if ( count( $max_times ) != count( $max_times_sliced ) ) {
+					$max_times_sliced[] = '...';
+				}
+
 				$min_times_sliced = array_slice( $min_times, 0, 5 );
+				if ( count( $min_times ) != count( $min_times_sliced ) ) {
+					$min_times_sliced[] = '...';
+				}
 
 				echo '<tr class="monitoring-table">';
 				echo "<td class='monitoring-table_link'><span class='monitoring-table_color'></span>{$url}</td>";
-				echo "<td class='monitoring-table_lowest'><span data-balloon='" . esc_attr( implode( "\n", $min_times_sliced ) . ( count( $min_times ) != count( $min_times_sliced ) ? "\n..." : '' ) ) . "'>$min</span></td>";
-				echo "<td class='monitoring-table_highest'><span data-balloon='" . esc_attr( implode( "\n", $max_times_sliced ) . ( count( $max_times ) != count( $max_times_sliced ) ? "\n..." : '' ) ) . "'>$max</span></td>";
+				echo "<td class='monitoring-table_lowest'><span data-balloon='" . implode( '<br>', $min_times_sliced ) . "'>$min</span></td>";
+				echo "<td class='monitoring-table_highest'><span data-balloon='" . implode( '<br>', $max_times_sliced ) . "'>$max</span></td>";
 				echo "<td class='monitoring-table_average'><b>$average</b></td>";
 				echo "<td class='monitoring-table_remove'></td>";
 				echo '</tr>';
