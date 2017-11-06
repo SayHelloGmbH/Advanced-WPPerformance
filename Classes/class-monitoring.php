@@ -39,7 +39,7 @@ class Monitoring {
 			$urls = [ get_home_url() ];
 		}
 
-		$colors = [ '#ff0000', '#00ff00', '#0000ff' ];
+		//$colors = [ '#ff0000', '#00ff00', '#0000ff' ];
 
 		$psi_apikey     = get_option( $this->option_psikey );
 		$psi_apikey_set = ( '' != $psi_apikey );
@@ -119,14 +119,14 @@ class Monitoring {
 					continue;
 				}
 
+				rsort( $data );
 				$scores = [];
 				foreach ( $data as $timestamp => $d ) {
 					$scores[ $timestamp ] = $d['ruleGroups']['SPEED']['score'];
 				}
-				echo '<pre>' . print_r( $scores, true ) . '</pre>';
 
-				$color_index = $index % count( $colors );
-				$color       = $colors[ $color_index ];
+				//$color_index = $index % count( $colors );
+				//$color       = $colors[ $color_index ];
 
 				$max       = max( $scores );
 				$min       = min( $scores );
@@ -148,9 +148,9 @@ class Monitoring {
 				$average = round( $av / count( $scores ), 2 );
 
 				echo '<tr class="monitoring-table">';
-				echo "<td class='monitoring-table_link'><span class='monitoring-table_color' style='background-color: $color'></span>{$url}</td>";
-				echo "<td class='monitoring-table_lowest'><span title='" . implode( ', ', $min_times ) . "'></span>$min</td>";
-				echo "<td class='monitoring-table_highest'><span title='" . implode( ', ', $max_times ) . "'></span>$max</td>";
+				echo "<td class='monitoring-table_link'><span class='monitoring-table_color'></span>{$url}</td>";
+				echo "<td class='monitoring-table_lowest'><span title='" . esc_attr( implode( ', ', $min_times ) ) . "'></span>$min</td>";
+				echo "<td class='monitoring-table_highest'><span title='" . esc_attr( implode( ', ', $max_times ) ) . "'></span>$max</td>";
 				echo "<td class='monitoring-table_average'><b>$average</b></td>";
 				echo "<td class='monitoring-table_remove'></td>";
 				echo '</tr>';
