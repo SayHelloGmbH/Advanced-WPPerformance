@@ -38,8 +38,6 @@ button[data-balloon] {
 
 [data-balloon] {
   position: relative;
-  display: inline-block;
-  cursor: pointer;
 }
 [data-balloon]:after {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
@@ -702,6 +700,10 @@ body.user-edit-php .criticalapi-generate__controls {
 }
 .monitoring-links th {
   border-bottom-color: #000;
+}
+
+[data-balloon] {
+  display: block;
 }
 
 td.monitoring-table_link {
