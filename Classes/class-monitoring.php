@@ -127,7 +127,6 @@ class Monitoring {
 				foreach ( $data as $timestamp => $d ) {
 					$scores[ $timestamp ] = $d['ruleGroups']['SPEED']['score'];
 				}
-				echo '<pre>' . print_r( $scores, true ) . '</pre>';
 
 				//$color_index = $index % count( $colors );
 				//$color       = $colors[ $color_index ];
@@ -174,12 +173,12 @@ class Monitoring {
 			echo '</table>';
 		} // End if().
 
-		echo '<p><b>' . __( 'Google Pagespeed Insights API Key', 'awpp' ) . '</b></p>';
 		if ( $psi_apikey_set ) {
-			$val = str_repeat( '*', strlen( $psi_apikey ) - 4 ) . substr( $psi_apikey, - 4 );
-			echo '<input type="text" value="' . $val . '" disabled />';
-			echo '<p class="awpp-smaller"><a href="admin.php?action=' . $this->action_remove_psikey . '&site=' . get_current_blog_id() . '">' . __( 'remove API Key', 'awpp' ) . '</a></p>';
+			//$val = str_repeat( '*', strlen( $psi_apikey ) - 4 ) . substr( $psi_apikey, - 4 );
+			//echo '<input type="text" value="' . $val . '" disabled />';
+			echo '<p class="awpp-smaller monitoring-remove-psikey"><a href="admin.php?action=' . $this->action_remove_psikey . '&site=' . get_current_blog_id() . '">' . __( 'remove API Key', 'awpp' ) . '</a></p>';
 		} else {
+			echo '<p><b>' . __( 'Google Pagespeed Insights API Key', 'awpp' ) . '</b></p>';
 			echo '<div class="" id="monitoring-set-psikey">';
 			echo '<p><a href="https://console.developers.google.com/apis/library/pagespeedonline.googleapis.com/" target="_blank">' . __( 'Get an API Key', 'awpp' ) . '</a></p>';
 			echo '<input type="text" name="apikey" />';
