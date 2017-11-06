@@ -39,6 +39,8 @@ class Monitoring {
 			$urls = [ get_home_url() ];
 		}
 
+		natsort( $urls );
+
 		//$colors = [ '#ff0000', '#00ff00', '#0000ff' ];
 
 		$psi_apikey     = get_option( $this->option_psikey );
