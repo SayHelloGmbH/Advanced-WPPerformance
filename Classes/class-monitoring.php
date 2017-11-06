@@ -163,7 +163,7 @@ class Monitoring {
 
 				echo '<tr class="monitoring-table">';
 				echo "<td class='monitoring-table_link'><span class='monitoring-table_color'></span>{$url}</td>";
-				echo "<td class='monitoring-table_lowest'><span data-balloon='" . implode( '<br>', $min_times_sliced ) . "'>$min</span></td>";
+				echo "<td class='monitoring-table_lowest'><span data-balloon='" . implode( '&#013;', $min_times_sliced ) . "'>$min</span></td>";
 				echo "<td class='monitoring-table_highest'><span data-balloon='" . implode( '<br>', $max_times_sliced ) . "'>$max</span></td>";
 				echo "<td class='monitoring-table_average'><b>$average</b></td>";
 				echo "<td class='monitoring-table_remove'></td>";
