@@ -119,7 +119,10 @@ class Monitoring {
 					continue;
 				}
 
+				echo '<pre>' . print_r( $data, true ) . '</pre>';
 				rsort( $data );
+				echo '<pre>' . print_r( $data, true ) . '</pre>';
+
 				$scores = [];
 				foreach ( $data as $timestamp => $d ) {
 					$scores[ $timestamp ] = $d['ruleGroups']['SPEED']['score'];
