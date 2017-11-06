@@ -332,5 +332,6 @@ class Monitoring {
 			}
 			$return['rules'][ $key ]['content'] = $content;
 		}
+		return $return;
 	}
 }
