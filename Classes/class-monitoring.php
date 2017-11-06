@@ -59,6 +59,7 @@ class Monitoring {
 		}
 
 		echo '<pre>';
+		echo get_option( 'monitoring_test_test' );
 		print_r( get_option( 'monitoring_test' ) );
 		echo '</pre>';
 
@@ -309,6 +310,7 @@ class Monitoring {
 				$old_data[ time() ] = $return_value;
 				$parsed_value       = $this->parse_psi( $return_value );
 				$score              = $parsed_value['score'];
+				update_option( 'monitoring_test_test', 'Test' );
 				update_option( 'monitoring_test', $parsed_value );
 			}
 			file_put_contents( $file, json_encode( $old_data ) );
