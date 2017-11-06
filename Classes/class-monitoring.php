@@ -119,14 +119,15 @@ class Monitoring {
 					continue;
 				}
 
-				echo '<pre>' . print_r( $data, true ) . '</pre>';
-				rsort( $data );
-				echo '<pre>' . print_r( $data, true ) . '</pre>';
+				//echo '<pre>' . print_r( $data, true ) . '</pre>';
+				//rsort( $data );
+				//echo '<pre>' . print_r( $data, true ) . '</pre>';
 
 				$scores = [];
 				foreach ( $data as $timestamp => $d ) {
 					$scores[ $timestamp ] = $d['ruleGroups']['SPEED']['score'];
 				}
+				echo '<pre>' . print_r( $scores, true ) . '</pre>';
 
 				//$color_index = $index % count( $colors );
 				//$color       = $colors[ $color_index ];
