@@ -58,11 +58,6 @@ class Monitoring {
 			$settings['frequency'][ $key ] = $shedule['display'];
 		}
 
-		echo '<pre>';
-		echo get_option( 'monitoring_test_test' );
-		print_r( get_option( 'monitoring_test' ) );
-		echo '</pre>';
-
 		echo '<div id="awpp-monitoring-settings" style="display: none;">';
 		echo '<div class="awpp-monitoring-settings">';
 		echo '<h3>' . __( 'Settings', 'awpp' ) . '</h3>';
@@ -292,7 +287,8 @@ class Monitoring {
 			mkdir( $dir );
 		}
 
-		$urls = apply_filters( 'awpp_monitoring_urls', [ get_home_url() ] );
+		$urls     = apply_filters( 'awpp_monitoring_urls', [ get_home_url() ] );
+		$settings = get_option( $this->option_monitoring );
 
 		foreach ( $urls as $url ) {
 			$key  = str_replace( [ 'https://', 'http://', 'www.' ], '', $url );
@@ -309,9 +305,14 @@ class Monitoring {
 			if ( ! isset( $return['error'] ) ) {
 				$old_data[ time() ] = $return_value;
 				$parsed_value       = $this->parse_psi( $return_value );
-				$score              = $parsed_value['score'];
-				update_option( 'monitoring_test_test', 'Test' );
-				update_option( 'monitoring_test', $parsed_value );
+				if ( intval( $settings['minindex'] ) > $parsed_value['score'] ) {
+					// translators: Sheduled Pagespeed insights returned a score lower than {{score}}.
+					$content = sprintf( __( 'Sheduled Pagespeed insights returned a score lower than %s.', 'awpp' ), $settings['minindex'] );
+					// translators: Time {DateTime}
+					$content .= "\n" . sprintf( __( 'Time: %s', 'awpp' ), date( 'd.m.Y H:i' ) );
+					$content .= "\n<pre>" . print_r( $parsed_value, true ) . '</pre>';
+					wp_mail( $settings['email'], __( 'Advanced WPPerformance - Monitoring', 'awpp' ), $content );
+				}
 			}
 			file_put_contents( $file, json_encode( $old_data ) );
 		}
