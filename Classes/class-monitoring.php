@@ -58,6 +58,10 @@ class Monitoring {
 			$settings['frequency'][ $key ] = $shedule['display'];
 		}
 
+		echo '<pre>';
+		print_r( get_option( 'monitoring_test' ) );
+		echo '</pre>';
+
 		echo '<div id="awpp-monitoring-settings" style="display: none;">';
 		echo '<div class="awpp-monitoring-settings">';
 		echo '<h3>' . __( 'Settings', 'awpp' ) . '</h3>';
@@ -286,9 +290,8 @@ class Monitoring {
 		if ( ! is_dir( $dir ) ) {
 			mkdir( $dir );
 		}
-		$urls = [
-			get_home_url(),
-		];
+
+		$urls = apply_filters( 'awpp_monitoring_urls', [ get_home_url() ] );
 
 		foreach ( $urls as $url ) {
 			$key  = str_replace( [ 'https://', 'http://', 'www.' ], '', $url );
@@ -301,11 +304,31 @@ class Monitoring {
 				$old_data = [];
 			}
 
-			$return = $this->do_psi_request( $url );
+			$return_value = $this->do_psi_request( $url );
 			if ( ! isset( $return['error'] ) ) {
-				$old_data[ time() ] = $return;
+				$old_data[ time() ] = $return_value;
+				$parsed_value       = $this->parse_psi( $return_value );
+				$score              = $parsed_value['score'];
+				update_option( 'monitoring_test', $parsed_value );
 			}
 			file_put_contents( $file, json_encode( $old_data ) );
+		}
+	}
+
+	private function parse_psi( $data ) {
+		$return          = [];
+		$return['score'] = $data['ruleGroups']['SPEED']['score'];
+		$return['rules'] = [];
+		foreach ( $data['formattedResults']['ruleResults'] as $key => $val ) {
+			$return['rules'][ $key ]['title'] = $val['localizedRuleName'];
+			$content                          = $val['summary']['format'];
+			foreach ( $val['summary']['format']['args'] as $args ) {
+				if ( 'HYPERLINK' == $args['type'] ) {
+					$content = str_replace( "{{BEGIN_{$args['key']}}}", '<a href="' . $args['value'] . '">', $content );
+					$content = str_replace( "{{END_{$args['key']}}}", '</a>', $content );
+				}
+			}
+			$return['rules'][ $key ]['content'] = $content;
 		}
 	}
 }
