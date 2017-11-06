@@ -336,10 +336,14 @@ class Monitoring {
 				if ( intval( $settings['minindex'] ) > $parsed_value['score'] ) {
 					// translators: Sheduled Pagespeed insights returned a score lower than {{score}}.
 					$content = sprintf( __( 'Sheduled Pagespeed insights returned a score lower than %s.', 'awpp' ), $settings['minindex'] );
-					// translators: Time {DateTime}
-					$content .= "\n" . sprintf( __( 'Time: %s', 'awpp' ), awpp_convert_date() );
-					$content .= "\n" . __( 'Answer:', 'awpp' );
-					$content .= "\n<pre style='text-align: left;'>" . print_r( $parsed_value, true ) . '</pre>';
+
+					$content .= '<table>';
+					$content .= '<tr><td>' . __( 'Time:', 'awpp' ) . '</td><td>' . awpp_convert_date() . '</td></tr>';
+					$content .= '<tr><td>' . __( 'Score:', 'awpp' ) . '</td><td>' . $parsed_value['score'] . '</td></tr>';
+					$content .= '<tr><td>' . __( 'URL:', 'awpp' ) . '</td><td>' . $url . '</td></tr>';
+					$content .= '<tr><td>' . __( 'Answer:', 'awpp' ) . '</td><td><pre style="text-align: left">' . print_r( $parsed_value, true ) . '</pre></td></tr>';
+					$content .= '</table>';
+
 					wp_mail( $settings['email'], __( 'Advanced WPPerformance - Monitoring', 'awpp' ), $content );
 				}
 			}
