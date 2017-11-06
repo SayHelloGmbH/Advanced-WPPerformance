@@ -338,6 +338,7 @@ class Monitoring {
 					$content = sprintf( __( 'Sheduled Pagespeed insights returned a score lower than %s.', 'awpp' ), $settings['minindex'] );
 					// translators: Time {DateTime}
 					$content .= "\n" . sprintf( __( 'Time: %s', 'awpp' ), awpp_convert_date() );
+					$content .= "\n" . __( 'Answer:', 'awpp' );
 					$content .= "\n<pre style='text-align: left;'>" . print_r( $parsed_value, true ) . '</pre>';
 					wp_mail( $settings['email'], __( 'Advanced WPPerformance - Monitoring', 'awpp' ), $content );
 				}
