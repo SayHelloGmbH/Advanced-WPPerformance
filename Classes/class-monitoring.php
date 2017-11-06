@@ -263,6 +263,7 @@ class Monitoring {
 			$this->sheduled_psi_request();
 			wp_schedule_event( time(), $data['frequency'], 'awpp_monitoring_sheduled_psi_request' );
 		}
+		add_action( 'awpp_monitoring_sheduled_psi_request', [ $this, 'sheduled_psi_request' ] );
 
 		awpp_exit_ajax( 'success', 'test' );
 	}
