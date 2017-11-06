@@ -39,9 +39,6 @@ class Monitoring {
 			$urls = [ get_home_url() ];
 		}
 
-		$values = [
-			get_home_url() => [ 10, 100, 100, 85 ],
-		];
 		$colors = [ '#ff0000', '#00ff00', '#0000ff' ];
 
 		$psi_apikey     = get_option( $this->option_psikey );
@@ -112,27 +109,43 @@ class Monitoring {
 			echo '</thead>';
 			echo '<tbody>';
 			foreach ( $urls as $index => $url ) {
-				$key         = $this->filter_monitoring_url_key( $url );
+				$key  = $this->filter_monitoring_url_key( $url );
+				$file = $this->dir . $key . '.json';
+				if ( ! file_exists( $file ) ) {
+					fopen( $file, 'w' );
+				}
+				$data = json_decode( file_get_contents( $file ), true );
+				if ( is_null( $data ) ) {
+					continue;
+				}
+
+				$scores = [];
+				foreach ( $data as $timestamp => $d ) {
+					$scores[ $timestamp ] = $d['ruleGroups']['SPEED']['score'];
+				}
+				echo '<pre>' . print_r( $scores, true ) . '</pre>';
+
+				continue;
 				$color_index = $index % count( $colors );
 				$color       = $colors[ $color_index ];
 
-				$max       = max( $values[ $url ] );
-				$max_times = [];
-				$min       = min( $values[ $url ] );
-				$min_times = [];
-				$av        = 0;
-				foreach ( $values[ $url ] as $timestamp => $score ) {
+				$max      = max( $scores );
+				$max_date = time();
+				$min      = min( $scores );
+				$min_date = time();
+				$av       = 0;
+				foreach ( $scores as $timestamp => $score ) {
 
 					if ( $score == $max ) {
-						$max_times[] = awpp_convert_date( $timestamp );
+						$max_date[] = awpp_convert_date( $timestamp );
 					}
 					if ( $score == $min ) {
-						$min_times[] = awpp_convert_date( $timestamp );
+						$min_date[] = awpp_convert_date( $timestamp );
 					}
 
 					$av = $av + $score;
 				}
-				$average = round( $av / count( $values[ $url ] ), 2 );
+				$average = round( $av / count( $scores ), 2 );
 
 				echo '<tr class="monitoring-table">';
 				echo "<td class='monitoring-table_link'><span class='monitoring-table_color' style='background-color: $color'></span>{$url}</td>";
@@ -141,6 +154,7 @@ class Monitoring {
 				echo "<td class='monitoring-table_average'><b>$average</b></td>";
 				echo "<td class='monitoring-table_remove'></td>";
 				echo '</tr>';
+
 			}
 			echo '</tbody>';
 			echo '</table>';
@@ -310,7 +324,7 @@ class Monitoring {
 					// translators: Sheduled Pagespeed insights returned a score lower than {{score}}.
 					$content = sprintf( __( 'Sheduled Pagespeed insights returned a score lower than %s.', 'awpp' ), $settings['minindex'] );
 					// translators: Time {DateTime}
-					$content .= "\n" . sprintf( __( 'Time: %s', 'awpp' ), date( 'd.m.Y H:i' ) );
+					$content .= "\n" . sprintf( __( 'Time: %s', 'awpp' ), awpp_convert_date( 'd.m.Y H:i' ) );
 					$content .= "\n<pre>" . print_r( $parsed_value, true ) . '</pre>';
 					wp_mail( $settings['email'], __( 'Advanced WPPerformance - Monitoring', 'awpp' ), $content );
 				}
