@@ -202,7 +202,7 @@ class AdminPage extends Init {
 		if ( 'publish' != $post->post_status ) {
 			echo '<p>' . __( 'Please publish the post before generating the Critical CSS.', 'awpp' ) . '</p>';
 		} else {
-			echo self::render_criticalapi_generate_single( "singular-{$post->ID}", get_post_permalink( $post->ID ) );
+			echo self::render_criticalapi_generate_single( "singular-{$post->ID}", get_permalink( $post->ID ) );
 		}
 	}
 
