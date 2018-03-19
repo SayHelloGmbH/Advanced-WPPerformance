@@ -93,10 +93,11 @@ if ( version_compare( $wp_version, '4.7', '<' ) || version_compare( PHP_VERSION,
 	awpp_get_instance()->Http2Push = new nicomartin\AdvancedWPPerformance\Http2Push();
 	awpp_get_instance()->Http2Push->run();
 
+	/*
 	require_once 'Classes/class-monitoring.php';
 	awpp_get_instance()->Monitoring = new nicomartin\AdvancedWPPerformance\Monitoring();
 	awpp_get_instance()->Monitoring->run();
-
+	*/
 	/**
 	 * Critical API
 	 */
