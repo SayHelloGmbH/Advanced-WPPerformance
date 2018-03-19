@@ -14,7 +14,10 @@ class CriticalCSS {
 
 		$this->base_path             = ABSPATH;
 		$this->base_url              = get_home_url() . '/';
-		$this->default_critical_path = $this->base_path . 'wp-content/cache/awpp/critical/';
+		$this->default_critical_path = trailingslashit( WP_CONTENT_DIR ) . 'cache/awpp/critical/';
+		if ( is_multisite() ) {
+			$this->default_critical_path = trailingslashit( WP_CONTENT_DIR ) . 'cache/awpp/critical/' . get_current_blog_id() . '/';
+		}
 
 		if ( ! file_exists( $this->default_critical_path ) ) {
 			mkdir( $this->default_critical_path, 0777, true );

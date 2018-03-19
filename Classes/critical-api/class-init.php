@@ -61,6 +61,7 @@ class Init {
 
 		$data = [
 			'datetime' => self::convert_date(),
+			'option'   => self::$criticalapi_filesmatch_option,
 		];
 		// translators: Critical CSS for "{key}" ({url}) generated
 		awpp_exit_ajax( 'success', sprintf( __( 'Critical CSS for "%1$s" (%2$s) generated.', 'awpp' ), $key, $url ), $data );
@@ -164,7 +165,17 @@ class Init {
 	}
 
 	protected function get_critical_dir() {
-		return ABSPATH . 'wp-content/cache/awpp/criticalapi/';
+
+		$dir = ABSPATH . 'wp-content/cache/awpp/criticalapi/';
+		if ( is_multisite() ) {
+			$dir = $dir . get_current_blog_id() . '/';
+		}
+
+		if ( ! is_dir( $dir ) ) {
+			mkdir( $dir, 0777, true );
+		}
+
+		return $dir;
 	}
 
 	protected function fetch_css( $url, $api_key = '' ) {
@@ -357,13 +368,13 @@ class Init {
 				}
 			}
 			$return .= '</select>';
-			$return .= '<input name="savepage" type="hidden" value="yes"/>';
+			$return .= '<input name="savepage" data-criticalapi-name="savepage" type="hidden" value="yes"/>';
 		} elseif ( '' == $urls ) {
 			$return .= '<input name="criticalapi_url" data-criticalapi-name="url" type="text" class="criticalapi-generate__input" value="' . $saved_url . '" placeholder="' . trailingslashit( get_home_url() ) . '..."/>';
-			$return .= '<input name="savepage" type="hidden" value="yes"/>';
+			$return .= '<input name="savepage" data-criticalapi-name="savepage" type="hidden" value="yes"/>';
 		} else {
 			$return .= '<input name="criticalapi_url" data-criticalapi-name="url" type="text" value="' . $urls . '" disabled class="criticalapi-generate__input"/>';
-			$return .= '<input name="savepage" type="hidden" value="no"/>';
+			$return .= '<input name="savepage" data-criticalapi-name="savepage" type="hidden" value="no"/>';
 		} // End if().
 		$return .= '</td>';
 

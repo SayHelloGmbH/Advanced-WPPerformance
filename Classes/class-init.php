@@ -95,6 +95,11 @@ class Init {
 	 * Admin Bar
 	 */
 	public function add_toolbar( $wp_admin_bar ) {
+
+		if ( is_network_admin() ) {
+			return;
+		}
+
 		$icon = file_get_contents( plugin_dir_path( awpp_get_instance()->file ) . '/assets/img/menu-icon.svg' );
 		$args = [
 			'id'    => $this->admin_bar_id,

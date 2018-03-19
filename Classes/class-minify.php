@@ -213,6 +213,10 @@ class Minify {
 			$cache_dir = $this->default_cache_path;
 		}
 
+		if ( is_multisite() ) {
+			$cache_dir = trailingslashit( $cache_dir ) . get_current_blog_id() . '/';
+		}
+
 		return $cache_dir;
 	}
 }

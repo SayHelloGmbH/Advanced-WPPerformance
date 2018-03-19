@@ -1,7 +1,7 @@
 === Advanced WPPerformance ===
 Contributors: nico_martin
 Donate link: https://www.paypal.me/NicoMartin
-Tags: Performance, Pagespeed, scriptloading, autoptimize, http2, server push, SPDY, preload, Critical CSS, Critical CSS API
+Tags: Performance, Pagespeed, scriptloading, optimize, http2, server push, SPDY, preload, Critical CSS, Critical CSS API
 Requires at least: 4.7
 Tested up to: 4.8.3
 Stable tag: 1.5.3
