@@ -79,6 +79,9 @@ The second option puts all files to push inside you .htaccess. This way they are
 
 ## Changelog
 
+### 1.6.0
+* Added multisite support
+
 ### 1.5.3
 * Fixed Bug while save/post and CriticalAPI enabled
 
