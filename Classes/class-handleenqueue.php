@@ -72,7 +72,7 @@ class HandleEnqueue {
 		}
 
 		$html = str_replace( '\'', '"', $html );
-		$html = str_replace( 'rel="stylesheet"', 'rel="preload" as="style" onload="this.rel=\'stylesheet\'"', $html );
+		$html = str_replace( 'rel="stylesheet"', 'rel="preload" as="style" onload="this.onload=null;this.rel=\'stylesheet\'"', $html );
 
 		return "$html<noscript><link rel='stylesheet' data-push-id='$handle' id='$handle' href='$href' type='text/css' media='$media'></noscript>\n";
 	}
@@ -83,14 +83,12 @@ class HandleEnqueue {
 			return;
 		}
 
-		$loadcss = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/loadCSS.min.js';
-		$preload = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/awpp_relpreload_polyfill.min.js';
-		if ( ! file_exists( $loadcss ) || ! file_exists( $preload ) ) {
-			wp_die( 'loadcss.min.js or awpp_relpreload_polyfill.min.js not found!' );
+		$preload = plugin_dir_path( awpp_get_instance()->file ) . 'assets/scripts/cssrelpreload.min.js';
+		if ( ! file_exists( $preload ) ) {
+			wp_die( 'cssrelpreload.min.js not found!' );
 		}
 
 		echo '<script id="loadCSS">';
-		echo file_get_contents( $loadcss );
 		echo file_get_contents( $preload );
 		echo '</script>';
 	}
