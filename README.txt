@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/NicoMartin
 Tags: Performance, Pagespeed, scriptloading, optimize, http2, server push, SPDY, preload, Critical CSS, Critical CSS API
 Requires at least: 4.7
 Tested up to: 4.9.4
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 Requires PHP: 5.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -76,6 +76,9 @@ A development version of this plugin is hosted on github. If you have some ideas
 [https://github.com/nico-martin/Advanced-WPPerformance](https://github.com/nico-martin/Advanced-WPPerformance)
 
 == Changelog ==
+
+### 1.6.1
+* changed to standalone cssrelpreload.js
 
 ### 1.6.0
 * Added multisite support

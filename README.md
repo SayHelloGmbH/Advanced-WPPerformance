@@ -79,6 +79,9 @@ The second option puts all files to push inside you .htaccess. This way they are
 
 ## Changelog
 
+### 1.6.1
+* changed to standalone cssrelpreload.js
+
 ### 1.6.0
 * Added multisite support
 
