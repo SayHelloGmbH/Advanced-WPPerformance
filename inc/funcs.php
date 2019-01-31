@@ -23,8 +23,6 @@ function awpp_get_critical_keys() {
 		if ( is_404() ) {
 			$ids[] = '404';
 		}
-
-		return $ids;
 	}
 
 	if ( is_singular() ) {

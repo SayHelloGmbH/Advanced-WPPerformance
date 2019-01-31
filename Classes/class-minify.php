@@ -14,7 +14,7 @@ class Minify {
 	public function __construct() {
 
 		$this->base_path          = trailingslashit( ABSPATH );
-		$this->base_url           = trailingslashit( get_home_url() );
+		$this->base_url           = trailingslashit( get_site_url() );
 		$this->default_cache_path = trailingslashit( WP_CONTENT_DIR ) . 'cache/awpp/';
 		$this->minify_files       = [ 'css', 'js' ];
 

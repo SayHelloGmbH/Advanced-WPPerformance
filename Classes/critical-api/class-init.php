@@ -31,9 +31,9 @@ class Init {
 	public function ajax_generate() {
 
 		$url = esc_url( $_POST['url'] );
-		if ( strpos( untrailingslashit( get_home_url() ), $url ) != 0 ) {
+		if ( strpos( untrailingslashit( get_site_url() ), $url ) != 0 ) {
 			// translators: The requested URL is not a subpage of {url}
-			awpp_exit_ajax( 'error', sprintf( __( 'The requested URL is not a subpage of %s', 'awpp' ), untrailingslashit( get_home_url() ) ) );
+			awpp_exit_ajax( 'error', sprintf( __( 'The requested URL is not a subpage of %s', 'awpp' ), untrailingslashit( get_site_url() ) ) );
 		}
 
 		$key  = sanitize_title( $_POST['critical_key'] );

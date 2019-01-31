@@ -13,7 +13,7 @@ class CriticalCSS {
 	public function __construct() {
 
 		$this->base_path             = ABSPATH;
-		$this->base_url              = get_home_url() . '/';
+		$this->base_url              = trailingslashit( get_site_url() );
 		$this->default_critical_path = trailingslashit( WP_CONTENT_DIR ) . 'cache/awpp/critical/';
 		if ( is_multisite() ) {
 			$this->default_critical_path = trailingslashit( WP_CONTENT_DIR ) . 'cache/awpp/critical/' . get_current_blog_id() . '/';
@@ -140,11 +140,12 @@ class CriticalCSS {
 			}
 		}
 
-		$content = "/*\n";
+		$content = '';
+		$content .= "/*\n";
 		$content .= "Critical CSS: set by Advanced WP Performance.\n";
 
 		$ccss_path = $path . $critical_id . '.css';
-		$ccss_url  = str_replace( ABSPATH, get_home_url() . '/', $ccss_path );
+		$ccss_url  = str_replace( trailingslashit( ABSPATH ), trailingslashit( get_site_url() ), $ccss_path );
 
 		if ( is_user_logged_in() ) {
 			$content .= "\nDebug Information (for logged in users):\n";

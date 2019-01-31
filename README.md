@@ -79,6 +79,9 @@ The second option puts all files to push inside you .htaccess. This way they are
 
 ## Changelog
 
+### 1.6.2
+* minor bugfix with WPML
+
 ### 1.6.1
 * changed to standalone cssrelpreload.js
 

@@ -77,6 +77,9 @@ A development version of this plugin is hosted on github. If you have some ideas
 
 == Changelog ==
 
+### 1.6.2
+* minor bugfix with WPML
+
 ### 1.6.1
 * changed to standalone cssrelpreload.js
 
