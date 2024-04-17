@@ -9,6 +9,7 @@ Version: 1.6.5
 Author URI: https://nicomartin.ch
 Text Domain: awpp
 Domain Path: /languages
+Update URI: https://github.com/SayHelloGmbH/Advanced-WPPerformance
  */
 
 global $wp_version;
