@@ -77,6 +77,9 @@ A development version of this plugin is hosted on github. If you have some ideas
 
 == Changelog ==
 
+### 1.6.5
+* PHP 8.x compatibility
+
 ### 1.6.2
 * minor bugfix with WPML
 
