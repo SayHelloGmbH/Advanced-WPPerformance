@@ -502,8 +502,11 @@ class CSS extends Minify
             '#F5DEB3' => 'wheat',
         );
 
+        $keys = array_keys($colors);
+        $regex = implode('|', $keys);
+
         return preg_replace_callback(
-            '/(?<=[: ])('.implode(array_keys($colors), '|').')(?=[; }])/i',
+            '/(?<=[: ])('.$regex.')(?=[; }])/i',
             function ($match) use ($colors) {
                 return $colors[strtoupper($match[0])];
             },
